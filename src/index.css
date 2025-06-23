@@ -1,0 +1,70 @@
+@import "tailwindcss";
+@import 'typeface-poppins';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dark-color: #080411;
+  --puprle-color: #7F6AF7;
+  --white-color: #FFFFFF;
+  --light-grey-color: #98A9B8;
+  --light-blur-grey-color: #98a9b882;
+  --light-purple-color: #7f6af766;
+  --light-dark-color: #080411b3;
+  --white-glass-color: #ffffff1f;
+}
+
+@font-face {
+  font-family: "Expressa Serial";
+  src: url("./assets/font/Expressa-Serial-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--dark-color);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--light-blur-grey-color);
+  border-radius: 6px;
+}
+
+.animated-logo {
+  font-family: "Expressa Serial";
+}
+
+.custom-scrollbar-hide::-webkit-scrollbar {
+  width: 0px;
+}
+.custom-scrollbar-hide::-webkit-scrollbar-thumb {
+  background: #00000000;
+  border-radius: 6px;
+}
+
+/* Add this to index.css or inside a <style> block */
+.swiper-pagination-bullet {
+  width: 60px !important;
+  height: 2px !important;
+  border-radius: 0px !important;
+  background-color: var(--white-color) !important; /* optional color */
+  opacity: 0.4;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1;
+  background-color: var(--puprle-color); /* or use your custom color */
+}
+
+.swiper-pagination {
+  bottom: 0px !important;
+}
