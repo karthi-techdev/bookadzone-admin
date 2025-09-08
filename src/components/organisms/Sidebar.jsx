@@ -24,11 +24,15 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     {
       icon: <RiListIndefinite />, text: "Listings", path: "/Listings",
       children: [
-        { icon: <BsUiChecks />, text: "My Properties", path: "/Listings/properties" },
+        { icon: <BsUiChecks />, text: "My Properties", path: "/listings/properties" },
         { icon: <FaFileContract />, text: "Draft Listings", path: "/Listings/drafts" }
       ]
     },
-    { icon: <BsUiChecks />, text: "Bookings", path: "/Bookings" },
+    { icon: <BsUiChecks />, text: "Bookings", path: "/bookings",
+      children: [
+        { icon: <FaUser />, text: "Campaigns", path: "/bookings/campaigns-list" },
+      ]
+     },
     { icon: <FaMoneyCheck />, text: "Payments", path: "/Payments" },
     { icon: <FaFileContract />, text: "Agreements", path: "/Agreements" },
     { icon: <PiChatTeardropTextFill />, text: "Chat", path: "/Chat" },
