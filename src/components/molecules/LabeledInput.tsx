@@ -1,0 +1,187 @@
+import React, { memo } from 'react';
+import { FiAlertCircle } from 'react-icons/fi';
+import { motion } from 'framer-motion';
+import BAZInput from '../atoms/BAZ-Input';
+import BAZTextArea from '../atoms/BAZ-TextArea';
+import BAZCheckbox from '../atoms/BAZ-Checkbox';
+import BAZRadio from '../atoms/BAZ-Radio';
+import BAZSelect from '../atoms/BAZ-Select';
+import BAZFileInput from '../atoms/BAZ-FileInput';
+import type { InputType, SelectOption } from '../types/common';
+
+interface LabeledInputProps {
+  name: string;
+  label?: string;
+  type: InputType;
+  value?: any;
+  onChange?: (e: { target: { name: string; value: any } }) => void;
+  placeholder?: string;
+  required?: boolean;
+  options?: SelectOption[];
+  className?: string;
+  disabled?: boolean;
+  accept?: string;
+  multiple?: boolean;
+  valueAsNumber?: boolean;
+  error?: string;
+}
+
+const LabeledInput: React.FC<LabeledInputProps> = memo(
+  ({
+    name,
+    label,
+    type,
+    value,
+    onChange,
+    placeholder,
+    required,
+    disabled,
+    options = [],
+    className = '',
+    accept,
+    multiple = false,
+    valueAsNumber = false,
+    error,
+  }) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      if (!onChange) return;
+
+      let newValue: any;
+      if (type === 'file') {
+        const files = (e.target as HTMLInputElement).files;
+        newValue = multiple && files ? Array.from(files) : files?.[0] || undefined;
+      } else if (type === 'checkbox') {
+        newValue = (e.target as HTMLInputElement).checked;
+      } else if (type === 'number' && valueAsNumber) {
+        newValue = e.target.value === '' ? undefined : Number(e.target.value);
+      } else if (type === 'radio') {
+        newValue = e.target.value;
+      } else {
+        newValue = e.target.value;
+      }
+      onChange({ target: { name, value: newValue } });
+    };
+
+    const selectChangeHandler = (selected: SelectOption | SelectOption[] | null) => {
+      if (!onChange) return;
+      const value = multiple
+        ? (selected as SelectOption[])?.map((opt) => opt.value) || []
+        : (selected as SelectOption)?.value || '';
+      onChange({ target: { name, value } });
+    };
+
+    const renderInput = () => {
+      switch (type) {
+        case 'textarea':
+          return (
+            <>
+              <BAZTextArea
+              id={name}
+                name={name}
+                value={value || ''}
+                onChange={handleChange}
+                placeholder={placeholder}
+                disabled={disabled}
+                error={undefined}
+                className="w-full"
+              />
+              {error && (
+                <p className="text-xs text-red-400 flex items-center mt-1">
+                  <FiAlertCircle className="mr-1" /> {error}
+                </p>
+              )}
+            </>
+          );
+        case 'checkbox':
+          return (
+            <BAZCheckbox
+              id={name}
+              name={name}
+              checked={!!value}
+              onChange={handleChange}
+              disabled={disabled}
+              error={error}
+            />
+          );
+        case 'radio':
+          return (
+            <BAZRadio
+              name={name}
+              selectedValue={value || ''}
+              onChange={handleChange}
+              options={options}
+              disabled={disabled}
+              error={error}
+            />
+          );
+        case 'select':
+        case 'country-select':
+        case 'state-select':
+        case 'city-select':
+          return (
+            <BAZSelect
+              id={name}  
+              options={options}
+              value={multiple ? value : options.find((opt) => opt.value === value) || null}
+              onChange={selectChangeHandler}
+              placeholder={placeholder}
+              isMulti={multiple}
+              disabled={disabled}
+              error={error}
+            />
+          );
+        case 'file':
+          return (
+            <BAZFileInput
+              name={name}
+              value={value}
+              onChange={handleChange}
+              accept={accept}
+              multiple={multiple}
+              disabled={disabled}
+              error={error}
+            />
+          );
+        default:
+          return (
+            <>
+              <BAZInput
+                id={name} 
+                name={name}
+                type={type}
+                value={type === 'number' && value != null ? value : value || ''}
+                onChange={handleChange}
+                placeholder={placeholder}
+                disabled={disabled}
+                error={undefined}
+              />
+              {error && (
+                <p className="text-xs text-red-400 flex items-center mt-1">
+                  <FiAlertCircle className="mr-1" /> {error}
+                </p>
+              )}
+            </>
+          );
+      }
+    };
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        className={`space-y-2 ${className}`}
+      >
+        {label && (
+          <label htmlFor={name} className="block text-xs text-[var(--light-grey-color)]">
+            {label}
+            {required && <span className="text-red-400 ml-1">*</span>}
+          </label>
+        )}
+        {renderInput()}
+      </motion.div>
+    );
+  }
+);
+
+export default LabeledInput;
