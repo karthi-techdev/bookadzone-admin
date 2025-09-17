@@ -1,16 +1,23 @@
-// jest.config.ts
+// Mock browser APIs for file input tests
+if (typeof URL.createObjectURL === 'undefined') {
+  URL.createObjectURL = () => 'mock-url';
+}
+if (typeof URL.revokeObjectURL === 'undefined') {
+  URL.revokeObjectURL = () => {};
+}
 
-export default {
-  preset: 'ts-jest',
-  testEnvironment: 'jest-environment-jsdom',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
-  roots: ['/src'],
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
-  setupFilesAfterEnv: ['/src/setupTests.ts'],
-  moduleNameMapper: {
-    '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-  },
-  testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
-};
+import '@testing-library/jest-dom';
+
+// Polyfill for TextEncoder/TextDecoder in Jest environment
+// @ts-ignore
+import { TextEncoder, TextDecoder } from 'util';
+// @ts-ignore
+if (typeof global.TextEncoder === 'undefined') {
+  // @ts-ignore
+  global.TextEncoder = TextEncoder;
+}
+// @ts-ignore
+if (typeof global.TextDecoder === 'undefined') {
+  // @ts-ignore
+  global.TextDecoder = TextDecoder;
+}

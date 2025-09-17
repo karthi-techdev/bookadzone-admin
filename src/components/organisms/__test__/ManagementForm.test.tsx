@@ -10,8 +10,8 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import ManagementForm from '../organisms/ManagementForm';
-import type { FieldConfig } from '../types/common';
+import ManagementForm from '../ManagementForm';
+import type { FieldConfig } from '../../types/common';
 
 // React Hook Form provider wrapper for tests
 const Wrapper = ({ children }: { children: React.ReactNode }) => {

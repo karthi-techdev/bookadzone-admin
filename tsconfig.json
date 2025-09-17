@@ -3,7 +3,9 @@
     "esModuleInterop": true,
     "jsx": "react-jsx"
   },
-  "files": [],
+  "files": [
+    "./src/images.d.ts"
+  ],
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
