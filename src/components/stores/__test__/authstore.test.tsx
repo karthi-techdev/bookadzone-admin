@@ -25,7 +25,7 @@ console.error = (...args) => {
 
 import { act } from '@testing-library/react';
 import axios from 'axios';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../authStore';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
