@@ -1,6 +1,6 @@
-const LIVE = false;
+const LIVE = true;
 
-const SITEURL = 'https://example.com/';
+const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
 const ROOTURL = `${LIVEURL}api/v1/`;
 const FILEURL = LIVEURL;
