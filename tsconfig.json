@@ -1,10 +1,13 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "lib": ["es2017", "dom", "dom.iterable"],
+    "types": ["jest", "@testing-library/jest-dom", "node"]
   },
   "files": [
-    "./src/images.d.ts"
+    "./src/images.d.ts",
+    "./src/declarations.d.ts"
   ],
   "references": [
     { "path": "./tsconfig.app.json" },

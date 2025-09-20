@@ -9,9 +9,12 @@ interface FormFieldProps {
   value: any;
   onChange?: (e: { target: { name: string; value: any } }) => void;
   error?: string;
+  togglePassword?: () => void;
+  showPassword?: boolean;
+  isAuth?:boolean;
 }
 
-const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, error }) => {
+const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, error, togglePassword, showPassword ,isAuth}) => {
   const { clearErrors } = useFormContext();
 
   const normalizedOptions = Array.isArray(field.options)
@@ -21,9 +24,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, error }) 
     : undefined;
 
   const handleChange = (e: { target: { name: string; value: any } }) => {
-    // Clear errors for this field
     clearErrors(field.name);
-    // Call the provided onChange handler
     if (onChange) {
       onChange(e);
     }
@@ -45,6 +46,9 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, error }) 
         valueAsNumber={field.valueAsNumber}
         error={error}
         required={field.required}
+        togglePassword={togglePassword}
+        showPassword={showPassword}
+        isAuth={isAuth}
       />
     </div>
   );

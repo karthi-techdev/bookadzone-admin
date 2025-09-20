@@ -37,11 +37,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     { icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/config" },
       ]
      },
     { icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
       ]
      },
     // Example: Add more special items

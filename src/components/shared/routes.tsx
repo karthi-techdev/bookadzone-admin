@@ -1,4 +1,4 @@
-import { lazy, ReactNode } from 'react';
+import { lazy, type ReactNode } from 'react';
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Properties = lazy(() => import('../pages/Properties'));
@@ -9,7 +9,9 @@ const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
 const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
 const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
-
+const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
+const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
+const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -58,6 +60,26 @@ export const routesData = (): RouteData[] => {
       path: '/faq/edit/:id',
       pageTitle: 'Edit FAQ',
       component: <FaqFormPage />,
+    },
+    {
+      path: '/config',
+      pageTitle: 'Config List',
+      component: <ConfigListPage />,
+    },
+    {
+      path: '/config/add',
+      pageTitle: 'Add Config',
+      component: <ConfigFormPage />,
+    },
+    {
+      path: '/config/edit/:id',
+      pageTitle: 'Edit Config',
+      component: <ConfigFormPage />,
+    },
+    {
+      path: '/trash/config',
+      pageTitle: 'Trash Config',
+      component: <ConfigTrashListPage />,
     },
     {
       path: '/Login',

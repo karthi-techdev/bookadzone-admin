@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-// Swiper removed. Using custom carousel below.
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FcGoogle } from 'react-icons/fc';
@@ -9,7 +10,8 @@ import ManagementForm from '../../organisms/ManagementForm';
 import { loginFields } from '../../utils/fields/loginFields';
 import { useAuthStore } from '../../stores/authStore';
 import ValidationHelper from '../../utils/validationHelper';
-// Swiper CSS imports removed.
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 interface LoginFormData {
   username: string;
@@ -77,9 +79,31 @@ const Login: React.FC = () => {
   return (
     <section className="login-page min-h-screen flex items-center justify-center bg-[var(--main-bg-color)] px-2 md:px-0">
       <div className="login-box bg-[var(--light-dark-color)] p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 rounded-[20px] border border-[var(--light-blur-grey-color)] shadow-lg shadow-[var(--puprle-color)]/20 w-full max-w-5xl">
-        {/* Carousel Section (Custom) */}
+        {/* Carousel Section */}
         <div className="carousel-part md:pr-2 flex items-center justify-center">
-          <CustomCarousel />
+          <div className="carousel bg-[var(--puprle-color)] rounded-[20px] py-3 w-full h-full flex items-center">
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              grabCursor={true}
+              pagination={{ clickable: true }}
+              className="mySwiper"
+            >
+              {[1, 2, 3].map((_, idx) => (
+                <SwiperSlide key={idx}>
+                  <div className="cards px-4 md:px-7 py-6 flex flex-col h-full justify-between">
+                    <div className="contents">
+                      <h3 className="font-bold text-2xl md:text-3xl text-[var(--white-color)] mb-2 leading-tight">Map Your Reach. Maximize Your Impact.</h3>
+                      <p className="font-medium text-sm md:text-base text-[var(--white-color)] mb-5">Quickly explore and book hoardings directly from the interactive map.</p>
+                    </div>
+                    <div className="card-image rounded-xl overflow-hidden h-[180px] md:h-[250px] flex justify-center items-center bg-white/10">
+                      <img src="/assets/image/common/form-carousel-card.jpg" alt="" className="object-cover w-full h-full" />
+                    </div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
         </div>
         {/* Form Section */}
         <div className="form-part md:pl-2 flex flex-col items-center justify-center w-full">
@@ -154,95 +178,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-// Simple custom carousel component (no external CSS or Swiper)
-const carouselData = [
-  {
-    title: 'Map Your Reach. Maximize Your Impact.',
-    desc: 'Quickly explore and book hoardings directly from the interactive map.',
-    img: '/assets/image/common/form-carousel-card.jpg',
-  },
-  {
-    title: 'Find the Best Locations',
-    desc: 'Discover top advertising spots with ease and confidence.',
-    img: '/assets/image/common/form-carousel-card.jpg',
-  },
-  {
-    title: 'Book Instantly',
-    desc: 'Secure your hoarding space in just a few clicks.',
-    img: '/assets/image/common/form-carousel-card.jpg',
-  },
-];
-
-function CustomCarousel() {
-  const [index, setIndex] = React.useState(0);
-  const [direction, setDirection] = React.useState<'left' | 'right'>('right');
-  const [isSliding, setIsSliding] = React.useState(false);
-  const slideDuration = 500;
-
-  React.useEffect(() => {
-    const timer = setInterval(() => {
-      setDirection('right');
-      setIsSliding(true);
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % carouselData.length);
-        setIsSliding(false);
-      }, slideDuration);
-    }, 3500);
-    return () => clearInterval(timer);
-  }, [index]);
-
-  const handleDotClick = (i: number) => {
-    if (i === index) return;
-    setDirection(i > index ? 'right' : 'left');
-    setIsSliding(true);
-    setTimeout(() => {
-      setIndex(i);
-      setIsSliding(false);
-    }, slideDuration);
-  };
-
-  const { title, desc, img } = carouselData[index];
-
-  return (
-    <div className="carousel bg-[var(--puprle-color)] rounded-[20px] py-3 w-full h-full flex items-center relative overflow-hidden">
-      <div
-        className={`absolute inset-0 w-full h-full transition-transform duration-500 ${isSliding ? (direction === 'right' ? '-translate-x-full' : 'translate-x-full') : 'translate-x-0'}`}
-        style={{ zIndex: 10 }}
-      >
-        <div className="cards px-4 md:px-7 py-6 flex flex-col h-full justify-between w-full">
-          <div className="contents">
-            <h3 className="font-bold text-2xl md:text-3xl text-[var(--white-color)] mb-2 leading-tight">{title}</h3>
-            <p className="font-medium text-sm md:text-base text-[var(--white-color)] mb-5">{desc}</p>
-          </div>
-          <div className="card-image rounded-xl overflow-hidden h-[180px] md:h-[250px] flex justify-center items-center bg-white/10">
-            <img src={img} alt="" className="object-cover w-full h-full" />
-          </div>
-        </div>
-      </div>
-      <div
-        className={`absolute inset-0 w-full h-full transition-transform duration-500 ${isSliding ? 'translate-x-0' : (direction === 'right' ? 'translate-x-full' : '-translate-x-full')}`}
-        style={{ zIndex: 20 }}
-      >
-        <div className="cards px-4 md:px-7 py-6 flex flex-col h-full justify-between w-full">
-          <div className="contents">
-            <h3 className="font-bold text-2xl md:text-3xl text-[var(--white-color)] mb-2 leading-tight">{title}</h3>
-            <p className="font-medium text-sm md:text-base text-[var(--white-color)] mb-5">{desc}</p>
-          </div>
-          <div className="card-image rounded-xl overflow-hidden h-[180px] md:h-[250px] flex justify-center items-center bg-white/10">
-            <img src={img} alt="" className="object-cover w-full h-full" />
-          </div>
-        </div>
-      </div>
-      <div className="flex justify-center mt-2 gap-2 absolute left-0 right-0 bottom-4 z-30">
-        {carouselData.map((_, i) => (
-          <button
-            key={i}
-            className={`w-2 h-2 rounded-full ${i === index ? 'bg-white' : 'bg-gray-400'}`}
-            onClick={() => handleDotClick(i)}
-            aria-label={`Go to slide ${i + 1}`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}

@@ -1,3 +1,4 @@
+
 import type { FieldConfig } from '../../types/common';
 
 export const faqFields: FieldConfig[] = [
@@ -6,7 +7,7 @@ export const faqFields: FieldConfig[] = [
     label: 'Question',
     type: 'textarea',
     required: true,
-    className: 'md:col-span-12',
+    className: 'md:col-span-6',
     placeholder: 'Enter your question...',
   },
   {
@@ -14,7 +15,7 @@ export const faqFields: FieldConfig[] = [
     label: 'Answer',
     type: 'textarea',
     required: true,
-    className: 'md:col-span-12',
+    className: 'md:col-span-6',
     placeholder: 'Enter the answer...',
-  }
+  },
 ];
