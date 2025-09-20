@@ -6,7 +6,7 @@ export const loginFields: FieldConfig[] = [
     label: 'Email',
     type: 'email',
     required: true,
-    className: 'md:col-span-12',
+    className: 'md:col-span-6 ',
     placeholder: 'Enter Your Email',
     value:'admin@gmail.com'
   },
@@ -15,7 +15,7 @@ export const loginFields: FieldConfig[] = [
     label: 'Password',
     type: 'password',
     required: true,
-    className: 'md:col-span-12',
+    className: 'md:col-span-6',
     placeholder: 'Enter Your Password',
     value:'admin@123'
   },

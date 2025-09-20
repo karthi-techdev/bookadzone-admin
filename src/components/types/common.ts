@@ -15,6 +15,14 @@ export interface Faq {
   priority: number;
 }
 
+export interface Config {
+  _id?: string;
+  name: string;
+  slug: string;
+  configFields?: { key: string; value: string }[];
+  status?: boolean;
+}
+
 export type InputType =
   | 'text'
   | 'email'
