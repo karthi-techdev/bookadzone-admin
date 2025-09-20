@@ -1,4 +1,10 @@
-// Ensure Axios Authorization header is set from localStorage token on app initialization
+import { create } from 'zustand';
+import axios from 'axios';
+import type { Faq } from '../types/common';
+import ImportedURL from '../common/urls';
+
+const { API } = ImportedURL;
+
 const token = localStorage.getItem('token');
 if (token) {
   axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -24,12 +30,7 @@ interface FaqState {
   deleteFaqPermanently: (id: string) => Promise<void>;
   fetchTrashFaqs: (page?: number, limit?: number, filter?: 'total' | 'active' | 'inactive') => Promise<void>;
 }
-import { create } from 'zustand';
-import axios from 'axios';
-import type { Faq } from '../types/common';
-import ImportedURL from '../common/urls';
 
-const { API } = ImportedURL;
 
 interface FaqStats {
   total: number;

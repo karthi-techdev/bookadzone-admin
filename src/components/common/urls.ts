@@ -21,6 +21,17 @@ const API = {
   trashfaqlist: `${ROOTURL}faqs/trash`,
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
+  
+// Footer endpoints
+  addfooterinfo: `${ROOTURL}footerinfo/`,
+  listfooterinfo: `${ROOTURL}footerinfo/`,
+  getfooterinfobyid: `${ROOTURL}footerinfo/getfooterinfoById/`,
+  updatefooterinfo: `${ROOTURL}footerinfo/updatefooterinfo/`,
+  deletefooterinfo: `${ROOTURL}footerinfo/softDeletefooterinfo/`,
+  toggleStatusfooterinfo: `${ROOTURL}footerinfo/togglestatus/`,
+  trashfooterinfolist: `${ROOTURL}footerinfo/trash`,
+  restorefooterinfo: `${ROOTURL}footerinfo/restore/`,
+  permanentDeletefooterinfo: `${ROOTURL}footerinfo/permanentDelete/`,
 
   // Auth endpoints
   login: `${ROOTURL}auth/login`,

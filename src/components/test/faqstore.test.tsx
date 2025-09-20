@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import axios from 'axios';
-import { useFaqStore } from '../stores/faqStore';
+import { useFaqStore } from '../stores/FaqStore';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

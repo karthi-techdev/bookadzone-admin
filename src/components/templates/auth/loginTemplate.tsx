@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { FcGoogle } from 'react-icons/fc';
 import { FaSquareFacebook } from 'react-icons/fa6';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../../stores/AuthStore';
 import ValidationHelper from '../../utils/validationHelper';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -160,7 +160,7 @@ const Login: React.FC = () => {
                 <span className='text-[.50rem] text-[var(--light-grey-color)]'>Or Login With</span>
               </div>
               <div className="login-methods flex justify-center items-center gap-4">
-                <Link to="/login/google" className='px-5 py-2 rounded-[5px] bg-[var(--white-color)] font-medium text-[.65rem] cursor-pointer flex items-center gap-2 font-semibold'> <FcGoogle className='text-[1.2rem]'/> Google</Link>
+                <Link to="/login/google" className='px-5 py-2 rounded-[5px] bg-[var(--white-color)] font-medium text-[.65rem] cursor-pointer flex items-center gap-2 font-semibold'> <FcGoogle className='text-[1.2rem]' /> Google</Link>
                 <Link to="/login/facebook" className='px-5 py-2 rounded-[5px] bg-[#1877F2] text-[var(--white-color)] font-medium text-[.65rem] cursor-pointer flex items-center gap-2 font-semibold'><FaSquareFacebook className='text-[1.2rem]' /> Facebook</Link>
               </div>
               <div className="already-have-account mt-3">

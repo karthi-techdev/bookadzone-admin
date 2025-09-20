@@ -2,7 +2,7 @@ import React from 'react';
 import { FiSearch, FiPlus, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../stores/AuthStore';
 
 interface StatFilter {
   id: string;

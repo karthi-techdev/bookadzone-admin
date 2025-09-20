@@ -25,7 +25,7 @@ console.error = (...args) => {
 
 import { act } from '@testing-library/react';
 import axios from 'axios';
-import { useAuthStore } from '../stores/authStore';
+import { useAuthStore } from '../stores/AuthStore';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -34,7 +34,7 @@ describe('Auth Store', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     localStorage.clear();
-    
+
   });
 
   it('logs in correctly and stores token', async () => {

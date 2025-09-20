@@ -1,4 +1,5 @@
-import { lazy, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { lazy } from 'react';
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Properties = lazy(() => import('../pages/Properties'));
@@ -9,6 +10,9 @@ const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
 const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
 const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+const FooterInfoListPage = lazy(() => import('../pages/footerinfo/FooterInfoListPage'));
+const FooterInfoFormPage = lazy(() => import('../pages/footerinfo/FooterInfoFormPage'));
+const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
 
 export interface RouteData {
   path: string;
@@ -60,14 +64,34 @@ export const routesData = (): RouteData[] => {
       component: <FaqFormPage />,
     },
     {
+      path: '/footerinfo',
+      pageTitle: 'FAQ List',
+      component: <FooterInfoListPage />,
+    },
+    {
+      path: '/footerinfo/add',
+      pageTitle: 'Add FAQ',
+      component: <FooterInfoFormPage />,
+    },
+    {
+      path: '/footerinfo/edit/:id',
+      pageTitle: 'Edit FAQ',
+      component: <FooterInfoFormPage />,
+    },
+    {
       path: '/Login',
       pageTitle: 'Login',
       component: <Login />,
     },
     {
       path: '/trash/faq',
-      pageTitle: 'Trash FAQ',
+      pageTitle: 'Trash FooterInfo',
       component: <FaqTrashListPage />,
+    },
+     {
+      path: '/trash/footerinfo',
+      pageTitle: 'Trash FooterInfo',
+      component: <FooterInfoTrashListPage />,
     },
   ];
   return Routes;

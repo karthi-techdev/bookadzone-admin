@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import { FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { FiCheck } from 'react-icons/fi';
 import FormField from '../molecules/FormField';
 import type { FieldConfig } from '../types/common';
 import Button from '../atoms/BAZ-Button';
@@ -18,7 +18,9 @@ interface ManagementFormProps {
   isDynamic?: boolean;
   dynamicFieldName?: string;
   dynamicFieldConfig?: FieldConfig[];
-  onFieldChange?: { [key: string]: (e: { target: { name: string; value: any } }) => void };
+  onFieldChange?: {
+    [key: string]: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  };
 }
 
 const ManagementForm: React.FC<ManagementFormProps> = ({
@@ -63,7 +65,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className='flex flex-col justify-center items-center w-full'
+        className="flex flex-col justify-center items-center w-full"
         data-testid={dataTestId}
       >
         <div className="w-full space-y-6">
@@ -72,8 +74,14 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
               <FormField
                 field={field}
                 value={getValues(field.name)}
-                onChange={onFieldChange[field.name] || ((e) => {
-                  setValue(field.name, e.target.value, { shouldValidate: true });
+                onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                  if (field.type === 'file' && 'files' in e.target && e.target.files) {
+                    setValue(field.name, e.target.files[0], { shouldValidate: true });
+                  } else if (field.type === 'checkbox') {
+                    setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
+                  } else {
+                    setValue(field.name, e.target.value, { shouldValidate: true });
+                  }
                 })}
                 error={getNestedError(errors, field.name)}
               />
@@ -104,12 +112,18 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
     >
       <div className={isLogin ? 'space-y-6' : 'grid grid-cols-1 md:grid-cols-12 gap-6'}>
         {fields.map((field) => (
-          <div key={field.name} className={isLogin ? 'w-full' : 'md:col-span-6 col-span-12'}>
+          <div key={field.name} className={isLogin ? 'w-full' : field.className || 'md:col-span-6 col-span-12'}>
             <FormField
               field={field}
               value={getValues(field.name)}
-              onChange={onFieldChange[field.name] || ((e) => {
-                setValue(field.name, e.target.value, { shouldValidate: true });
+              onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                if (field.type === 'file' && 'files' in e.target && e.target.files) {
+                  setValue(field.name, e.target.files[0], { shouldValidate: true });
+                } else if (field.type === 'checkbox') {
+                  setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
+                } else {
+                  setValue(field.name, e.target.value, { shouldValidate: true });
+                }
               })}
               error={getNestedError(errors, field.name)}
             />
@@ -128,9 +142,16 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                 key={`${dynamicFieldName}.${index}`}
                 field={field}
                 value={getValues(`${dynamicFieldName}.${index}.${field.name}`)}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
                   const updatedFields = [...(getValues(dynamicFieldName) || [])];
-                  updatedFields[index] = { ...updatedFields[index], [field.name]: e.target.value };
+                  updatedFields[index] = {
+                    ...updatedFields[index],
+                    [field.name]: field.type === 'file' && 'files' in e.target && e.target.files
+                      ? e.target.files[0]
+                      : field.type === 'checkbox'
+                      ? (e as React.ChangeEvent<HTMLInputElement>).target.checked
+                      : e.target.value,
+                  };
                   setValue(dynamicFieldName, updatedFields, { shouldValidate: true });
                 }}
                 error={getNestedError(errors, `${dynamicFieldName}.${index}.${field.name}`)}
