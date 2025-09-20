@@ -40,7 +40,7 @@ const Navbar: React.FC = () => {
             </div>
   
             <div className="nav-actions flex items-center justify-between">
-              <div className="quick-btns flex items-center justify-between gap-5 mr-10">
+              <div className="quick-btns flex items-center justify-between gap-5 mr-4">
                 <Link to="/support"><RiCustomerServiceFill className="text-[1.1rem] text-[var(--white-color)] h-[100%]" /></Link>
   
                 <div className="relative flex items-center flex-col" ref={notifDropdown.ref}>
