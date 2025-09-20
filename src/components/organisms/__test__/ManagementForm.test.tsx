@@ -1,17 +1,12 @@
-// src/components/test/ManagementForm.test.tsx
 
-beforeAll(() => {
-  global.URL.createObjectURL = jest.fn();
-  global.URL.revokeObjectURL = jest.fn();
-});
 
 import '@testing-library/jest-dom'; // For extended jest matchers
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import { useForm, FormProvider } from 'react-hook-form';
 
-import ManagementForm from '../organisms/ManagementForm';
-import type { FieldConfig } from '../types/common';
+import ManagementForm from '../ManagementForm';
+import type { FieldConfig } from '../../types/common';
 
 // React Hook Form provider wrapper for tests
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
@@ -106,7 +101,7 @@ describe('ManagementForm Component', () => {
     expect(screen.getByText('file.pdf')).toBeInTheDocument();
   });
 
-  it('renders dynamic fields when isDynamic is true', () => {
+  it('renders dynamic fields when isDynamic is true', async () => {
     const dynamicFields: FieldConfig[] = [
       { name: 'dynamic1', type: 'text', label: 'Dynamic 1', required: false },
     ];
@@ -123,7 +118,15 @@ describe('ManagementForm Component', () => {
       </Wrapper>
     );
 
-    expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+    // Simulate clicking the "Add Field" button to add a dynamic field
+    const addButton = screen.getByRole('button', { name: /add field/i });
+    await act(async () => {
+      addButton && fireEvent.click(addButton);
+    });
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+    });
   });
 
   it('disables the submit button when isSubmitting is true', () => {

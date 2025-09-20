@@ -7,11 +7,11 @@ import { parseExpiresIn } from './utils';
 const { API } = ImportedURL;
 
 export const checkTokenValidity = (): boolean => {
-  const token = localStorage.getItem('token');
-  const storedExpiry = localStorage.getItem('tokenExpiry');
+  try {
+    const token = localStorage.getItem('token');
+    const storedExpiry = localStorage.getItem('tokenExpiry');
 
-  if (token && storedExpiry) {
-    try {
+    if (token && storedExpiry) {
       const expiryTime = parseInt(storedExpiry, 10);
       const now = Date.now();
 
@@ -82,16 +82,16 @@ export const checkTokenValidity = (): boolean => {
       }
 
       return true;
-    } catch (e) {
-      // On error, clear storage and redirect to login for safety
-      localStorage.removeItem('token');
-      localStorage.removeItem('tokenExpiry');
-      delete axios.defaults.headers.common['Authorization'];
-      window.location.href = '/Login';
-      return false;
     }
-  }
 
-  // No token or expiry found, consider invalid
-  return false;
+    // No token or expiry found, consider invalid
+    return false;
+  } catch (e) {
+    // On error, clear storage and redirect to login for safety
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiry');
+    delete axios.defaults.headers.common['Authorization'];
+    window.location.href = '/Login';
+    return false;
+  }
 };

@@ -27,6 +27,10 @@ const BAZFileInput: React.FC<FileInputProps> = ({
   const [previews, setPreviews] = useState<{ url: string; name: string; isImage: boolean }[]>([]);
   const [selectedPreview, setSelectedPreview] = useState<{ url: string; name: string } | null>(null);
   const objectUrlsRef = useRef<string[]>([]);
+  // Ensure objectUrlsRef.current is always an array
+  if (!Array.isArray(objectUrlsRef.current)) {
+    objectUrlsRef.current = [];
+  }
   const isUserChange = useRef(false);
 
   useEffect(() => {
@@ -35,7 +39,9 @@ const BAZFileInput: React.FC<FileInputProps> = ({
       return;
     }
 
-    objectUrlsRef.current.forEach(URL.revokeObjectURL);
+    if (Array.isArray(objectUrlsRef.current)) {
+      objectUrlsRef.current.forEach(URL.revokeObjectURL);
+    }
     objectUrlsRef.current = [];
 
     if (!value) {
@@ -61,14 +67,18 @@ const BAZFileInput: React.FC<FileInputProps> = ({
 
   useEffect(() => {
     return () => {
-      objectUrlsRef.current.forEach(URL.revokeObjectURL);
+      if (Array.isArray(objectUrlsRef.current)) {
+        objectUrlsRef.current.forEach(URL.revokeObjectURL);
+      }
     };
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!onChange) return;
 
-    objectUrlsRef.current.forEach(URL.revokeObjectURL);
+    if (Array.isArray(objectUrlsRef.current)) {
+      objectUrlsRef.current.forEach(URL.revokeObjectURL);
+    }
     objectUrlsRef.current = [];
 
     const files = e.target.files;

@@ -9,10 +9,10 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+  // "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
     "moduleDetection": "force",
-    "noEmit": true,
+  "composite": true,
     "jsx": "react-jsx",
 
     /* Linting */
@@ -24,5 +24,6 @@
     "noUncheckedSideEffectImports": true
     ,"esModuleInterop": true
   },
+  "types": ["jest", "@testing-library/jest-dom"],
   "include": ["src"]
 }

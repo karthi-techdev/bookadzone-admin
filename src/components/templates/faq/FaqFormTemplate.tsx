@@ -6,7 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useFaqStore } from '../../stores/FaqStore';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
-import { faqFields } from '../../utils/fields/FaqFields';
+import { faqFields } from '../../utils/fields/faqFields';
 import ValidationHelper from '../../utils/validationHelper';
 import Swal from 'sweetalert2';
 

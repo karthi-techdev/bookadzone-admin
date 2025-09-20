@@ -127,6 +127,7 @@ const ManagementTable = <T extends Record<string, any>>({
                         {onView && (
                           <BAZButton
                             type="button"
+                            aria-label="View"
                             onClick={() => onView(row)}
                             className="text-[var(--light-grey-color)] hover:text-white p-1 rounded-md hover:bg-[var(--dark-color)]"
                           >
@@ -140,6 +141,7 @@ const ManagementTable = <T extends Record<string, any>>({
                             onClick={() => onEdit(row)}
                             className="text-[var(--light-grey-color)] hover:text-blue-400 p-1 rounded-md hover:bg-[var(--dark-color)]"
                           >
+                            <span style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}>Edit</span>
                             <FiEdit className="h-4 w-4" />
                           </BAZButton>
                         )}
@@ -150,12 +152,14 @@ const ManagementTable = <T extends Record<string, any>>({
                             onClick={() => onDelete(row)}
                             className="text-[var(--light-grey-color)] hover:text-red-400 p-1 rounded-md hover:bg-[var(--dark-color)]"
                           >
+                            <span style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', whiteSpace: 'nowrap', border: 0 }}>Delete</span>
                             <FiTrash2 className="h-4 w-4" />
                           </BAZButton>
                         )}
                         {onDownload && (
                           <BAZButton
                             type="button"
+                            aria-label="Download"
                             onClick={() => onDownload(row)}
                             className="text-[var(--light-grey-color)] hover:text-red-400 p-1 rounded-md hover:bg-[var(--dark-color)]"
                           >
@@ -165,6 +169,7 @@ const ManagementTable = <T extends Record<string, any>>({
                         {onRestore && (
                           <BAZButton
                             type="button"
+                            aria-label="Restore"
                             onClick={() => onRestore(row)}
                             className="text-[var(--light-grey-color)] hover:text-green-400 p-1 rounded-md hover:bg-[var(--dark-color)]"
                           >
@@ -174,6 +179,7 @@ const ManagementTable = <T extends Record<string, any>>({
                         {onPermanentDelete && (
                           <BAZButton
                             type="button"
+                            aria-label="Permanent Delete"
                             onClick={() => onPermanentDelete(row)}
                             className="text-[var(--light-grey-color)] hover:text-red-400 p-1 rounded-md hover:bg-[var(--dark-color)]"
                           >

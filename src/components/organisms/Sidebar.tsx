@@ -33,19 +33,23 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   }, [location.pathname]);
 
   const navItems = [
-    { icon: <IoGrid />, text: "Dashboard", path: "/" },
+    { icon: <IoGrid />, text: "Dashboard", path: "/", special: true },
     { icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/config" },
       ]
      },
-     { icon: <FaTrashCan />, text: "Trash", path: "#",
+    { icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
       ]
      },
+    // Example: Add more special items
+    // { icon: <SomeIcon />, text: "User Management", path: "/users", special: true },
   ];
 
   // Handle expand/collapse for submenu
@@ -78,7 +82,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
             const hasChildren = !!item.children;
             const isExpanded = expandedMenuIdx === idx;
 
-            if (item.text === "Dashboard") {
+            if (item.special) {
               if (collapsed) {
                 return (
                   <li key={idx} className="flex flex-col items-center">

@@ -1,6 +1,6 @@
-const LIVE = false;
+const LIVE = true;
 
-const SITEURL = 'https://example.com/';
+const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
 const ROOTURL = `${LIVEURL}api/v1/`;
 const FILEURL = LIVEURL;
@@ -32,6 +32,17 @@ const API = {
   trashfooterinfolist: `${ROOTURL}footerinfo/trash`,
   restorefooterinfo: `${ROOTURL}footerinfo/restore/`,
   permanentDeletefooterinfo: `${ROOTURL}footerinfo/permanentDelete/`,
+
+  // Config endpoints
+  addconfig: `${ROOTURL}configs/`,
+  listconfig: `${ROOTURL}configs/`,
+  getConfig: `${ROOTURL}configs/getConfigById/`,
+  updateconfig: `${ROOTURL}configs/updateConfig/`,
+  deleteconfig: `${ROOTURL}configs/softDeleteConfig/`,
+  toggleStatusconfig: `${ROOTURL}configs/togglestatus/`,
+  trashconfiglist: `${ROOTURL}configs/trash`,
+  restoreconfig: `${ROOTURL}configs/restore/`,
+  permanentDeleteconfig: `${ROOTURL}configs/permanentDelete/`,
 
   // Auth endpoints
   login: `${ROOTURL}auth/login`,

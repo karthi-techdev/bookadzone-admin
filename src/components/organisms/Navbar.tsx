@@ -23,33 +23,33 @@ const Navbar: React.FC = () => {
       exit={{ y: -70, opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 1.8 }}
       className="z-100000 fixed top-0 left-0 right-0 w-full shadow flex items-center justify-between px-6 py-3 bg-[var(--light-dark-color)] h-[60px] border-b-[1px] border-b-[var(--light-blur-grey-color)]">
-      <div className="nav-enclose flex items-center justify-between w-full">
-        <motion.div className="logo flex items-center justify-center" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.97 }}>
-          <Logo className="h-[20px]" />
-        </motion.div>
-        <div className="nav-content flex items-center w-[80vw] justify-between">
-          <div className="search-box w-[35vw] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
-            <FiSearch className="text-[1.3rem] ml-2 text-[var(--light-grey-color)]" />
-            <input type="search" placeholder="Search..." className="outline-none text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] text-[.80rem] px-3 w-full" />
-            <Button
-              className="bg-[var(--puprle-color)] text-[var(--white-color)] text-[.80rem] px-5 py-1.5 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px]"
-              onClick={() => {/* TODO: handle search action */ }}
-            >
-              Search
-            </Button>
-          </div>
-
-          <div className="nav-actions flex items-center justify-between">
-            <div className="quick-btns flex items-center justify-between gap-5 mr-10">
-              <Link to="/support"><RiCustomerServiceFill className="text-[1.1rem] text-[var(--white-color)] h-[100%]" /></Link>
-
-              <div className="relative flex items-center flex-col" ref={notifDropdown.ref}>
-                <Button className="relative focus:outline-none" onClick={notifDropdown.toggle}>
-                  <RiNotification2Fill className="text-lg text-[var(--white-color)]" />
-                  <span className="absolute -top-1 -right-1 text-[.50rem] text-white h-3 w-3 bg-[var(--puprle-color)] rounded-full flex items-center justify-center">3</span>
-                </Button>
-                {notifDropdown.open && (
-                  <motion.div
+        <div className="nav-enclose flex items-center justify-between w-full">
+          <motion.div className="logo flex items-center justify-center" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.97 }}>
+            <Logo className="h-[20px]" />
+          </motion.div>
+          <div className="nav-content flex items-center w-[80vw] justify-between">
+            <div className="search-box w-[35vw] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
+              <FiSearch className="text-[1.3rem] ml-2 text-[var(--light-grey-color)]" />
+              <input type="search" placeholder="Search..." className="outline-none text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] text-[.80rem] px-3 w-full"/>
+              <Button
+                className="bg-[var(--puprle-color)] text-[var(--white-color)] text-[.80rem] px-5 py-1.5 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px]"
+                onClick={() => {/* TODO: handle search action */}}
+              >
+                Search
+              </Button>
+            </div>
+  
+            <div className="nav-actions flex items-center justify-between">
+              <div className="quick-btns flex items-center justify-between gap-5 mr-4">
+                <Link to="/support"><RiCustomerServiceFill className="text-[1.1rem] text-[var(--white-color)] h-[100%]" /></Link>
+  
+                <div className="relative flex items-center flex-col" ref={notifDropdown.ref}>
+                  <Button className="relative focus:outline-none" onClick={notifDropdown.toggle}>
+                    <RiNotification2Fill className="text-lg text-[var(--white-color)]" />
+                    <span className="absolute -top-1 -right-1 text-[.50rem] text-white h-3 w-3 bg-[var(--puprle-color)] rounded-full flex items-center justify-center">3</span>
+                  </Button>
+                  {notifDropdown.open && (
+                    <motion.div 
                     initial={{ y: 50, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 50, opacity: 0 }}
