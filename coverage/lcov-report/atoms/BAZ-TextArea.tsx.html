@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">91.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>11/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -105,9 +105,15 @@
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -116,10 +122,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,7 +159,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useId } from 'react';
+<span class="cline-any cline-yes">8x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useId } from 'react';
 import { FiAlertCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 &nbsp;
@@ -155,12 +167,18 @@ interface TextAreaProps extends React.TextareaHTMLAttributes&lt;HTMLTextAreaElem
   className?: string;
   error?: string;
   label?: string;
+  isAuth?: boolean;
 }
 &nbsp;
-&nbsp;
-const BAZTextArea: React.FC&lt;TextAreaProps&gt; = ({ className = '', error, label, id, ...rest }) =&gt; {
+const BAZTextArea: React.FC&lt;TextAreaProps&gt; = ({ className = '', error, label, id, isAuth = false, ...rest }) =&gt; {
   const generatedId = useId();
   const textareaId = id || generatedId;
+  
+  // Define different border radius styles based on isAuth
+  const borderRadiusClass = isAuth 
+    ? <span class="branch-0 cbranch-no" title="branch not covered" >'rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px]' </span>
+    : 'rounded';
+&nbsp;
   return (
     &lt;motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -178,7 +196,7 @@ const BAZTextArea: React.FC&lt;TextAreaProps&gt; = ({ className = '', error, lab
         {...rest}
         className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
-        } rounded text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
+        } ${borderRadiusClass} text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
       /&gt;
       {error &amp;&amp; (
         &lt;p className="text-xs text-red-400 flex items-center mt-1"&gt;
@@ -196,7 +214,7 @@ export default BAZTextArea;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-17T08:02:04.380Z
+                at 2025-09-22T14:33:43.682Z
             </div>
         <script src="../prettify.js"></script>
         <script>
