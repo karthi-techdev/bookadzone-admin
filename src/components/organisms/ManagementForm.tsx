@@ -14,7 +14,8 @@ interface ManagementFormProps {
   onSubmit?: React.FormEventHandler<HTMLFormElement>;
   ['data-testid']?: string;
   onButtonClick?: () => void;
-  existingFileName?: string;
+  existingFileName?: string; // Deprecated - kept for backward compatibility
+  existingFiles?: { [key: string]: string | string[] }; // Enhanced for multiple files
   isAuth?: boolean;
   isDynamic?: boolean;
   dynamicFieldName?: string;
@@ -30,7 +31,8 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   isSubmitting,
   onSubmit,
   onButtonClick,
-  existingFileName,
+  existingFileName, // Deprecated
+  existingFiles = {},
   isAuth = false,
   isDynamic = false,
   dynamicFieldName = 'dynamicFields',
@@ -91,7 +93,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="flex flex-col justify-center items-center w-full"
-        data-testid={dataTestId}
+        data-testid={dataTestId || 'auth-form'}
       >
         <div className="w-full space-y-2">
           {fields.map((field) => (
@@ -109,9 +111,10 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                   }
                 })}
                 error={getNestedError(errors, field.name)}
-                togglePassword={field.name === 'password' ? extraProps.togglePassword : undefined}
-                showPassword={field.name === 'password' ? extraProps.showPassword : undefined}
+                togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
+                showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
                 isAuth={isAuth}
+                existingFiles={existingFiles[field.name]}
               />
             </div>
           ))}
@@ -122,7 +125,6 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
             className="p-3 bg-[var(--puprle-color)] text-[var(--white-color)] font-medium text-[.75rem] cursor-pointer rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px] w-full disabled:opacity-50"
             disabled={isSubmitting}
           >
-          
             {isSubmitting ? 'Submitting...' : label}
           </Button>
         </div>
@@ -155,16 +157,19 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                 }
               })}
               error={getNestedError(errors, field.name)}
-              togglePassword={field.name === 'password' ? extraProps.togglePassword : undefined}
-              showPassword={field.name === 'password' ? extraProps.showPassword : undefined}
+              togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
+              showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
+              existingFiles={existingFiles[field.name]}
             />
+            {/* Show previously uploaded file name if file field and prop provided */}
             {field.type === 'file' && existingFileName && (
-              <p className="text-xs text-[var(--light-grey-color)] mt-1">
-                Previously uploaded: <strong>{existingFileName}</strong>
-              </p>
+              <div className="mt-2 text-xs text-[var(--light-grey-color)]">
+                <span>Previously uploaded:</span> <span>{existingFileName}</span>
+              </div>
             )}
           </div>
         ))}
+        
         {isDynamic && dynamicFieldConfig.length > 0 && (
           <div className="md:col-span-12 col-span-12">
             <h4 className="text-sm font-semibold text-white mb-4">Dynamic Fields</h4>

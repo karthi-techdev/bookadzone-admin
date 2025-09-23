@@ -1,18 +1,18 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import FaqListTemplate from './FaqListTemplate';
-import { useFaqStore } from '../../stores/faqStore';
+import ConfigListTemplate from '../ConfigListTemplate';
+import { useConfigStore } from '../../../stores/configStore';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-jest.mock('../../stores/faqStore');
+jest.mock('../../../stores/configStore');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
 }));
 jest.mock('react-toastify', () => ({ toast: { error: jest.fn() } }));
 jest.mock('sweetalert2', () => ({ fire: jest.fn().mockResolvedValue({ isConfirmed: true }) }));
-jest.mock('../../organisms/ManagementTable', () => (props: any) => (
+jest.mock('../../../organisms/ManagementTable', () => (props: any) => (
   <div data-testid="table">
     {props.data.map((row: any) => (
       <div key={row._id} data-testid="row">
@@ -23,7 +23,7 @@ jest.mock('../../organisms/ManagementTable', () => (props: any) => (
     ))}
   </div>
 ));
-jest.mock('../../molecules/TableHeader', () => (props: any) => (
+jest.mock('../../../molecules/TableHeader', () => (props: any) => (
   <div>
     <button onClick={() => props.onSelectFilter('active')}>Active</button>
     <button onClick={() => props.onSelectFilter('inactive')}>Inactive</button>
@@ -36,23 +36,23 @@ jest.mock('../../molecules/TableHeader', () => (props: any) => (
     <button onClick={() => props.addButtonLink && props.onSelectFilter('add')}>Add</button>
   </div>
 ));
-jest.mock('../../atoms/BAZ-Loader', () => () => <div>Loading...</div>);
-jest.mock('../../atoms/BAZ-Pagination', () => () => <div>Pagination</div>);
+jest.mock('../../../atoms/BAZ-Loader', () => () => <div>Loading...</div>);
+jest.mock('../../../atoms/BAZ-Pagination', () => () => <div>Pagination</div>);
 
-describe('FaqListTemplate', () => {
-  const mockFetchFaqs = jest.fn();
-  const mockDeleteFaq = jest.fn();
-  const mockToggleStatusFaq = jest.fn();
+describe('ConfigListTemplate', () => {
+  const mockFetchConfigs = jest.fn();
+  const mockDeleteConfig = jest.fn();
+  const mockToggleStatusConfig = jest.fn();
   const mockNavigate = jest.fn();
   beforeEach(() => {
-    (useFaqStore as unknown as jest.Mock).mockReturnValue({
-      faqs: [
-        { _id: '1', question: 'Q1', answer: 'A1', status: true, priority: 1 },
-        { _id: '2', question: 'Q2', answer: 'A2', status: false, priority: 2 },
+    (useConfigStore as unknown as jest.Mock).mockReturnValue({
+      configs: [
+        { _id: '1', name: 'C1', slug: 'c1', status: true, configFields: [{ key: 'k', value: 'v' }] },
+        { _id: '2', name: 'C2', slug: 'c2', status: false, configFields: [] },
       ],
-      fetchFaqs: mockFetchFaqs,
-      deleteFaq: mockDeleteFaq,
-      toggleStatusFaq: mockToggleStatusFaq,
+      fetchConfigs: mockFetchConfigs,
+      deleteConfig: mockDeleteConfig,
+      toggleStatusConfig: mockToggleStatusConfig,
       totalPages: 1,
       loading: false,
       error: null,
@@ -63,7 +63,7 @@ describe('FaqListTemplate', () => {
   });
 
   it('renders table and filters', () => {
-    render(<FaqListTemplate />);
+    render(<ConfigListTemplate />);
     expect(screen.getByTestId('table')).toBeInTheDocument();
     expect(screen.getByText('Active')).toBeInTheDocument();
     expect(screen.getByText('Inactive')).toBeInTheDocument();
@@ -71,37 +71,37 @@ describe('FaqListTemplate', () => {
   });
 
   it('calls onEdit when edit clicked', () => {
-    render(<FaqListTemplate />);
+    render(<ConfigListTemplate />);
     fireEvent.click(screen.getAllByText('Edit')[0]);
-    expect(mockNavigate).toHaveBeenCalledWith('/faq/edit/1');
+    expect(mockNavigate).toHaveBeenCalledWith('/config/edit/1');
   });
 
   it('calls onDelete and confirms', async () => {
-    render(<FaqListTemplate />);
+    render(<ConfigListTemplate />);
     fireEvent.click(screen.getAllByText('Delete')[0]);
     await waitFor(() => {
-      expect(mockDeleteFaq).toHaveBeenCalledWith('1');
+      expect(mockDeleteConfig).toHaveBeenCalledWith('1');
     });
   });
 
   it('calls onToggleStatus', () => {
-    render(<FaqListTemplate />);
+    render(<ConfigListTemplate />);
     fireEvent.click(screen.getAllByText('Toggle')[0]);
-    expect(mockToggleStatusFaq).toHaveBeenCalledWith('1');
+    expect(mockToggleStatusConfig).toHaveBeenCalledWith('1');
   });
 
   it('shows loader when loading', () => {
-    (useFaqStore as unknown as jest.Mock).mockReturnValueOnce({
+    (useConfigStore as unknown as jest.Mock).mockReturnValueOnce({
       loading: true,
-      faqs: [],
-      fetchFaqs: jest.fn(),
-      deleteFaq: jest.fn(),
-      toggleStatusFaq: jest.fn(),
+      configs: [],
+      fetchConfigs: jest.fn(),
+      deleteConfig: jest.fn(),
+      toggleStatusConfig: jest.fn(),
       totalPages: 1,
       error: null,
       stats: { total: 0, active: 0, inactive: 0 },
     });
-    render(<FaqListTemplate />);
+    render(<ConfigListTemplate />);
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 });

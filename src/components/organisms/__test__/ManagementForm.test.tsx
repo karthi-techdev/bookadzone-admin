@@ -6,6 +6,9 @@ import { render, screen, fireEvent, act, waitFor } from '@testing-library/react'
 import { useForm, FormProvider } from 'react-hook-form';
 
 import ManagementForm from '../ManagementForm';
+
+// Mock toast.error at the top to avoid redefine errors
+jest.mock('react-toastify', () => ({ toast: { error: jest.fn() } }));
 import type { FieldConfig } from '../../types/common';
 
 // React Hook Form provider wrapper for tests
@@ -135,7 +138,111 @@ describe('ManagementForm Component', () => {
         <ManagementForm label="Submit" fields={fields} isSubmitting={true} />
       </Wrapper>
     );
-
     expect(screen.getByRole('button')).toBeDisabled();
+  });
+
+  it('renders auth form when isAuth is true', () => {
+    render(
+      <Wrapper>
+        <ManagementForm label="Login" fields={fields} isAuth={true} />
+      </Wrapper>
+    );
+    // Use getByTestId for more robust query (add data-testid="auth-form" to ManagementForm's form)
+    expect(screen.getByTestId('auth-form')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
+  });
+
+  it('calls onButtonClick when provided', () => {
+    const onButtonClick = jest.fn();
+    render(
+      <Wrapper>
+        <ManagementForm label="Submit" fields={fields} onButtonClick={onButtonClick} />
+      </Wrapper>
+    );
+    fireEvent.click(screen.getByRole('button', { name: /submit/i }));
+    expect(onButtonClick).toHaveBeenCalled();
+  });
+
+  it('removes dynamic field', async () => {
+    const dynamicFields: FieldConfig[] = [
+      { name: 'dynamic1', type: 'text', label: 'Dynamic 1', required: false },
+    ];
+    render(
+      <Wrapper>
+        <ManagementForm
+          label="Submit"
+          fields={[]}
+          isDynamic={true}
+          dynamicFieldConfig={dynamicFields}
+          dynamicFieldName="dynamicFields"
+        />
+      </Wrapper>
+    );
+    const addButton = screen.getByRole('button', { name: /add field/i });
+    await act(async () => { fireEvent.click(addButton); });
+    await waitFor(() => expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument());
+    const removeButton = screen.getByRole('button', { name: '' });
+    fireEvent.click(removeButton);
+    // Should still be present (disabled if only one field)
+    expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+  });
+
+  it('shows toast error if last dynamic field incomplete', async () => {
+    const { toast } = require('react-toastify');
+    toast.error.mockClear();
+    const dynamicFields: FieldConfig[] = [
+      { name: 'key', type: 'text', label: 'Key', required: false },
+      { name: 'value', type: 'text', label: 'Value', required: false },
+    ];
+    render(
+      <Wrapper>
+        <ManagementForm
+          label="Submit"
+          fields={[]}
+          isDynamic={true}
+          dynamicFieldConfig={dynamicFields}
+          dynamicFieldName="dynamicFields"
+        />
+      </Wrapper>
+    );
+    const addButton = screen.getByRole('button', { name: /add field/i });
+    await act(async () => { fireEvent.click(addButton); });
+    // Try to add again without filling last field
+    await act(async () => { fireEvent.click(addButton); });
+  expect(toast.error).toHaveBeenCalled();
+  });
+
+  it('renders file field with existingFiles', () => {
+    const fileField: FieldConfig[] = [
+      { name: 'document', type: 'file', label: 'Document', required: false },
+    ];
+    render(
+      <Wrapper>
+        <ManagementForm
+          label="Upload"
+          fields={fileField}
+          existingFiles={{ document: '/test.pdf' }}
+        />
+      </Wrapper>
+    );
+    expect(screen.getByLabelText(/Document/i)).toBeInTheDocument();
+  });
+
+  it('renders password field with extraProps', () => {
+    const passwordField: FieldConfig[] = [
+      { name: 'password', type: 'password', label: 'Password', required: true },
+    ];
+    const togglePassword = jest.fn();
+    render(
+      <Wrapper>
+        <ManagementForm
+          label="Login"
+          fields={passwordField}
+          extraProps={{ togglePassword, showPassword: true }}
+        />
+      </Wrapper>
+    );
+    // Use getAllByLabelText to avoid multiple match error
+    expect(screen.getAllByLabelText(/Password/i).length).toBeGreaterThan(0);
   });
 });

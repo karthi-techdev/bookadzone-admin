@@ -1,3 +1,48 @@
+export interface Settings {
+  general: {
+    siteName: string;
+    siteLogo: string;
+    favicon: string;
+    defaultCurrency: string;
+    currencyIcon: string;
+    timezone: string;
+  };
+  contact: {
+    companyName: string;
+    contactEmail: string;
+    contactPhone: string;
+    address: string;
+  };
+  email: {
+    email: string;
+    mailHost: string;
+    smtpUsername: string;
+    smtpPassword: string;
+    mailPort: number;
+    emailEncryption: string;
+  };
+  seo: {
+    metaTitle: string;
+    metaDescription: string;
+    metaKeyword: string;
+    canonicalUrl: string;
+    robotsMeta: string;
+    schemaMarkup: string;
+    h1Tag: string;
+    breadcrumbs: string;
+    altText: string;
+    sitemapUrl: string;
+    googleAnalyticsCode: string;
+    googleSearchConsoleCode: string;
+  };
+  og: {
+    ogTitle: string;
+    ogDescription: string;
+    ogImage: string;
+    ogUrl: string;
+    ogType: string;
+  };
+}
 
 export interface User {
   _id?: string;

@@ -10,10 +10,20 @@ interface FormFieldProps {
   error?: string;
   togglePassword?: () => void;
   showPassword?: boolean;
-  isAuth?:boolean;
+  isAuth?: boolean;
+  existingFiles?: string | string[]; // Support for existing files
 }
 
-const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, error, togglePassword, showPassword ,isAuth}) => {
+const FormField: React.FC<FormFieldProps> = ({ 
+  field, 
+  value, 
+  onChange, 
+  error, 
+  togglePassword, 
+  showPassword, 
+  isAuth,
+  existingFiles
+}) => {
   const { clearErrors } = useFormContext();
 
   const normalizedOptions = Array.isArray(field.options)
@@ -49,6 +59,7 @@ const FormField: React.FC<FormFieldProps> = ({ field, value, onChange, error, to
         togglePassword={togglePassword}
         showPassword={showPassword}
         isAuth={isAuth}
+        existingFiles={existingFiles} 
       />
     </div>
   );

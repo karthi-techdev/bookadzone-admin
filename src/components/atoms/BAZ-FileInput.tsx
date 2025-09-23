@@ -12,6 +12,7 @@ interface FileInputProps {
   disabled?: boolean;
   error?: string;
   className?: string;
+  existingFiles?: string | string[];
 }
 
 const BAZFileInput: React.FC<FileInputProps> = ({
@@ -23,6 +24,7 @@ const BAZFileInput: React.FC<FileInputProps> = ({
   disabled,
   error,
   className = '',
+  existingFiles,
 }) => {
   const [previews, setPreviews] = useState<{ url: string; name: string; isImage: boolean }[]>([]);
   const [selectedPreview, setSelectedPreview] = useState<{ url: string; name: string } | null>(null);
@@ -44,12 +46,26 @@ const BAZFileInput: React.FC<FileInputProps> = ({
     }
     objectUrlsRef.current = [];
 
-    if (!value) {
+    // Combine value and existingFiles for preview
+    const filesToPreview: any[] = [];
+    if (existingFiles) {
+      if (Array.isArray(existingFiles)) {
+        filesToPreview.push(...existingFiles);
+      } else {
+        filesToPreview.push(existingFiles);
+      }
+    }
+    if (value) {
+      if (Array.isArray(value)) {
+        filesToPreview.push(...value);
+      } else {
+        filesToPreview.push(value);
+      }
+    }
+    if (filesToPreview.length === 0) {
       setPreviews([]);
       return;
     }
-
-    const filesToPreview = Array.isArray(value) ? value : [value];
     const resolvedPreviews = filesToPreview
       .map((file) => {
         if (typeof file === 'string' && file.trim() !== '') {
@@ -61,9 +77,8 @@ const BAZFileInput: React.FC<FileInputProps> = ({
         return null;
       })
       .filter((p): p is { url: string; name: string; isImage: boolean } => !!p);
-
     setPreviews(resolvedPreviews);
-  }, [value]);
+  }, [value, existingFiles]);
 
   useEffect(() => {
     return () => {

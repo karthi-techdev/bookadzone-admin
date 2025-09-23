@@ -17,6 +17,11 @@ const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/Foo
 const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
 const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
+const GeneralSettingsPage = lazy(() => import('../pages/settings/GeneralSettingsPage'));
+const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
+const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
+const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
+const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -115,6 +120,32 @@ export const routesData = (): RouteData[] => {
       path: '/trash/footerinfo',
       pageTitle: 'Trash FooterInfo',
       component: <FooterInfoTrashListPage />,
+     },
+    // Settings routes
+    {
+      path: '/settings/general',
+      pageTitle: 'General Settings',
+      component: <GeneralSettingsPage />,
+    },
+    {
+      path: '/settings/contact',
+      pageTitle: 'Contact Info',
+      component: <ContactInfoPage />,
+    },
+    {
+      path: '/settings/email',
+      pageTitle: 'Email Configuration',
+      component: <EmailConfigPage />,
+    },
+    {
+      path: '/settings/seo',
+      pageTitle: 'SEO Configuration',
+      component: <SeoConfigPage />,
+    },
+    {
+      path: '/settings/og',
+      pageTitle: 'OG Configuration',
+      component: <OgConfigPage />,
     },
   ];
   return Routes;

@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import ConfigFormTemplate from './ConfigFormTemplate';
-import { useConfigStore } from '../../stores/configStore';
+import ConfigFormTemplate from '../ConfigFormTemplate';
+import { useConfigStore } from '../../../stores/configStore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-jest.mock('../../stores/configStore');
+jest.mock('../../../stores/configStore');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
 }));
 jest.mock('react-toastify', () => ({ toast: { error: jest.fn() }, ToastContainer: () => <div>ToastContainer</div> }));
 jest.mock('sweetalert2', () => ({ fire: jest.fn().mockResolvedValue({ isConfirmed: true }) }));
-jest.mock('../../organisms/ManagementForm', () => (props: any) => (
+jest.mock('../../../organisms/ManagementForm', () => (props: any) => (
   <form data-testid="config-form" onSubmit={e => { e.preventDefault(); props.onSubmit && props.onSubmit(e); }}>
     <input
       data-testid="name"
@@ -37,7 +37,7 @@ jest.mock('../../organisms/ManagementForm', () => (props: any) => (
     <button type="submit">Submit</button>
   </form>
 ));
-jest.mock('../../molecules/FormHeader', () => () => <div>FormHeader</div>);
+jest.mock('../../../molecules/FormHeader', () => () => <div>FormHeader</div>);
 
 describe('ConfigFormTemplate', () => {
   const mockFetchConfigById = jest.fn();

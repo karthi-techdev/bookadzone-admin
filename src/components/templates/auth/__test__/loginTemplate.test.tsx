@@ -5,12 +5,14 @@ jest.mock('swiper/react', () => ({
 jest.mock('swiper/modules', () => ({}));
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import Login from './loginTemplate';
-import { useAuthStore } from '../../stores/AuthStore';
+import Login from '../loginTemplate';
+import { useAuthStore } from '../../../stores/AuthStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-jest.mock('../../stores/authStore');
+jest.mock('../../../stores/AuthStore', () => ({
+  useAuthStore: jest.fn(),
+}));
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
@@ -18,7 +20,7 @@ jest.mock('react-router-dom', () => ({
   Link: ({ children, ...props }: any) => <a {...props}>{children}</a>,
 }));
 jest.mock('react-toastify', () => ({ toast: { error: jest.fn(), success: jest.fn() } }));
-jest.mock('../../organisms/ManagementForm', () => (props: any) => (
+jest.mock('../../../organisms/ManagementForm', () => (props: any) => (
   <form onSubmit={e => { e.preventDefault(); props.onSubmit && props.onSubmit({ username: 'admin@gmail.com', password: 'admin@123' }); }}>
     <button type="submit">Login</button>
   </form>

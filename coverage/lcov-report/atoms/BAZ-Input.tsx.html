@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>8/8</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>8/8</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>5/5</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -93,24 +93,17 @@
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
 <a name='L30'></a><a href='#L30'>30</a>
-<a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">31x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -118,40 +111,71 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">365x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">365x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">365x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { memo } from 'react';
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { memo } from 'react';
 import { FiAlertCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 &nbsp;
 interface InputProps extends React.InputHTMLAttributes&lt;HTMLInputElement&gt; {
   className?: string;
   error?: string;
+  isAuth?: boolean;
 }
 &nbsp;
-const BAZInput: React.FC&lt;InputProps&gt; = memo(({ className = '', error, ...props }) =&gt; (
-  &lt;motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.2 }}
-    className={`space-y-2 ${className}`}
-  &gt;
-    &lt;input
-      {...props}
-      className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
-        error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
-      } rounded text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
-    /&gt;
-    {error &amp;&amp; (
-      &lt;p className="text-xs text-red-400 flex items-center mt-1"&gt;
-        &lt;FiAlertCircle className="mr-1" /&gt; {error}
-      &lt;/p&gt;
-    )}
-  &lt;/motion.div&gt;
-));
+const BAZInput: React.FC&lt;InputProps&gt; = memo(({ className = '', error, isAuth = false, ...props }) =&gt; {
+  // Define different border radius styles based on isAuth
+  const borderRadiusClass = isAuth 
+    ? 'rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px]' 
+    : 'rounded';
+&nbsp;
+  return (
+    &lt;motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className={`space-y-2 ${className}`}
+    &gt;
+      &lt;input
+        {...props}
+        className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
+          error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
+        } ${borderRadiusClass} text-[.75rem] text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
+      /&gt;
+      {error &amp;&amp; (
+        &lt;p className="text-xs text-red-400 flex items-center mt-1"&gt;
+          &lt;FiAlertCircle className="mr-1" /&gt; {error}
+        &lt;/p&gt;
+      )}
+    &lt;/motion.div&gt;
+  );
+});
 &nbsp;
 export default BAZInput;</pre></td></tr></table></pre>
 
@@ -160,7 +184,7 @@ export default BAZInput;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-09-17T08:02:04.380Z
+                at 2025-09-22T14:33:43.682Z
             </div>
         <script src="../prettify.js"></script>
         <script>

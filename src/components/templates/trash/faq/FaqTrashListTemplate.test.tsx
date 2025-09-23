@@ -2,10 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import FaqTrashListTemplate from './FaqTrashListTemplate';
-import { useFaqStore } from '../../../stores/faqStore';
+import { useFaqStore } from '../../../stores/FaqStore';
 import { toast } from 'react-toastify';
 
-jest.mock('../../../stores/faqStore');
+jest.mock('../../../stores/FaqStore', () => ({
+  useFaqStore: jest.fn(),
+}));
 jest.mock('react-toastify', () => ({ toast: { error: jest.fn() } }));
 jest.mock('sweetalert2', () => ({ fire: jest.fn().mockResolvedValue({ isConfirmed: true }) }));
 jest.mock('../../../organisms/ManagementTable', () => (props: any) => (

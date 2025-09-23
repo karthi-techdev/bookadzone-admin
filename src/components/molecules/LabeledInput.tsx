@@ -28,6 +28,7 @@ interface LabeledInputProps {
   togglePassword?: () => void;
   showPassword?: boolean;
   isAuth?: boolean;
+  existingFiles?: string | string[]; // Support for existing files
 }
 
 const LabeledInput: React.FC<LabeledInputProps> = memo(
@@ -45,10 +46,11 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
     accept,
     multiple = false,
     valueAsNumber = false,
-    isAuth=false,
+    isAuth = false,
     error,
     togglePassword,
     showPassword,
+    existingFiles,
   }) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       if (!onChange) return;
@@ -135,6 +137,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
               multiple={multiple}
               disabled={disabled}
               error={error}
+              existingFiles={existingFiles} 
             />
           );
         default:
@@ -143,7 +146,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
               <BAZInput
                 id={name}
                 name={name}
-                type={type}
+                type={type === 'password' && showPassword ? 'text' : type}
                 value={type === 'number' && value != null ? value : value || ''}
                 onChange={handleChange}
                 placeholder={placeholder}
@@ -152,7 +155,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
                 isAuth={isAuth}
                 className="outline-none w-full"
               />
-              {name === 'password' && togglePassword && (
+              {type === 'password' && togglePassword && (
                 <button
                   type="button"
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
@@ -182,7 +185,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
         )}
         {renderInput()}
       </motion.div>
-    ); 
+    );
   }
 );
 
