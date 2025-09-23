@@ -76,3 +76,13 @@ export interface SelectOption {
   label: string;
   value: string | number;
 }
+
+export interface BlogCategory {
+  _id?:string
+  name:string;
+  label:string;
+  className?: string;
+  placeholder?: string;
+  required?: boolean;
+  status?:boolean;
+}

@@ -1,4 +1,5 @@
-import { lazy, ReactNode } from 'react';
+import { lazy } from 'react';
+import type { ReactNode } from 'react';
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Properties = lazy(() => import('../pages/Properties'));
@@ -9,6 +10,8 @@ const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
 const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
 const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+const BlogCategoryListPage=lazy(()=> import('../pages/blogCategory/BlogCaategoryListPage'))
+const BlogCategoryFormPage=lazy(()=>import ('../pages/blogCategory/BlogCategoryFormPage'))
 
 export interface RouteData {
   path: string;
@@ -43,6 +46,8 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Campaign Details',
       component: <CampaignDetails />,
     },
+
+
     // FAQ routes
     {
       path: '/faq',
@@ -68,6 +73,29 @@ export const routesData = (): RouteData[] => {
       path: '/trash/faq',
       pageTitle: 'Trash FAQ',
       component: <FaqTrashListPage />,
+    },
+
+
+    //Blog routes
+    {
+      path: '/blog',
+      pageTitle: 'Blog List',
+      component: <BlogCategoryListPage />,
+    },
+    {
+      path: '/blog/add',
+      pageTitle: 'add Blog',
+      component: <BlogCategoryFormPage />,
+    },
+    {
+      path: '/Login',
+      pageTitle: 'Login',
+      component: <Login />,
+    },
+    {
+      path: '/trash/blog',
+      pageTitle: 'Trash Blog',
+      component: <BlogCategoryListPage />,
     },
   ];
   return Routes;

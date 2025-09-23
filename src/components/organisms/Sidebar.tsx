@@ -39,11 +39,19 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
       ]
      },
+
+     { icon: <BsUiChecks />, text: "Manage Blog", path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "Blog Category", path: "/blog" },
+      ]
+     },
+     
      { icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
       ]
      },
+     
   ];
 
   // Handle expand/collapse for submenu

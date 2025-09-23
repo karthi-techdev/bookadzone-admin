@@ -1,4 +1,6 @@
-const LIVE = true;
+// import { FaToggleOn } from "react-icons/fa";
+
+const LIVE = false;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
@@ -25,6 +27,17 @@ const API = {
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,
+
+  //BlogCategory endpoints
+  addBlogCategory:`${ROOTURL}blogs/`,
+  listBlogCategory:`${ROOTURL}blogs/`,
+  getBlogCategory:`${ROOTURL}blogs/getblogByID/`,
+  updateBlogCategory:`${ROOTURL}blogs/updateblog/`,
+  deleteBlogCategory:`${ROOTURL}blogs/softdeleteblog/`,
+  toggleStatusBlogCategory:`${ROOTURL}blogs/togglestatus/`,
+  trashBlogCategoryList:`${ROOTURL}blogs/trash`,
+  restoreBlogCategory:`${ROOTURL}blogs/restore/`,
+  permanentDeleteBlogCategory:`${ROOTURL}blogs/permanentDelete/`
 
 };
 
