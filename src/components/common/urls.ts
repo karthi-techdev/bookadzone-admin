@@ -22,6 +22,19 @@ const API = {
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
 
+
+
+  // Category endpoints
+  addcategory: `${ROOTURL}categorys/`,
+  listcategory: `${ROOTURL}categorys/`,
+  getcategory: `${ROOTURL}categorys/getcategoryById/`,
+  updatecategory: `${ROOTURL}categorys/updatecategory/`,
+  deletecategory: `${ROOTURL}categorys/softDeletecategory/`,
+  toggleStatuscategory: `${ROOTURL}categorys/togglestatus/`,
+  trashcategorylist: `${ROOTURL}categorys/trash`,
+  restorecategory: `${ROOTURL}categorys/restore/`,
+  permanentDeletecategory: `${ROOTURL}categorys/permanentDelete/`,
+
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,

@@ -7,7 +7,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-const BAZInput: React.FC<InputProps> = memo(({ className = '', error, ...props }) => (
+const BAZInput: React.FC<InputProps> = memo(({ className = '', error, disabled = false, ...props }) => (
+  
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -16,9 +17,9 @@ const BAZInput: React.FC<InputProps> = memo(({ className = '', error, ...props }
   >
     <input
       {...props}
-      className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
-        error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
-      } rounded text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
+      disabled={disabled}
+      className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
+        } rounded text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
     />
     {error && (
       <p className="text-xs text-red-400 flex items-center mt-1">

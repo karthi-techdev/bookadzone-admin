@@ -61,6 +61,17 @@ export class ValidationHelper {
   static validate(rules: (ValidationError | null)[]): ValidationError[] {
     return rules.filter((error): error is ValidationError => error !== null);
   }
+
+
+  static getFileType = (filePath: string | undefined): 'image' | 'pdf' | 'other' => {
+    if (!filePath) return 'other';
+    const ext = filePath.split('.').pop()?.toLowerCase();
+    if (!ext) return 'other';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
+    if (['pdf'].includes(ext)) return 'pdf';
+    return 'other';
+  };
+
 }
 
 export default ValidationHelper;

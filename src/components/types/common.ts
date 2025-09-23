@@ -15,6 +15,17 @@ export interface Faq {
   priority: number;
 }
 
+export interface Category {
+  length: number;
+  _id?: string;
+  name: string;
+  slug: string,
+  description: string;
+  photo?: string | File | (string | File)[]; 
+  checkbox:boolean | undefined;
+  status?: boolean;
+}
+
 export type InputType =
   | 'text'
   | 'email'
@@ -56,7 +67,7 @@ export interface FieldConfig {
   valueAsNumber?: boolean;
   onChange?: (e: React.ChangeEvent<any> | { target: { name: string; value: any } }) => void;
   dataTestId?: string;
-  value?:any;
+  value?: any;
 }
 
 

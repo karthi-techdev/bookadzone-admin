@@ -1,4 +1,4 @@
-import { lazy, ReactNode } from 'react';
+import { lazy, type ReactNode } from 'react';
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Properties = lazy(() => import('../pages/Properties'));
@@ -9,6 +9,13 @@ const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
 const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
 const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+
+// Category
+const CategoryListPage = lazy(() => import('../pages/category/CategoryListPage'));
+const CategoryFormPage = lazy(() => import('../pages/category/CategoryFormPage'));
+
+
+
 
 export interface RouteData {
   path: string;
@@ -69,6 +76,28 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Trash FAQ',
       component: <FaqTrashListPage />,
     },
+    // Category routes
+    {
+      path: '/category',
+      pageTitle: 'Category List',
+      component: <CategoryListPage />,
+    },
+     {
+      path: '/category/add',
+      pageTitle: ' Add Category ',
+      component: <CategoryFormPage />,
+    },
+    {
+      path: '/categorys/edit/:id',
+      pageTitle: 'Edit Category',
+      component: <CategoryFormPage />,
+    },
+     {
+      path: '/trash/categorys',
+      pageTitle: 'Trash Category',
+      component: <CategoryListPage />,
+    },
+
   ];
   return Routes;
 };

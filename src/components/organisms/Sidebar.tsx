@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import BAZButton from "../atoms/BAZ-Button";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { IoGrid } from "react-icons/io5";
+import { TbCategoryPlus } from "react-icons/tb";
 import { RiListIndefinite } from "react-icons/ri";
 import { BsUiChecks } from "react-icons/bs";
 import { TbMenu2 } from "react-icons/tb";
@@ -33,17 +34,20 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   }, [location.pathname]);
 
   const navItems = [
-    { icon: <IoGrid />, text: "Dashboard", path: "/" },
-    { icon: <BsUiChecks />, text: "Site Setting", path: "#",
+    { icon: <IoGrid />, text: "Dashboard", path: "/", position: "single" },
+    { icon: <TbCategoryPlus />, text: "Category", path: "/category", position: "single" },
+    {
+      icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
       ]
-     },
-     { icon: <FaTrashCan />, text: "Trash", path: "#",
+    },
+    {
+      icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
       ]
-     },
+    },
   ];
 
   // Handle expand/collapse for submenu
@@ -76,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
             const hasChildren = !!item.children;
             const isExpanded = expandedMenuIdx === idx;
 
-            if (item.text === "Dashboard") {
+            if (item.position === "single") {
               if (collapsed) {
                 return (
                   <li key={idx} className="flex flex-col items-center">
@@ -110,7 +114,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                 </li>
               );
             }
-
             return (
               <li key={idx} className="flex flex-col justify-center items-center">
                 {collapsed ? (

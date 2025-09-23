@@ -98,7 +98,7 @@ const BAZFileInput: React.FC<FileInputProps> = ({
       className={`space-y-2 ${className}`}
     >
       <label
-        className={`flex flex-col items-center justify-center w-full h-32 bg-[var(--dark-color)] border-2 border-dashed ${
+        className={`flex flex-col items-center justify-center w-full h-25 bg-[var(--dark-color)] border-2 border-dashed ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
         } rounded cursor-pointer hover:border-[var(--puprle-color)] transition-colors`}
       >

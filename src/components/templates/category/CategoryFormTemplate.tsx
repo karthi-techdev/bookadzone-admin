@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast,ToastContainer } from 'react-toastify';
-import { useFaqStore } from '../../stores/faqStore';
+import { toast, ToastContainer } from 'react-toastify';
+import { useCategoryStore } from '../../stores/categoryStore';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
-import { faqFields } from '../../utils/fields/faqFields';
+import { CategoryFields } from '../../utils/fields/categoryfield';
 import ValidationHelper from '../../utils/validationHelper';
 import Swal from 'sweetalert2';
 
-type FaqFormData = {
-  question: string;
-  answer: string;
-  status?: boolean;
-  priority: number;
+type CategoryFormData = {
+  name: string;
+  slug: string;
+  checkbox?: boolean;
+  description: string;
+  photo?: string | File | (string | File)[];
+  // priority?: number; // Add this line if 'priority' is needed elsewhere in the form
 };
 
 const getNestedError = (errors: any, path: string): any => {
@@ -22,29 +24,34 @@ const getNestedError = (errors: any, path: string): any => {
   }, errors);
 };
 
-const FaqFormTemplate: React.FC = () => {
+const CategoryFormTemplate: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { fetchFaqById, addFaq, updateFaq } = useFaqStore();
+  const { fetchCategoryById, addCategory, updateCategory } = useCategoryStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
-  const methods = useForm<FaqFormData>({
+  const methods = useForm<CategoryFormData>({
     defaultValues: {
-      question: '',
-      answer: '',
-      status: true,
-      priority: 1,
+      name: '',
+      slug: '',
+      checkbox: true,
+      description: '',
+      photo: '',
     },
     mode: 'onSubmit',
   });
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
 
-  const handleFieldChange = (fieldName: keyof FaqFormData, minLengthValue?: number, maxValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
+  const handleFieldChange = (fieldName: keyof CategoryFormData, minLengthValue?: number, maxValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
+    console.log('==============fieldName=====', fieldName);
+
     let value = e.target.value;
+    console.log('==============value=====', value);
+
     if (typeof methods.getValues(fieldName) === 'boolean' && typeof e.target.checked === 'boolean') {
       value = e.target.checked;
-    } else if (fieldName === 'priority') {
+    } else if (fieldName === 'name') {
       value = parseInt(value, 10);
     }
 
@@ -68,60 +75,80 @@ const FaqFormTemplate: React.FC = () => {
     } else {
       clearErrors(fieldName);
     }
+    if (fieldName === 'name') {
+      methods.setValue('slug', value.replaceAll(" ","-"), { shouldValidate: false });
+    }
     methods.setValue(fieldName, value, { shouldValidate: false });
+
   };
 
   useEffect(() => {
     if (id && !isInitialized) {
       const fetchData = async () => {
-        const faq = await fetchFaqById(id);
-        if (faq) {
+        const category = await fetchCategoryById(id);
+        if (category) {
           reset({
-            question: faq.question || '',
-            answer: faq.answer || '',
-            status: typeof faq.status === 'boolean' ? faq.status : faq.status === 'active',
-            priority: faq.priority || 1,
+            name: category.name || '',
+            slug: category.slug || '',
+            description: category.description || '',
+            photo: category.photo || '' ,
+
+
+            checkbox: typeof category.checkbox === 'boolean' ? category.checkbox : category.checkbox === 'active',
           });
           setIsInitialized(true);
         } else {
-          toast.error('Failed to load FAQ data');
+          toast.error('Failed to load CATEGORY data');
         }
       };
       fetchData();
     }
-  }, [id, fetchFaqById, reset, isInitialized]);
+  }, [id, fetchCategoryById, reset, isInitialized]);
 
-  const onSubmit = async (data: FaqFormData) => {
+  const onSubmit = async (data: CategoryFormData) => { 
+    
+   
+    
     clearErrors();
 
     const trimmedData = {
-      question: data.question.trim(),
-      answer: data.answer.trim(),
-      status: data.status,
-      priority: data.priority,
+      name: data.name.trim(),
+      slug: data.slug.trim(),
+      checkbox: data.checkbox,
+      description: data.description,
+      photo: data.photo,
+      // priority: data.priority,
+      length: 0, 
     };
 
     // Frontend validation
     const validationErrors = ValidationHelper.validate([
-      ValidationHelper.isRequired(trimmedData.question, 'Question'),
-      ValidationHelper.minLength(trimmedData.question, 'Question', 5),
-      ValidationHelper.maxLength(trimmedData.question, 'Question', 500),
-      
-      ValidationHelper.isRequired(trimmedData.answer, 'Answer'),
-      ValidationHelper.minLength(trimmedData.answer, 'Answer', 5),
-      ValidationHelper.maxLength(trimmedData.answer, 'Answer', 2000),
+      ValidationHelper.isRequired(trimmedData.name, 'name'),
+      ValidationHelper.minLength(trimmedData.name, 'name', 5),
+      ValidationHelper.maxLength(trimmedData.name, 'name', 500),
+
+      // ValidationHelper.isRequired(trimmedData.slug, 'Slug'),
+      // ValidationHelper.minLength(trimmedData.slug, 'Slug', 5),
+      // ValidationHelper.maxLength(trimmedData.slug, 'Slug', 2000),
+
+
+      ValidationHelper.isRequired(trimmedData.description, 'Description'),
+      ValidationHelper.minLength(trimmedData.description, 'Description', 5),
+      ValidationHelper.maxLength(trimmedData.description, 'Description', 2000),
+
       ValidationHelper.isValidEnum(
-        typeof trimmedData.status === 'boolean' ? (trimmedData.status ? 'active' : 'inactive') : trimmedData.status,
+        typeof trimmedData.checkbox === 'boolean' ? (trimmedData.checkbox ? 'active' : 'inactive') : trimmedData.checkbox,
         'Status',
         ['active', 'inactive']
       ),
-      ValidationHelper.isRequired(trimmedData.priority, 'Priority'),
-      ValidationHelper.maxValue(trimmedData.priority, 'Priority', 100),
+      // ValidationHelper.isRequired(trimmedData.priority, 'Priority'),
+      // ValidationHelper.maxValue(trimmedData.priority, 'Priority', 100),
     ]);
+console.log("validationErrors ",validationErrors);
 
     if (validationErrors.length > 0) {
       validationErrors.forEach((err) => {
-        const fieldName = err.field.toLowerCase() as keyof FaqFormData;
+        const fieldName = err.field?.toLowerCase() as keyof CategoryFormData;
         setError(fieldName, {
           type: 'manual',
           message: err.message,
@@ -135,23 +162,23 @@ const FaqFormTemplate: React.FC = () => {
     // Only reach here if frontend validation passes
     try {
       if (id) {
-        await updateFaq(id, trimmedData);
+        await updateCategory(id, trimmedData);
         await Swal.fire({
           title: 'Success!',
-          text: 'FAQ updated successfully',
+          text: 'Category updated successfully',
           icon: 'success',
           confirmButtonColor: 'var(--puprle-color)',
         });
       } else {
-        await addFaq(trimmedData);
+        await addCategory(trimmedData);
         await Swal.fire({
           title: 'Success!',
-          text: 'FAQ added successfully',
+          text: 'Category added successfully',
           icon: 'success',
           confirmButtonColor: 'var(--puprle-color)',
         });
       }
-      navigate('/faq');
+      navigate('/category');
     } catch (error: any) {
       // Show backend errors only in toast, do not set as field errors
       const errorData = error?.response?.data || {};
@@ -175,7 +202,7 @@ const FaqFormTemplate: React.FC = () => {
   };
 
   const hasErrors = () => {
-    return faqFields.some(field => {
+    return CategoryFields.some(field => {
       const error = getNestedError(errors, field.name);
       return error?.message !== undefined;
     });
@@ -184,22 +211,22 @@ const FaqFormTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <FormHeader
-        managementName="FAQ"
-        addButtonLink="/faq"
+        managementName="Category"
+        addButtonLink="/category"
         type={id ? 'Edit' : 'Add'}
       />
-       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
       <FormProvider {...methods}>
         <ManagementForm
           label={id ? 'Update' : 'Save'}
-          fields={faqFields}
-          isSubmitting={isSubmitting}
+          fields={CategoryFields}
+          isSubmitting={methods.formState.isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
-          data-testid="faq-form"
+          data-testid="category-form"
           onFieldChange={{
-            question: handleFieldChange('question', 5),
-            answer: handleFieldChange('answer', 5),
-            priority: handleFieldChange('priority', undefined, 100),
+            name: handleFieldChange('name', 5),
+            slug: handleFieldChange('slug', 5),
+            // priority: handleFieldChange('priority', undefined, 100),
           }}
         />
         {hasErrors() && (
@@ -212,4 +239,4 @@ const FaqFormTemplate: React.FC = () => {
   );
 };
 
-export default FaqFormTemplate;
+export default CategoryFormTemplate;
