@@ -4,13 +4,11 @@ import type { FooterInfo } from '../types/common';
 import ImportedURL from '../common/urls';
 const { API } = ImportedURL;
 
-
 interface FooterState {
   footers: FooterInfo[];
   loading: boolean;
   page: number;
   totalPages: number;
-
   error: string | null;
   stats: { total: number; active: number; inactive: number };
   fetchFooters: (page: number, limit: number, status?: 'total' | 'active' | 'inactive') => Promise<void>;
@@ -23,13 +21,11 @@ interface FooterState {
   fetchTrashFooters: (page?: number, limit?: number, filter?: 'total' | 'active' | 'inactive') => Promise<void>;
 }
 
-
-
 export const useFooterStore = create<FooterState>((set) => ({
   footers: [],
   loading: false,
   error: null,
-    page: 1,
+  page: 1,
   totalPages: 1,
   stats: { total: 0, active: 0, inactive: 0 },
 
@@ -145,63 +141,63 @@ export const useFooterStore = create<FooterState>((set) => ({
     }
   },
 
+  restoreFooterInfo: async (id: string) => {
+    try {
+      set({ loading: true, error: null });
+      await axios.patch(`${API.restorefooterinfo}${id}`);
+      set((state) => ({
+        footers: state.footers.filter(f => f._id !== id),
+        error: null,
+        loading: false
+      }));
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to restore FooterInfo';
+      set({ error: errorMessage, loading: false });
+      throw errorMessage;
+    }
+  },
+
   deleteFooterInfoPermanently: async (id: string) => {
-  try {
-    set({ loading: true, error: null });
-    await axios.delete(`${API.permanentDeletefooterinfo}${id}`);
-    set((state) => ({
-      footers: state.footers.filter(f => f._id !== id),
-      error: null,
-      loading: false
-    }));
-  } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || error?.message || 'Failed to permanently delete FAQ';
-    set({ error: errorMessage, loading: false });
-    throw errorMessage;
-  }
-},
-restoreFooterInfo: async (id: string) => {
-  try {
-    set({ loading: true, error: null });
-    await axios.patch(`${API.restorefooterinfo}${id}`);
-    set((state) => ({
-      footers: state.footers.filter(f => f._id !== id),
-      error: null,
-      loading: false
-    }));
-  } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || error?.message || 'Failed to restore FAQ';
-    set({ error: errorMessage, loading: false });
-    throw errorMessage;
-  }
-},
-fetchTrashFooters: async (page = 1, limit = 20, filter = 'total') => {
-  try {
-    set({ loading: true, error: null });
-    const statusParam =
-      filter === 'active' ? 'active' :
-      filter === 'inactive' ? 'inactive' : '';
-    const res = await axios.patch(`${API.trashfooterinfolist}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
-    const data = res.data as {
-      data: FooterInfo[];
-      meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };
-    };
-    set({
-      footers: Array.isArray(data.data) ? data.data : [],
-      stats: {
-        total: data.meta?.total ?? 0,
-        active: data.meta?.active ?? 0,
-        inactive: data.meta?.inactive ?? 0,
-      },
-      page,
-      totalPages: data.meta?.totalPages ?? 1,
-      loading: false,
-      error: null
-    });
-  } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch trash FAQs';
-    set({ error: errorMessage, loading: false });
-    throw errorMessage;
-  }
-},
+    try {
+      set({ loading: true, error: null });
+      await axios.delete(`${API.permanentDeletefooterinfo}${id}`);
+      set((state) => ({
+        footers: state.footers.filter(f => f._id !== id),
+        error: null,
+        loading: false
+      }));
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to permanently delete FooterInfo';
+      set({ error: errorMessage, loading: false });
+      throw errorMessage;
+    }
+  },
+
+  fetchTrashFooters: async (page = 1, limit = 20, filter = 'total') => {
+    try {
+      set({ loading: true, error: null });
+      const statusParam = filter === 'total' ? '' : `&status=${filter}`;
+      const res = await axios.get(`${API.trashfooterinfolist}?page=${page}&limit=${limit}${statusParam}`); // Changed to GET
+      const data = res.data as {
+        data: FooterInfo[];
+        meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };
+      };
+      set({
+        footers: Array.isArray(data.data) ? data.data : [],
+        stats: {
+          total: data.meta?.total ?? 0,
+          active: data.meta?.active ?? 0,
+          inactive: data.meta?.inactive ?? 0,
+        },
+        page,
+        totalPages: data.meta?.totalPages ?? 1,
+        loading: false,
+        error: null
+      });
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch trash FooterInfo';
+      set({ error: errorMessage, loading: false });
+      throw errorMessage;
+    }
+  },
 }));

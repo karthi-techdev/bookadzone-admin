@@ -5,14 +5,10 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FcGoogle } from 'react-icons/fc';
 import { FaSquareFacebook } from 'react-icons/fa6';
-<<<<<<< HEAD
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuthStore } from '../../stores/AuthStore';
-=======
 import ManagementForm from '../../organisms/ManagementForm';
 import { loginFields } from '../../utils/fields/loginFields';
-import { useAuthStore } from '../../stores/authStore';
->>>>>>> 6ed33a0643ad56507648321eacc5386b2902367e
 import ValidationHelper from '../../utils/validationHelper';
 // Swiper CSS imports removed.
 
@@ -92,67 +88,6 @@ const Login: React.FC = () => {
             <img src="/assets/image/logo/bookadzone-logo.png" alt="bookadzone-logo" className="w-[120px] md:w-[150px] mb-2" />
           </div>
           <FormProvider {...methods}>
-<<<<<<< HEAD
-            <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col justify-center items-center w-full'>
-              <div className="input-group bg-[var(--light-dark-color)] border-[1px] border-[var(--light-blur-grey-color)] rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px] mb-4 w-[90%]">
-                <input
-                  {...methods.register('username', {
-                    onChange: () => methods.clearErrors('username'),
-                  })}
-                  type="email"
-                  className='outline-none w-full p-3 text-[.75rem] text-[var(--white-color)] placeholder:text-[var(--light-grey-color)]'
-                  placeholder='Enter Your Email'
-                />
-                {errors.username && (
-                  <span className="text-xs text-red-500 mt-1">{errors.username.message}</span>
-                )}
-              </div>
-              <div className="input-group bg-[var(--light-dark-color)] border-[1px] border-[var(--light-blur-grey-color)] rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px] mb-4 w-[90%] relative">
-                <input
-                  {...methods.register('password', {
-                    onChange: () => methods.clearErrors('password'),
-                  })}
-                  type={showPassword ? 'text' : 'password'}
-                  className='outline-none w-full p-3 text-[.75rem] text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] pr-10'
-                  placeholder='Enter Your Password'
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  tabIndex={-1}
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </button>
-                {errors.password && (
-                  <span className="text-xs text-red-500 mt-1">{errors.password.message}</span>
-                )}
-              </div>
-              <div className="forgot-link w-[90%] flex justify-end mb-4">
-                <Link to="/forgot-password" className='text-[.50rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] underline transition-all duration-300 ease-in ease-out'>Forgot Password?</Link>
-              </div>
-              <div className="button-group w-[90%]">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className='p-3 bg-[var(--puprle-color)] text-[var(--white-color)] font-medium text-[.75rem] cursor-pointer rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px] w-full disabled:opacity-50'
-                >
-                  {isSubmitting ? 'Logging in...' : 'Login'}
-                </button>
-              </div>
-              <div className="login-with relative w-[50%] flex justify-center items-center my-4">
-                <span className='text-[.50rem] text-[var(--light-grey-color)]'>Or Login With</span>
-              </div>
-              <div className="login-methods flex justify-center items-center gap-4">
-                <Link to="/login/google" className='px-5 py-2 rounded-[5px] bg-[var(--white-color)] font-medium text-[.65rem] cursor-pointer flex items-center gap-2 font-semibold'> <FcGoogle className='text-[1.2rem]' /> Google</Link>
-                <Link to="/login/facebook" className='px-5 py-2 rounded-[5px] bg-[#1877F2] text-[var(--white-color)] font-medium text-[.65rem] cursor-pointer flex items-center gap-2 font-semibold'><FaSquareFacebook className='text-[1.2rem]' /> Facebook</Link>
-              </div>
-              <div className="already-have-account mt-3">
-                <span className='text-[.50rem] text-[var(--light-grey-color)]'>Don't have an account? <Link to="/register" className='text-[var(--puprle-color)] font-medium underline'>Register Now</Link></span>
-              </div>
-            </form>
-=======
             <ManagementForm
               label="Login"
               fields={loginFields.map(f => f.name === 'password' ? { ...f, type: showPassword ? 'text' : 'password' } : f)}
@@ -212,7 +147,6 @@ const Login: React.FC = () => {
             <div className="already-have-account mt-3 text-center w-full">
               <span className="text-xs text-[var(--light-grey-color)]">Don't have an account? <Link to="/register" className="text-[var(--puprle-color)] font-medium underline">Register Now</Link></span>
             </div>
->>>>>>> 6ed33a0643ad56507648321eacc5386b2902367e
           </FormProvider>
         </div>
       </div>

@@ -6,7 +6,7 @@ jest.mock('swiper/modules', () => ({}));
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Login from './loginTemplate';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '../../stores/AuthStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
