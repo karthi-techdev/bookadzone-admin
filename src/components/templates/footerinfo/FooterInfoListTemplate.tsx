@@ -136,9 +136,13 @@ const FooterListTemplate: React.FC = () => {
         label: 'Logo',
         render: (value) => {
           if (typeof value === 'string' && value) {
-            // Check if logo is a base64 string
             const isBase64 = value.startsWith('data:image/');
-            const imageUrl = isBase64 ? value : `${ImportedURL.FILEURL}Uploads/${value}`;
+            let imageUrl;
+            if (isBase64) {
+              imageUrl = value;
+            } else {             
+              imageUrl = `${ImportedURL.FILEURL}uploads/footer/logo/${value}`; 
+            }
             console.log(`Rendering logo image: ${isBase64 ? 'base64' : 'URL'} - ${imageUrl.substring(0, 50)}...`);
             return (
               <img
@@ -147,7 +151,7 @@ const FooterListTemplate: React.FC = () => {
                 className="h-12 w-12 object-contain rounded-full border"
                 onError={(e) => {
                   console.error(`Failed to load logo image: ${imageUrl}`, e);
-                  e.currentTarget.src = '/placeholder-image.png'; // Fallback image
+                  e.currentTarget.src = '/placeholder-image.png';
                 }}
                 onLoad={() => console.log(`Successfully loaded logo image: ${imageUrl}`)}
               />
