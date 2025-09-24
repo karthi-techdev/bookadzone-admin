@@ -15,7 +15,7 @@ interface LabeledInputProps {
   label?: string;
   type: InputType;
   value?: any;
-  onChange?: (e: { target: { name: string; value: any } }) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   placeholder?: string;
   required?: boolean;
   options?: SelectOption[];
@@ -54,21 +54,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
   }) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       if (!onChange) return;
-
-      let newValue: any;
-      if (type === 'file') {
-        const files = (e.target as HTMLInputElement).files;
-        newValue = multiple && files ? Array.from(files) : files?.[0] || undefined;
-      } else if (type === 'checkbox') {
-        newValue = (e.target as HTMLInputElement).checked;
-      } else if (type === 'number' && valueAsNumber) {
-        newValue = e.target.value === '' ? undefined : Number(e.target.value);
-      } else if (type === 'radio') {
-        newValue = e.target.value;
-      } else {
-        newValue = e.target.value;
-      }
-      onChange({ target: { name, value: newValue } });
+      onChange(e);
     };
 
     const selectChangeHandler = (selected: SelectOption | SelectOption[] | null) => {
@@ -76,7 +62,9 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
       const value = multiple
         ? (selected as SelectOption[])?.map((opt) => opt.value) || []
         : (selected as SelectOption)?.value || '';
-      onChange({ target: { name, value } });
+      onChange({
+        target: { name, value } as any,
+      } as React.ChangeEvent<HTMLSelectElement>);
     };
 
     const renderInput = () => {
