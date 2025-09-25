@@ -4,10 +4,11 @@ import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { IoGrid } from "react-icons/io5";
 import { TbCategoryPlus } from "react-icons/tb";
 import { RiListIndefinite } from "react-icons/ri";
-import { BsUiChecks } from "react-icons/bs";
+import { MdSettings } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
 import { FaTrashCan } from "react-icons/fa6";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { BsUiChecks } from "react-icons/bs";
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,20 +35,35 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   }, [location.pathname]);
 
   const navItems = [
-    { icon: <IoGrid />, text: "Dashboard", path: "/", position: "single" },
-    { icon: <TbCategoryPlus />, text: "Category", path: "/category", position: "single" },
+    { icon: <IoGrid />, text: "Dashboard", path: "/", special: true },
+     { icon: <TbCategoryPlus />, text: "Category", path: "/category", special: true },
     {
-      icon: <BsUiChecks />, text: "Site Setting", path: "#",
+      icon: < BsUiChecks />, text: "Site Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/config" },
       ]
     },
     {
-      icon: <FaTrashCan />, text: "Trash", path: "#",
+      icon: <MdSettings />, text: "Setting", path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "General Settings", path: "/settings/general" },
+        { icon: <RiListIndefinite />, text: "Contact Info", path: "/settings/contact" },
+        { icon: <RiListIndefinite />, text: "Email Configuration", path: "/settings/email" },
+        { icon: <RiListIndefinite />, text: "SEO Configuration", path: "/settings/seo" },
+        { icon: <RiListIndefinite />, text: "OG Configuration", path: "/settings/og" },
+      ]
+     },
+    { icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
+        { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
+
       ]
-    },
+     },
+    // Example: Add more special items
+    // { icon: <SomeIcon />, text: "User Management", path: "/users", special: true },
   ];
 
   // Handle expand/collapse for submenu
@@ -80,7 +96,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
             const hasChildren = !!item.children;
             const isExpanded = expandedMenuIdx === idx;
 
-            if (item.position === "single") {
+            if (item.special) {
               if (collapsed) {
                 return (
                   <li key={idx} className="flex flex-col items-center">

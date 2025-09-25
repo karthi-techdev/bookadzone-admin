@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { FiAlertCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import BAZInput from '../atoms/BAZ-Input';
 import BAZTextArea from '../atoms/BAZ-TextArea';
 import BAZCheckbox from '../atoms/BAZ-Checkbox';
@@ -24,6 +25,10 @@ interface LabeledInputProps {
   multiple?: boolean;
   valueAsNumber?: boolean;
   error?: string;
+  togglePassword?: () => void;
+  showPassword?: boolean;
+  isAuth?: boolean;
+  existingFiles?: string | string[]; // Support for existing files
 }
 
 const LabeledInput: React.FC<LabeledInputProps> = memo(
@@ -41,7 +46,11 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
     accept,
     multiple = false,
     valueAsNumber = false,
+    isAuth = false,
     error,
+    togglePassword,
+    showPassword,
+    existingFiles,
   }) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
       if (!onChange) return;
@@ -76,7 +85,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
           return (
             <>
               <BAZTextArea
-              id={name}
+                id={name}
                 name={name}
                 value={value || ''}
                 onChange={handleChange}
@@ -120,7 +129,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
         case 'city-select':
           return (
             <BAZSelect
-              id={name}  
+              id={name}
               options={options}
               value={multiple ? value : options.find((opt) => opt.value === value) || null}
               onChange={selectChangeHandler}
@@ -140,27 +149,35 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
               multiple={multiple}
               disabled={disabled}
               error={error}
+              existingFiles={existingFiles} 
             />
           );
         default:
           return (
-            <>
+            <div className="relative">
               <BAZInput
-                id={name} 
+                id={name}
                 name={name}
-                type={type}
+                type={type === 'password' && showPassword ? 'text' : type}
                 value={type === 'number' && value != null ? value : value || ''}
                 onChange={handleChange}
                 placeholder={placeholder}
                 disabled={disabled}
-                error={undefined}
+                error={error}
+                isAuth={isAuth}
+                className="outline-none w-full"
               />
-              {error && (
-                <p className="text-xs text-red-400 flex items-center mt-1">
-                  <FiAlertCircle className="mr-1" /> {error}
-                </p>
+              {type === 'password' && togglePassword && (
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
+                  onClick={togglePassword}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
               )}
-            </>
+            </div>
           );
       }
     };

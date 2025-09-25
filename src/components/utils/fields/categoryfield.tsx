@@ -35,11 +35,11 @@ export const CategoryFields: FieldConfig[] = [
     placeholder: 'Enter the Photo...',
   },
   {
-    name: 'checkbox',
+    name: 'isFeatured',
     label: 'Is Featured.',
     type: 'checkbox',
     required: true,
     className: 'md:col-span-12',
-    placeholder: 'Enter the Checkbox...',
+    placeholder: 'Pick the Checkbox...',
   }
 ];

@@ -1,4 +1,5 @@
-import React, { useState, type FC, type ReactNode } from "react";
+import  { useState  } from "react";
+import  type {  FC, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "../organisms/Navbar";
 import Sidebar from "../organisms/Sidebar";

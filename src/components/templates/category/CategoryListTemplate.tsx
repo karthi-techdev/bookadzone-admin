@@ -27,7 +27,6 @@ interface StatFilter {
 
 const CategoryListTemplate: React.FC = () => {
   const navigate = useNavigate();
-
   const {
     category,
     fetchCategorys,
@@ -39,21 +38,12 @@ const CategoryListTemplate: React.FC = () => {
     stats,
   } = useCategoryStore();
 
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
-  const [file, setFile] = useState<File | null>(null);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setImageUrl(URL.createObjectURL(selectedFile));
-    }
-  };
+console.log(category,"category");
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<'total' | 'active' | 'inactive'>('total');
-  const itemsPerPage = 10;
+  const itemsPerPage = 3;
 
   // Calculate total items for pagination based on selected filter
   const getTotalItems = () => {
@@ -167,6 +157,11 @@ const CategoryListTemplate: React.FC = () => {
           <span className="text-gray-400 text-xs">No image</span>
         ),
     },
+    {
+      key: 'description',
+      label: 'Description',
+      render: (value) => truncate(value, 40),
+    },
   ];
 
   if (loading) return <BAZLoader />;
@@ -189,8 +184,6 @@ const CategoryListTemplate: React.FC = () => {
       />
 
       <ManagementTable
-
-      
         data={searchedCategorys}
         columns={columns}
         onEdit={(row) => navigate(`/categorys/edit/${row._id}`)}

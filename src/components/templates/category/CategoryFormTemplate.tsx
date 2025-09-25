@@ -12,7 +12,7 @@ import Swal from 'sweetalert2';
 type CategoryFormData = {
   name: string;
   slug: string;
-  checkbox?: boolean;
+  isFeatured?: boolean;
   description: string;
   photo?: string | File | (string | File)[];
   // priority?: number; // Add this line if 'priority' is needed elsewhere in the form
@@ -34,7 +34,7 @@ const CategoryFormTemplate: React.FC = () => {
     defaultValues: {
       name: '',
       slug: '',
-      checkbox: true,
+      isFeatured: true,
       description: '',
       photo: '',
     },
@@ -44,15 +44,13 @@ const CategoryFormTemplate: React.FC = () => {
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
 
   const handleFieldChange = (fieldName: keyof CategoryFormData, minLengthValue?: number, maxValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
-    console.log('==============fieldName=====', fieldName);
 
     let value = e.target.value;
-    console.log('==============value=====', value);
 
     if (typeof methods.getValues(fieldName) === 'boolean' && typeof e.target.checked === 'boolean') {
       value = e.target.checked;
     } else if (fieldName === 'name') {
-      value = parseInt(value, 10);
+      value = e.target.value;  // keep as string ✅
     }
 
     // Build validation rules for this field
@@ -76,7 +74,7 @@ const CategoryFormTemplate: React.FC = () => {
       clearErrors(fieldName);
     }
     if (fieldName === 'name') {
-      methods.setValue('slug', value.replaceAll(" ","-"), { shouldValidate: false });
+      methods.setValue('slug', value.replaceAll(" ", "-"), { shouldValidate: false });
     }
     methods.setValue(fieldName, value, { shouldValidate: false });
 
@@ -91,10 +89,10 @@ const CategoryFormTemplate: React.FC = () => {
             name: category.name || '',
             slug: category.slug || '',
             description: category.description || '',
-            photo: category.photo || '' ,
+            photo: category.photo || '',
 
 
-            checkbox: typeof category.checkbox === 'boolean' ? category.checkbox : category.checkbox === 'active',
+            isFeatured: typeof category.isFeatured === 'boolean' ? category.isFeatured : category.isFeatured === 'active',
           });
           setIsInitialized(true);
         } else {
@@ -105,21 +103,20 @@ const CategoryFormTemplate: React.FC = () => {
     }
   }, [id, fetchCategoryById, reset, isInitialized]);
 
-  const onSubmit = async (data: CategoryFormData) => { 
-    
-   
-    
-    clearErrors();
+const onSubmit = async (data: CategoryFormData) => {
+  clearErrors();
 
-    const trimmedData = {
-      name: data.name.trim(),
-      slug: data.slug.trim(),
-      checkbox: data.checkbox,
-      description: data.description,
-      photo: data.photo,
-      // priority: data.priority,
-      length: 0, 
-    };
+  // Prepare trimmed data object matching Category type
+  const trimmedData = {
+    name: data.name.trim(),
+    slug: data.slug.trim(),
+    description: data.description?.trim() ?? "",
+    photo: data.photo,
+    isFeatured: data.isFeatured ?? false,
+    length: 0, // or set as needed for your Category type
+  };
+
+
 
     // Frontend validation
     const validationErrors = ValidationHelper.validate([
@@ -137,14 +134,14 @@ const CategoryFormTemplate: React.FC = () => {
       ValidationHelper.maxLength(trimmedData.description, 'Description', 2000),
 
       ValidationHelper.isValidEnum(
-        typeof trimmedData.checkbox === 'boolean' ? (trimmedData.checkbox ? 'active' : 'inactive') : trimmedData.checkbox,
+        typeof trimmedData.isFeatured === 'boolean' ? (trimmedData.isFeatured ? 'active' : 'inactive') : trimmedData.isFeatured,
         'Status',
         ['active', 'inactive']
       ),
       // ValidationHelper.isRequired(trimmedData.priority, 'Priority'),
       // ValidationHelper.maxValue(trimmedData.priority, 'Priority', 100),
     ]);
-console.log("validationErrors ",validationErrors);
+    console.log("validationErrors ", validationErrors);
 
     if (validationErrors.length > 0) {
       validationErrors.forEach((err) => {

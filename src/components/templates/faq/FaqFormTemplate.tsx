@@ -1,8 +1,9 @@
+
 import React, { useEffect, useState } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast,ToastContainer } from 'react-toastify';
-import { useFaqStore } from '../../stores/faqStore';
+import { toast, ToastContainer } from 'react-toastify';
+import { useFaqStore } from '../../stores/FaqStore';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
 import { faqFields } from '../../utils/fields/faqFields';
@@ -92,6 +93,9 @@ const FaqFormTemplate: React.FC = () => {
   }, [id, fetchFaqById, reset, isInitialized]);
 
   const onSubmit = async (data: FaqFormData) => {
+
+     
+
     clearErrors();
 
     const trimmedData = {
@@ -188,7 +192,7 @@ const FaqFormTemplate: React.FC = () => {
         addButtonLink="/faq"
         type={id ? 'Edit' : 'Add'}
       />
-       <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" autoClose={3000} />
       <FormProvider {...methods}>
         <ManagementForm
           label={id ? 'Update' : 'Save'}

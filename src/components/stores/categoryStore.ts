@@ -53,6 +53,8 @@ export const useCategoryStore = create<CategoryState>((set) => ({
         filter === 'active' ? 'active' :
         filter === 'inactive' ? 'inactive' : '';
       const res = await axios.get(`${API.listcategory}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
+      console.log("res",res);
+      
       const data = res.data as {
         data: Category[];
         meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };
@@ -172,7 +174,7 @@ deleteCategoryPermanently: async (id: string) => {
         if ((category as any).name != null) formData.append('name', String((category as any).name));
         if ((category as any).slug != null) formData.append('slug', String((category as any).slug));
         if ((category as any).description != null) formData.append('description', String((category as any).description));
-        if ((category as any).checkbox != null) formData.append('checkbox', (category as any).checkbox ? 'true' : 'false');
+        if ((category as any).isFeatured != null) formData.append('isFeatured', (category as any).isFeatured ? 'true' : 'false');
 
         const photoVal: any = (category as any).photo;
         if (Array.isArray(photoVal)) {
@@ -221,18 +223,7 @@ deleteCategoryPermanently: async (id: string) => {
         if ((category as any).name != null) formData.append('name', String((category as any).name));
         if ((category as any).slug != null) formData.append('slug', String((category as any).slug));
         if ((category as any).description != null) formData.append('description', String((category as any).description));
-        if ((category as any).checkbox != null) formData.append('checkbox', (category as any).checkbox ? 'true' : 'false');
-
-        const photoVal: any = (category as any).photo;
-        if (Array.isArray(photoVal)) {
-          photoVal.forEach((file: any) => {
-            if (file instanceof File) formData.append('photo', file);
-          });
-        } else if (photoVal instanceof File) {
-          formData.append('photo', photoVal);
-        } else if (typeof photoVal === 'string' && photoVal.trim() !== '') {
-          formData.append('photo', photoVal);
-        }
+        if ((category as any).isFeatured != null) formData.append('isFeatured', (category as any).isFeatured ? 'true' : 'false');
 
         dataToSend = formData;
         axiosConfig = { headers: { 'Content-Type': 'multipart/form-data' } };
@@ -271,28 +262,32 @@ deleteCategoryPermanently: async (id: string) => {
   },
 
   toggleStatusCategory: async (id: string) => {
+  
     try {
       set({ loading: true, error: null });
       const res = await axios.patch(`${API.toggleStatuscategory}${id}`);
       const responseData = res.data as { data: { status: string } };
       set((state) => ({
-        categorys: state.category.map(c => {
-          if (c._id === id) {
+        category: state.category.map(f => {
+          if (f._id === id) {
             return {
-              ...c,
+              ...f,
               status: responseData.data.status === 'active'
             };
           }
-          return c;
+          return f;
         }),
         error: null,
         loading: false
       }));
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to toggle status';
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        'Failed to toggle status';
       set({ error: errorMessage, loading: false });
       throw errorMessage;
     }
-  }
+  },
 
 }));
