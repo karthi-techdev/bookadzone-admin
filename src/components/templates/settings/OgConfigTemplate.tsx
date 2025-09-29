@@ -109,10 +109,6 @@ const OgConfigTemplate: React.FC = () => {
       if (hasFileUploads) {
         // Create FormData for file uploads
         const formDataObj = new FormData();
-        
-        // Add managementName for file upload destination
-        formDataObj.append('managementName', 'settings');
-        
         ogConfigFields.forEach(field => {
           const value = formData[field.name];
           if (field.type === 'file') {
@@ -125,10 +121,8 @@ const OgConfigTemplate: React.FC = () => {
             formDataObj.append(field.name, value ?? '');
           }
         });
-        
         // Append the og data as a JSON string for the backend to parse
         formDataObj.append('og', JSON.stringify(formData));
-        
         await updateSettings(formDataObj);
       } else {
         // Regular JSON update if no files
