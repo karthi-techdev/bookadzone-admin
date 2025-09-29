@@ -1,7 +1,23 @@
+// Mock window.matchMedia for sweetalert2 compatibility in Jest
+beforeAll(() => {
+  window.matchMedia = window.matchMedia || function(query) {
+    return {
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: function() {},
+      removeListener: function() {},
+      addEventListener: function() {},
+      removeEventListener: function() {},
+      dispatchEvent: function() { return false; }
+    };
+  };
+});
 import '@testing-library/jest-dom';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import ManagementTable from '../ManagementTable';
+import Swal from 'sweetalert2';
 
 describe('ManagementTable Component', () => {
   const columns = [
@@ -78,13 +94,20 @@ describe('ManagementTable Component', () => {
     expect(screen.getByText('Inactive')).toBeInTheDocument();
   });
 
-  it('calls onToggleStatus, onView, onDownload, onRestore, onPermanentDelete', () => {
+  it('calls onToggleStatus, onView, onDownload, onRestore, onPermanentDelete', async () => {
     const row = { name: 'Test', email: 'test@example.com', _id: '1', status: true };
     const onToggleStatus = jest.fn();
     const onView = jest.fn();
     const onDownload = jest.fn();
     const onRestore = jest.fn();
     const onPermanentDelete = jest.fn();
+    // Mock Swal.fire to auto-confirm
+    jest.spyOn(Swal, 'fire').mockImplementation(() => Promise.resolve({
+      isConfirmed: true,
+      isDenied: false,
+      isDismissed: false,
+      value: undefined
+    }));
     render(
       <ManagementTable
         columns={columns}
@@ -97,21 +120,25 @@ describe('ManagementTable Component', () => {
         onPermanentDelete={onPermanentDelete}
       />
     );
-  // Status button
-  fireEvent.click(screen.getByText(/active/i).closest('button')!);
-  expect(onToggleStatus).toHaveBeenCalledWith(row);
-  // View button
-  fireEvent.click(screen.getByRole('button', { name: 'View' }));
-  expect(onView).toHaveBeenCalledWith(row);
-  // Download button
-  fireEvent.click(screen.getByRole('button', { name: 'Download' }));
-  expect(onDownload).toHaveBeenCalledWith(row);
-  // Restore button
-  fireEvent.click(screen.getByRole('button', { name: 'Restore' }));
-  expect(onRestore).toHaveBeenCalledWith(row);
-  // Permanent delete button
-  fireEvent.click(screen.getByRole('button', { name: 'Permanent Delete' }));
-  expect(onPermanentDelete).toHaveBeenCalledWith(row);
+    // Status button (async)
+    fireEvent.click(screen.getByText(/active/i).closest('button')!);
+    // Wait for async callback
+    const { waitFor } = require('@testing-library/react');
+    await waitFor(() => {
+      expect(onToggleStatus).toHaveBeenCalledWith(row);
+    });
+    // View button
+    fireEvent.click(screen.getByRole('button', { name: 'View' }));
+    expect(onView).toHaveBeenCalledWith(row);
+    // Download button
+    fireEvent.click(screen.getByRole('button', { name: 'Download' }));
+    expect(onDownload).toHaveBeenCalledWith(row);
+    // Restore button
+    fireEvent.click(screen.getByRole('button', { name: 'Restore' }));
+    expect(onRestore).toHaveBeenCalledWith(row);
+    // Permanent delete button
+    fireEvent.click(screen.getByRole('button', { name: 'Permanent Delete' }));
+    expect(onPermanentDelete).toHaveBeenCalledWith(row);
   });
 
   it('renders table with no actions', () => {

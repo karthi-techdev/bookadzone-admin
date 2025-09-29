@@ -14,7 +14,7 @@ import {
   handleError,
   numberToWords,
   formattedNoticePeriod
-} from './helper';
+} from '../helper';
 
 // Mock country-state-city
 jest.mock('country-state-city', () => ({

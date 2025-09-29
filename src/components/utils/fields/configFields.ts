@@ -16,3 +16,9 @@ export const configFields: FieldConfig[] = [
     placeholder: 'Enter config slug',
   },
 ];
+
+// Dynamic fields config for configFields
+export const configFieldsDynamic: FieldConfig[] = [
+  { name: 'key', label: 'Key', type: 'text', required: true, placeholder: 'Enter key' },
+  { name: 'value', label: 'Value', type: 'text', required: true, placeholder: 'Enter value' },
+];

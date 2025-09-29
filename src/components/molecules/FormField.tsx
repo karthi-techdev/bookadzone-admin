@@ -7,12 +7,12 @@ import type { FieldConfig } from '../types/common';
 interface FormFieldProps {
   field: FieldConfig;
   value: any;
-  onChange?: (e: { target: { name: string; value: any } }) => void;
+  onChange?: (e: { target: { name: string; value: any; removedFiles?: string[] } }) => void;
   error?: string;
   togglePassword?: () => void;
   showPassword?: boolean;
   isAuth?: boolean;
-  existingFiles?: string | string[]; // Support for existing files
+  existingFiles?: string | string[];
 }
 
 const FormField: React.FC<FormFieldProps> = ({ 
@@ -33,7 +33,7 @@ const FormField: React.FC<FormFieldProps> = ({
       )
     : undefined;
 
-  const handleChange = (e: { target: { name: string; value: any } }) => {
+  const handleChange = (e: { target: { name: string; value: any; removedFiles?: string[] } }) => {
     clearErrors(field.name);
     if (onChange) {
       onChange(e);
