@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FiCheck, FiPlus, FiTrash2 } from 'react-icons/fi';
@@ -6,6 +6,10 @@ import FormField from '../molecules/FormField';
 import type { FieldConfig } from '../types/common';
 import Button from '../atoms/BAZ-Button';
 import { toast } from 'react-toastify';
+import BAZJodiEdit from '../atoms/BAZ-Jodit';
+import BAZModal from '../atoms/BAZ-Modal';
+import BAZTextArea from '../atoms/BAZ-TextArea';
+import BAZInput from '../atoms/BAZ-Input';
 
 interface TabConfig {
   id: number;
@@ -20,6 +24,9 @@ interface ManagementFormProps {
   label: string;
   fields?: FieldConfig[];
   isSubmitting?: boolean;
+  isJodit?: boolean;
+  managementName?: string;
+  isInitialized?: boolean;
   onSubmit?: React.FormEventHandler<HTMLFormElement>;
   ['data-testid']?: string;
   onButtonClick?: () => void;
@@ -40,7 +47,7 @@ interface ManagementFormProps {
 
 const ManagementForm: React.FC<ManagementFormProps> = ({
   label,
-  fields,
+  fields = [],
   isSubmitting,
   onSubmit,
   onButtonClick,
@@ -48,6 +55,8 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   existingFiles = {},
   isAuth = false,
   isDynamic = false,
+  isJodit = false,
+  managementName,
   dynamicFieldName = 'dynamicFields',
   dynamicFieldConfig = [],
   tabs,
@@ -59,8 +68,10 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   onTabChange,
   activeTab: propActiveTab,
 }) => {
+  const { control, formState: { errors }, getValues, setValue, register, watch } = useFormContext();
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
+
   const [activeTab, setActiveTab] = useState(propActiveTab || initialTab);
-  const { control, formState: { errors }, getValues, setValue, watch } = useFormContext();
   
   // Use the active tab from props if provided, otherwise use local state
   const currentActiveTab = propActiveTab !== undefined ? propActiveTab : activeTab;
@@ -89,7 +100,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   // Initialize dynamic fields only when needed and avoid duplication
   useEffect(() => {
     if (isDynamicToUse) {
-      const existingValues = getValues(dynamicFieldNameToUse)
+      const existingValues = getValues(dynamicFieldNameToUse);
       
       // If we have no dynamic fields registered but we have existing values, we need to register them
       if (dynamicFields.length === 0 && existingValues && Array.isArray(existingValues) && existingValues.length > 0) {
@@ -145,10 +156,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
 
   const handleAddField = () => {
     if (!canAddNewField()) {
-      toast.error(toastErrorMessage, {
-        position: 'top-right',
-        autoClose: 3000,
-      });
+      toast.error(toastErrorMessage, { position: 'top-right', autoClose: 3000 });
       return;
     }
     
@@ -192,6 +200,14 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
     setValue(fieldPath, e.target.value, { shouldValidate: true });
   };
 
+  // Ensure 'template' is registered when Jodit editor is used
+  useEffect(() => {
+    if (isJodit) {
+      register('template');
+    }
+  }, [isJodit, register]);
+
+  // AUTH FORM RENDER
   if (isAuth) {
     return (
       <motion.form
@@ -203,7 +219,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         data-testid={dataTestId || 'auth-form'}
       >
         <div className="w-full space-y-2">
-          {(fields ?? []).map((field) => (
+          {fields.map((field) => (
             <div key={field.name} className="w-full">
               <FormField
                 field={field}
@@ -239,34 +255,117 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
     );
   }
 
+  // MAIN FORM RENDER (NON-AUTH)
   return (
     <div>
+      {/* Tabs */}
       {tabs && tabs.length > 0 && (
         <div className="mb-4 flex gap-2">
           {tabs.map(tab => (
             <button
               key={tab.id}
               type="button"
-              className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 transition-colors duration-200 ${currentActiveTab === tab.id ? 'bg-[var(--light-purple-color)] text-[var(--white-color)] border-purple-300' : 'bg-[var(--light-purple-color)] text-[var(--white-color)] border-transparent'}`}
+              className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 transition-colors duration-200 ${
+                currentActiveTab === tab.id 
+                  ? 'bg-[var(--light-purple-color)] text-[var(--white-color)] border-purple-300' 
+                  : 'bg-[var(--light-purple-color)] text-[var(--white-color)] border-transparent'
+              }`}
               onClick={() => handleTabClick(tab.id)}
-              style={{ boxShadow: currentActiveTab === tab.id ? 'bg-[var(--light-purple-color)]' : undefined }}
+              style={{ boxShadow: currentActiveTab === tab.id ? '0 2px 4px rgba(0,0,0,0.1)' : undefined }}
             >
               {tab.label}
             </button>
           ))}
         </div>
       )}
+
+      {/* Jodit Editor Modal */}
+      {isJodit && (
+        <BAZModal isOpen={isEditorOpen} onClose={() => setIsEditorOpen(false)} title="Edit Template" size="xl">
+          <div className="p-4 space-y-4">
+            <BAZJodiEdit
+              placeholder="Enter template"
+              value={watch('template') || ''}
+              onChange={(val: string) => setValue('template', val, { shouldValidate: true, shouldDirty: true })}
+              managementName={managementName}
+            />
+            <div className="flex justify-end gap-2">
+              <Button type="button" className="px-4 py-2 bg-gray-600 text-white rounded" onClick={() => setIsEditorOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="button" className="px-4 py-2 bg-[var(--puprle-color)] text-white rounded" onClick={() => setIsEditorOpen(false)}>
+                Save
+              </Button>
+            </div>
+          </div>
+        </BAZModal>
+      )}
+
+      {/* Main Form */}
       <motion.form
         onSubmit={handleButtonClick}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
         className="bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded-xl shadow-sm p-6"
-        data-testid={dataTestId}
+        data-testid={dataTestId || 'management-form'}
       >
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {(tabs ? tabConfig?.fields : fields)?.map((field) => (
-            ('type' in field && field.type === 'dynamic') ? null : (
+          {/* Regular Fields */}
+          {(tabs ? tabConfig?.fields : fields)?.map((field) => {
+            const fieldError = getNestedError(errors, field.name);
+            const isTemplateEditor = isJodit && field.name === 'template';
+            const isTemplatePreview = !isJodit && field.name === 'template' && field.readOnly;
+
+            if (isTemplateEditor) {
+              return (
+                <div key={field.name} className={field.className || 'md:col-span-12 col-span-12'}>
+                  <BAZTextArea
+                    name={field.name}
+                    label={field.label}
+                    value={watch('template') || ''}
+                    placeholder={field.placeholder || 'Enter template'}
+                    onClick={() => setIsEditorOpen(true)}
+                    onChange={(e: any) => setValue('template', e.target.value, { shouldValidate: true, shouldDirty: true })}
+                    disabled={field.disabled}
+                    error={fieldError}
+                    className="w-full"
+                  />
+                </div>
+              );
+            }
+
+            if (isTemplatePreview) {
+              const stripHtml = (html: string) => {
+                const div = document.createElement('div');
+                div.innerHTML = html || '';
+                return div.textContent || div.innerText || '';
+              };
+              return (
+                <div key={field.name} className={field.className || 'md:col-span-12 col-span-12'}>
+                  {field.label && (
+                    <label htmlFor={field.name} className="block text-xs text-[var(--light-grey-color)]">
+                      {field.label}
+                      {field.required && <span className="text-red-400 ml-1">*</span>}
+                    </label>
+                  )}
+                  <BAZInput
+                    id={field.name}
+                    name={field.name}
+                    type="text"
+                    value={stripHtml(watch('template') || '')}
+                    onClick={field.onClick}
+                    readOnly={true}
+                    placeholder={field.placeholder || 'Click to add template content'}
+                    disabled={field.disabled}
+                    error={fieldError}
+                    className="outline-none w-full"
+                  />
+                </div>
+              );
+            }
+
+            return (
               <div key={field.name} className={field.className || 'md:col-span-6 col-span-12'}>
                 <FormField
                   field={field}
@@ -274,7 +373,9 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                   onChange={onFieldChange[field.name] || ((e) => {
                     setValue(field.name, e.target.value, { shouldValidate: true });
                   })}
-                  error={getNestedError(errors, field.name)}
+                  onClick={field.onClick}
+                  readOnly={field.readOnly}
+                  error={fieldError}
                   togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
                   showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
                   existingFiles={existingFiles[field.name]}
@@ -285,8 +386,10 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                   </div>
                 )}
               </div>
-            )
-          ))}
+            );
+          })}
+
+          {/* Dynamic Fields Section */}
           {isDynamicToUse && dynamicFieldConfigToUse.length > 0 && (
             <div className="md:col-span-12 col-span-12">
               <h4 className="text-sm font-semibold text-white mb-4">
@@ -334,6 +437,8 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
             </div>
           )}
         </div>
+
+        {/* Submit Button */}
         <div className="mt-8 flex justify-end">
           <Button
             type="submit"

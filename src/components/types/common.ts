@@ -168,6 +168,7 @@ export interface FieldConfig {
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
+  onClick?: () => void;
 }
 
 
@@ -187,3 +188,11 @@ export interface SelectOption {
   label: string;
   value: string | number;
 }
+export interface NewsLetter {
+  _id?: string;
+  name: string;
+  slug: string ;
+  template:string;
+  status?: boolean;
+}
+

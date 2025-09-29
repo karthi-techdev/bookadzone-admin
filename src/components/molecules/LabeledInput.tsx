@@ -16,6 +16,8 @@ interface LabeledInputProps {
   type: InputType;
   value?: any;
   onChange?: (e: { target: { name: string; value: any; removedFiles?: string[] } }) => void;
+  onClick?: () => void;
+  readOnly?: boolean; 
   placeholder?: string;
   required?: boolean;
   options?: SelectOption[];
@@ -38,6 +40,8 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
     type,
     value,
     onChange,
+    onClick,
+    readOnly,
     placeholder,
     required,
     disabled,
@@ -106,6 +110,8 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
                 name={name}
                 value={value || ''}
                 onChange={handleChange}
+                onClick={onClick}
+                readOnly={!!readOnly}
                 placeholder={placeholder}
                 disabled={disabled}
                 error={undefined}

@@ -45,6 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
         { icon: <RiListIndefinite />, text: "Config", path: "/config" },
+        { icon: <RiListIndefinite />, text: "NewsLetter", path: "/newsletter" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
       ]
     },
@@ -62,6 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
+        { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
       ]
     },
     // Example: Add more special items
