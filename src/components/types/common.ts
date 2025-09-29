@@ -109,6 +109,7 @@ export interface FieldConfig {
   onChange?: (e: React.ChangeEvent<any> | { target: { name: string; value: any } }) => void;
   dataTestId?: string;
   value?:any;
+  onClick?: () => void;
 }
 
 
@@ -128,3 +129,11 @@ export interface SelectOption {
   label: string;
   value: string | number;
 }
+export interface NewsLetter {
+  _id?: string;
+  name: string;
+  slug: string ;
+  template:string;
+  status?: boolean;
+}
+

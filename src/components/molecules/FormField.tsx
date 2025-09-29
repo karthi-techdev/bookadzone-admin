@@ -8,6 +8,8 @@ interface FormFieldProps {
   field: FieldConfig;
   value: any;
   onChange?: (e: { target: { name: string; value: any } }) => void;
+  onClick?: () => void;            // ✅ Added
+  readOnly?: boolean;
   error?: string;
   togglePassword?: () => void;
   showPassword?: boolean;
@@ -19,6 +21,8 @@ const FormField: React.FC<FormFieldProps> = ({
   field, 
   value, 
   onChange, 
+  onClick,
+  readOnly = false,
   error, 
   togglePassword, 
   showPassword, 
@@ -48,6 +52,8 @@ const FormField: React.FC<FormFieldProps> = ({
         type={field.type}
         value={value}
         onChange={handleChange}
+        onClick={onClick}               // ✅ Forward click here
+        readOnly={readOnly} 
         placeholder={field.placeholder}
         disabled={field.disabled}
         options={normalizedOptions}

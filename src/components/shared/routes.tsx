@@ -9,6 +9,10 @@ const CampaignList = lazy(() => import('../pages/Campaign-List'));
 const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
 const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
 const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
+const NewsLetterListPage = lazy(() => import('../pages/newsLetter/NewsLetterListPage'));
+const NewsLetterFormPage = lazy(() => import('../pages/newsLetter/NewsLetterFormPage'));
+const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
+
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
 const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
 const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
@@ -67,6 +71,22 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Edit FAQ',
       component: <FaqFormPage />,
     },
+     // NewsLetter routes
+    {
+      path: '/newsletter',
+      pageTitle: 'NewsLetter List',
+      component: <NewsLetterListPage />,
+    },
+    {
+      path: '/newsletter/add',
+      pageTitle: 'Add NewsLetter',
+      component: <NewsLetterFormPage />,
+    },
+    {
+      path: '/newsletter/edit/:id',
+      pageTitle: 'Edit NewsLetter',
+      component: <NewsLetterFormPage />,
+    },
     {
      path: '/config',
       pageTitle: 'Config List',
@@ -96,6 +116,11 @@ export const routesData = (): RouteData[] => {
       path: '/trash/faq',
       pageTitle: 'Trash FooterInfo',
       component: <FaqTrashListPage />,
+    },
+    {
+      path: '/trash/newsletter',
+      pageTitle: 'Trash NewsLetterInfo',
+      component: <NewsLetterTrashListPage />,
     },
     // Settings routes
     {
