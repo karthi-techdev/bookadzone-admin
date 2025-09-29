@@ -91,7 +91,9 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
       const value = multiple
         ? (selected as SelectOption[])?.map((opt) => opt.value) || []
         : (selected as SelectOption)?.value || '';
-      onChange({ target: { name, value } });
+      onChange({
+        target: { name, value } as any,
+      } as React.ChangeEvent<HTMLSelectElement>);
     };
 
     const renderInput = () => {

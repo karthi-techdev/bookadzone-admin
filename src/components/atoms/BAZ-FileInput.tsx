@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FiUpload, FiTrash2, FiAlertCircle } from 'react-icons/fi';
+import { FiUpload, FiTrash2, FiAlertCircle, FiEye, FiDownload } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import urls from '../common/urls';
 
@@ -217,22 +217,47 @@ const BAZFileInput: React.FC<FileInputProps> = ({
     }
   };
 
+  const removePreview = (index: number) => {
+    const previewToRemove = previews[index];
+    const newPreviews = [...previews];
+    newPreviews.splice(index, 1);
+    setPreviews(newPreviews);
+    
+    // Revoke the object URL to prevent memory leaks
+    if (previewToRemove.url.startsWith('blob:')) {
+      URL.revokeObjectURL(previewToRemove.url);
+      objectUrlsRef.current = objectUrlsRef.current.filter((url) => url !== previewToRemove.url);
+    }
+    
+    if (onChange) {
+      // Create a synthetic event to notify parent of the change
+      const event = {
+        ...new Event('change'),
+        target: {
+          name,
+          files: undefined,
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>;
+      onChange(event);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
-      className={`space-y-2 ${className}`}
+      className={`space-y-3 ${className}`}
     >
       <label
-        className={`flex flex-col items-center justify-center w-full h-32 bg-[var(--dark-color)] border-2 border-dashed ${
+        className={`flex flex-col items-center justify-center w-full h-40 bg-[var(--dark-color)] border-2 border-dashed ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
-        } rounded cursor-pointer hover:border-[var(--puprle-color)] transition-colors`}
+        } rounded-lg cursor-pointer hover:border-[var(--puprle-color)] transition-colors p-6`}
       >
-        <div className="text-center p-4">
-          <FiUpload className="h-6 w-6 text-[var(--light-grey-color)] mx-auto mb-2" />
-          <span className="text-xs text-[var(--light-grey-color)]">Click to upload or drag and drop</span>
-          <p className="text-xs text-[var(--light-grey-color)] mt-1">JPG, PNG or GIF (Max 5MB each)</p>
+        <div className="text-center">
+          <FiUpload className="h-8 w-8 text-[var(--light-grey-color)] mx-auto mb-3" />
+          <span className="text-sm font-medium text-[var(--light-grey-color)]">Click to upload or drag and drop</span>
+          <p className="text-xs text-[var(--light-grey-color)] mt-2">JPG, PNG, GIF, SVG (Max 5MB each)</p>
         </div>
         <input
           id={name}
@@ -291,8 +316,8 @@ const BAZFileInput: React.FC<FileInputProps> = ({
       )}
       
       {error && (
-        <p className="text-xs text-red-400 flex items-center mt-1">
-          <FiAlertCircle className="mr-1" /> {error}
+        <p className="text-sm text-red-400 flex items-center mt-2 p-2 bg-red-50 rounded">
+          <FiAlertCircle className="mr-2" /> {error}
         </p>
       )}
     </motion.div>

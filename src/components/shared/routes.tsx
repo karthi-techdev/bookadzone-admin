@@ -10,6 +10,10 @@ const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
 const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
 const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+const FooterInfoListPage = lazy(() => import('../pages/footerinfo/FooterInfoListPage'));
+const FooterInfoFormPage = lazy(() => import('../pages/footerinfo/FooterInfoFormPage'));
+const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
+
 const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
 const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
@@ -81,6 +85,21 @@ export const routesData = (): RouteData[] => {
       component: <FaqFormPage />,
     },
     {
+      path: '/footerinfo',
+      pageTitle: 'FAQ List',
+      component: <FooterInfoListPage />,
+    },
+    {
+      path: '/footerinfo/add',
+      pageTitle: 'Add FAQ',
+      component: <FooterInfoFormPage />,
+    },
+    {
+      path: '/footerinfo/edit/:id',
+      pageTitle: 'Edit FAQ',
+      component: <FooterInfoFormPage />,
+    },
+    {
      path: '/config',
       pageTitle: 'Config List',
       component: <ConfigListPage />,
@@ -110,6 +129,11 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Trash FooterInfo',
       component: <FaqTrashListPage />,
     },
+     {
+      path: '/trash/footerinfo',
+      pageTitle: 'Trash FooterInfo',
+      component: <FooterInfoTrashListPage />,
+     },
     // Settings routes
     {
       path: '/settings/general',

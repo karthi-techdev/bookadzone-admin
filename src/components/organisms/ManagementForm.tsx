@@ -208,8 +208,14 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
               <FormField
                 field={field}
                 value={getValues(field.name)}
-                onChange={onFieldChange[field.name] || ((e) => {
-                  setValue(field.name, e.target.value, { shouldValidate: true });
+                onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                  if (field.type === 'file' && 'files' in e.target && e.target.files) {
+                    setValue(field.name, e.target.files[0], { shouldValidate: true });
+                  } else if (field.type === 'checkbox') {
+                    setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
+                  } else {
+                    setValue(field.name, e.target.value, { shouldValidate: true });
+                  }
                 })}
                 error={getNestedError(errors, field.name)}
                 togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}

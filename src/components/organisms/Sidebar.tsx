@@ -49,6 +49,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     },
     { icon: <MdSettings />, text: "Setting", path: "#",
       children: [
+        { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
+        { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/config" },
         { icon: <RiListIndefinite />, text: "General Settings", path: "/settings/general" },
         { icon: <RiListIndefinite />, text: "Contact Info", path: "/settings/contact" },
         { icon: <RiListIndefinite />, text: "Email Configuration", path: "/settings/email" },
@@ -59,6 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     { icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
+        { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
       ]
     },

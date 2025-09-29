@@ -102,6 +102,17 @@ export interface Faq {
   status?: boolean;
   priority: number;
 }
+export interface FooterInfo {
+  _id?: string;
+  logo: string | File;
+  description: string;
+  socialmedia: string;
+  socialmedialinks: string;
+  google: string;
+  appstore: string;
+  status?: boolean;
+  priority: number;
+};
 
 export interface Config {
   _id?: string;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FiAlertCircle } from 'react-icons/fi';
 import LabeledInput from './LabeledInput';
 import type { FieldConfig } from '../types/common';
 

@@ -16,8 +16,8 @@ interface ManagementTableProps<T> {
   onDelete?: (row: T) => void;
   onView?: (row: T) => void;
   onDownload?: (row: T) => void;
-  onRestore?: (row: T) => void; // New prop for restore
-  onPermanentDelete?: (row: T) => void; // New prop for permanent delete
+  onRestore?: (row: T) => void; 
+  onPermanentDelete?: (row: T) => void;
   currentPage?: number;
   limit?: number;
   module: string;
@@ -41,15 +41,13 @@ const ManagementTable = <T extends Record<string, any>>({
   onDelete,
   onView,
   onDownload,
-  onRestore, // Added
-  onPermanentDelete, // Added
+  onRestore, 
+  onPermanentDelete, 
   currentPage = 1,
-  limit = 5,
-  module,
+  limit = 5, 
 }: ManagementTableProps<T>) => {
 
-  const StatusBadge = ({ status }: { status: boolean | string }) => {
-    // Accept boolean or string ('active'/'inactive')
+  const StatusBadge = ({ status }: { status: boolean | string }) => {   
     const isActive = status === true || status === 'active';
     const bgColor = isActive ? 'bg-green-900/30' : 'bg-red-900/30';
     const textColor = isActive ? 'text-green-400' : 'text-red-400';
