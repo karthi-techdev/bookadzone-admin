@@ -123,7 +123,7 @@ const GeneralSettingsTemplate: React.FC = () => {
     <div className="p-6">
       <FormHeader
         managementName=" General Settings"
-      />      
+      />       
       <ToastContainer position="top-right" autoClose={3000} />
       <FormProvider {...methods}>
         <ManagementForm

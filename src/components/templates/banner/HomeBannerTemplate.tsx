@@ -262,7 +262,7 @@ const HomeBannerTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <FormHeader
-              managementName="Home Banner"
+        managementName="Home Banner"
       /> 
       <ToastContainer position="top-right" autoClose={3000} />
       <FormProvider {...methods}>
