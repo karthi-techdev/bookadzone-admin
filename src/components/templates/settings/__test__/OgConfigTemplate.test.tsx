@@ -44,18 +44,38 @@ describe('OgConfigTemplate', () => {
   });
 
   it('submits form and shows success toast', async () => {
-  render(<MemoryRouter><OgConfigTemplate /></MemoryRouter>);
-  await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+    render(<MemoryRouter><OgConfigTemplate /></MemoryRouter>);
+    await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+    // Fill OG Description to pass validation
+  fireEvent.change(screen.getByLabelText(/OG Description/i), { target: { value: 'Test OG Description' } });
+  fireEvent.change(screen.getByLabelText(/OG URL/i), { target: { value: 'https://example.com' } });
+  fireEvent.change(screen.getByLabelText(/OG Type/i), { target: { value: 'website' } });
+  // Simulate file upload for OG Image
+  const file = new File(['dummy'], 'test.png', { type: 'image/png' });
+  fireEvent.change(screen.getByLabelText(/OG Image/i), { target: { files: [file] } });
   fireEvent.submit(screen.getByTestId('og-config-form'));
-  await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().updateSettings).toHaveBeenCalled());
+    await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().updateSettings).toHaveBeenCalled());
     expect(require('react-toastify').toast.success).toHaveBeenCalledWith('OG configuration updated successfully');
   });
 
   it('shows error toast on update failure', async () => {
-  (require('../../../stores/settingsStore').useSettingsStore().updateSettings as jest.Mock).mockRejectedValue(new Error('Update failed'));
-  render(<MemoryRouter><OgConfigTemplate /></MemoryRouter>);
-  await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+    (require('../../../stores/settingsStore').useSettingsStore().updateSettings as jest.Mock).mockRejectedValue(new Error('Update failed'));
+    render(<MemoryRouter><OgConfigTemplate /></MemoryRouter>);
+    await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+  fireEvent.change(screen.getByLabelText(/OG Description/i), { target: { value: 'Test OG Description' } });
+  fireEvent.change(screen.getByLabelText(/OG URL/i), { target: { value: 'https://example.com' } });
+  fireEvent.change(screen.getByLabelText(/OG Type/i), { target: { value: 'website' } });
+  const file = new File(['dummy'], 'test.png', { type: 'image/png' });
+  fireEvent.change(screen.getByLabelText(/OG Image/i), { target: { files: [file] } });
   fireEvent.submit(screen.getByTestId('og-config-form'));
-  await waitFor(() => expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Update failed'));
+    await waitFor(() => expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Update failed'));
+  });
+
+  it('shows validation error toast if required fields are missing', async () => {
+    render(<MemoryRouter><OgConfigTemplate /></MemoryRouter>);
+    await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+    // Do not fill OG Description
+    fireEvent.submit(screen.getByTestId('og-config-form'));
+    await waitFor(() => expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Please fix validation errors'));
   });
 });

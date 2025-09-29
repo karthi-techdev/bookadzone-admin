@@ -183,6 +183,7 @@ const validationErrors = ValidationHelper.validate([
           fields={newsLetterFields}
           isSubmitting={isSubmitting}
           isJodit={true}
+          managementName="NewsLetter"
           onSubmit={handleSubmit(onSubmit)}
           data-testid="NewsLetter-form"
           onFieldChange={{

@@ -46,6 +46,8 @@ describe('ContactInfoTemplate', () => {
   it('submits form and shows success toast', async () => {
   render(<MemoryRouter><ContactInfoTemplate /></MemoryRouter>);
   await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+  fireEvent.change(screen.getByLabelText(/Company Name/i), { target: { value: 'Test Company' } });
+  fireEvent.change(screen.getByLabelText(/Contact Email/i), { target: { value: 'test@email.com' } });
   fireEvent.submit(screen.getByTestId('contact-info-form'));
   await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().updateSettings).toHaveBeenCalled());
     expect(require('react-toastify').toast.success).toHaveBeenCalledWith('Contact info updated successfully');
@@ -55,6 +57,8 @@ describe('ContactInfoTemplate', () => {
   (require('../../../stores/settingsStore').useSettingsStore().updateSettings as jest.Mock).mockRejectedValue(new Error('Update failed'));
   render(<MemoryRouter><ContactInfoTemplate /></MemoryRouter>);
   await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+  fireEvent.change(screen.getByLabelText(/Company Name/i), { target: { value: 'Test Company' } });
+  fireEvent.change(screen.getByLabelText(/Contact Email/i), { target: { value: 'test@email.com' } });
   fireEvent.submit(screen.getByTestId('contact-info-form'));
   await waitFor(() => expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Update failed'));
   });

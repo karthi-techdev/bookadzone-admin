@@ -1,5 +1,6 @@
 // Updated ManagementTable.tsx with support for onRestore and onPermanentDelete
 import React from 'react';
+import Swal from 'sweetalert2';
 import { motion } from 'framer-motion';
 import { FiEye, FiEdit, FiTrash2, FiCheckCircle, FiXCircle, FiRefreshCw } from 'react-icons/fi';
 import { FaTrash } from "react-icons/fa6";
@@ -15,8 +16,8 @@ interface ManagementTableProps<T> {
   onDelete?: (row: T) => void;
   onView?: (row: T) => void;
   onDownload?: (row: T) => void;
-  onRestore?: (row: T) => void; // New prop for restore
-  onPermanentDelete?: (row: T) => void; // New prop for permanent delete
+  onRestore?: (row: T) => void; 
+  onPermanentDelete?: (row: T) => void;
   currentPage?: number;
   limit?: number;
   module: string;
@@ -40,15 +41,13 @@ const ManagementTable = <T extends Record<string, any>>({
   onDelete,
   onView,
   onDownload,
-  onRestore, // Added
-  onPermanentDelete, // Added
+  onRestore, 
+  onPermanentDelete, 
   currentPage = 1,
-  limit = 5,
-  module,
+  limit = 5, 
 }: ManagementTableProps<T>) => {
 
-  const StatusBadge = ({ status }: { status: boolean | string }) => {
-    // Accept boolean or string ('active'/'inactive')
+  const StatusBadge = ({ status }: { status: boolean | string }) => {   
     const isActive = status === true || status === 'active';
     const bgColor = isActive ? 'bg-green-900/30' : 'bg-red-900/30';
     const textColor = isActive ? 'text-green-400' : 'text-red-400';
@@ -58,6 +57,22 @@ const ManagementTable = <T extends Record<string, any>>({
         {icon} {isActive ? 'Active' : 'Inactive'}
       </span>
     );
+  };
+
+  // Handler for status change with swal confirmation
+  const handleStatusChange = async (row: T) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to change the status?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, change it!'
+    });
+    if (result.isConfirmed && onToggleStatus) {
+      onToggleStatus(row);
+    }
   };
 
   return (
@@ -114,7 +129,7 @@ const ManagementTable = <T extends Record<string, any>>({
                     <td className="px-4 py-3 whitespace-nowrap">
                       <BAZButton
                         type="button"
-                        onClick={() => onToggleStatus(row)}
+                        onClick={() => handleStatusChange(row)}
                         className="text-[var(--light-grey-color)] hover:text-white p-1 rounded-md hover:bg-[var(--dark-color)]"
                       >
                         <StatusBadge status={row.status} />

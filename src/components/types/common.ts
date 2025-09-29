@@ -1,3 +1,47 @@
+export interface BannerOne {
+  title: string;
+  highlightedText: string;
+  image1: string;
+  subHead1: string;
+  subDescription1: string;
+  image2: string;
+  subHead2: string;
+  subDescription2: string;
+  image3: string;
+  subHead3: string;
+  subDescription3: string;
+}
+
+export interface BannerTwo {
+  backgroundImage: string;
+  title: string;
+  description: string;
+  features?: Array<{ icon?: string; title?: string }>;
+  buttonName: string;
+  buttonUrl: string;
+}
+
+export interface Banner {
+  homepage: {
+    bannerOne: BannerOne;
+    bannerTwo: BannerTwo;
+  };
+  aboutBanner: {
+    submenu1: {
+      backgroundImage: string;
+      title: string;
+      description: string;
+      images: string[];
+    };
+    submenu2: {
+      backgroundImage: string;
+      title: string;
+      description: string;
+      images: string[];
+    };
+  };
+}
+
 export interface Settings {
   general: {
     siteName: string;
@@ -58,6 +102,17 @@ export interface Faq {
   status?: boolean;
   priority: number;
 }
+export interface FooterInfo {
+  _id?: string;
+  logo: string | File;
+  description: string;
+  socialmedia: string;
+  socialmedialinks: string;
+  google: string;
+  appstore: string;
+  status?: boolean;
+  priority: number;
+};
 
 export interface Config {
   _id?: string;
@@ -83,7 +138,8 @@ export type InputType =
   | 'city-select'
   | 'composite'
   | 'password'
-  | 'array';
+  | 'array'
+  | 'dynamic';
 
 export interface FieldConfig {
   name: string;
@@ -109,6 +165,9 @@ export interface FieldConfig {
   onChange?: (e: React.ChangeEvent<any> | { target: { name: string; value: any } }) => void;
   dataTestId?: string;
   value?:any;
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
   onClick?: () => void;
 }
 

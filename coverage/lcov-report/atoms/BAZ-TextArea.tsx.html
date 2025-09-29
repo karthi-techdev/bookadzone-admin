@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">86.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/12</span>
+                <span class='fraction'>13/15</span>
             </div>
         
             
@@ -111,27 +111,10 @@
 <a name='L46'></a><a href='#L46'>46</a>
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -141,8 +124,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -159,7 +150,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useId } from 'react';
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span></td><td class="text"><pre class="prettyprint lang-js">import React, { useId } from 'react';
 import { FiAlertCircle } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 &nbsp;
@@ -168,9 +170,10 @@ interface TextAreaProps extends React.TextareaHTMLAttributes&lt;HTMLTextAreaElem
   error?: string;
   label?: string;
   isAuth?: boolean;
+  autoCompleted?: boolean;
 }
 &nbsp;
-const BAZTextArea: React.FC&lt;TextAreaProps&gt; = ({ className = '', error, label, id, isAuth = false, ...rest }) =&gt; {
+const BAZTextArea: React.FC&lt;TextAreaProps&gt; = ({ className = '', error, label, id, isAuth = false, autoCompleted = false, ...rest }) =&gt; {
   const generatedId = useId();
   const textareaId = id || generatedId;
   
@@ -194,9 +197,9 @@ const BAZTextArea: React.FC&lt;TextAreaProps&gt; = ({ className = '', error, lab
       &lt;textarea
         id={textareaId}
         {...rest}
-        className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
+        className={`w-full px-3 py-2 ${autoCompleted ? <span class="branch-0 cbranch-no" title="branch not covered" >'bg-purple-100' </span>: 'bg-[var(--dark-color)]'} border ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
-        } ${borderRadiusClass} text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
+        } ${borderRadiusClass} text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] resize-none ${className}`}
       /&gt;
       {error &amp;&amp; (
         &lt;p className="text-xs text-red-400 flex items-center mt-1"&gt;
@@ -214,7 +217,11 @@ export default BAZTextArea;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+<<<<<<< HEAD
                 at 2025-09-29T10:43:16.801Z
+=======
+                at 2025-09-29T10:30:41.254Z
+>>>>>>> 23f5a28e370edcc10e4d8e1501dee020774b9e9b
             </div>
         <script src="../prettify.js"></script>
         <script>

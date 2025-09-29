@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { lazy } from 'react';
 
-const Dashboard = lazy(() => import('../pages/Dashboard'));
+const Dashboard = lazy(() => import('../pages/ExampleMultiStepForm'));
 const Properties = lazy(() => import('../pages/Properties'));
 const Login = lazy(() => import('../pages/auth/LoginPage'));
 const AddProperties = lazy(() => import('../pages/Add-Properties'));
@@ -14,6 +14,10 @@ const NewsLetterFormPage = lazy(() => import('../pages/newsLetter/NewsLetterForm
 const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
 
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+const FooterInfoListPage = lazy(() => import('../pages/footerinfo/FooterInfoListPage'));
+const FooterInfoFormPage = lazy(() => import('../pages/footerinfo/FooterInfoFormPage'));
+const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
+
 const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
 const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
@@ -22,6 +26,9 @@ const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
 const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
 const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
+const BannerPage = lazy(() => import('../pages/banner/HomeBannerPage'));
+const AboutBannerPage = lazy(() => import('../pages/banner/AboutBannerPage'));
+
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -30,6 +37,16 @@ export interface RouteData {
 
 export const routesData = (): RouteData[] => {
   const Routes: RouteData[] = [
+    {
+      path: '/banner/homepage',
+      pageTitle: 'Banners',
+    component: <BannerPage />, // Ensure BannerPage uses BannerManagementTemplate, not BannerTemplate
+    },
+    {
+      path: '/banner/about',
+      pageTitle: 'About Banner',
+      component: <AboutBannerPage />,
+    },
     {
       path: '/',
       pageTitle: 'Dashboard',
@@ -88,6 +105,21 @@ export const routesData = (): RouteData[] => {
       component: <NewsLetterFormPage />,
     },
     {
+      path: '/footerinfo',
+      pageTitle: 'FAQ List',
+      component: <FooterInfoListPage />,
+    },
+    {
+      path: '/footerinfo/add',
+      pageTitle: 'Add FAQ',
+      component: <FooterInfoFormPage />,
+    },
+    {
+      path: '/footerinfo/edit/:id',
+      pageTitle: 'Edit FAQ',
+      component: <FooterInfoFormPage />,
+    },
+    {
      path: '/config',
       pageTitle: 'Config List',
       component: <ConfigListPage />,
@@ -122,6 +154,11 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Trash NewsLetterInfo',
       component: <NewsLetterTrashListPage />,
     },
+     {
+      path: '/trash/footerinfo',
+      pageTitle: 'Trash FooterInfo',
+      component: <FooterInfoTrashListPage />,
+     },
     // Settings routes
     {
       path: '/settings/general',

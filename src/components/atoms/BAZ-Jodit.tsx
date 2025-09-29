@@ -1,16 +1,16 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import JoditEditor from "jodit-react";
-
+import ImportedURL from "../common/urls";
 interface AppProps {
   placeholder?: string;
   value?: string; 
   onChange?: (val: string) => void; 
+  managementName?: string;
 }
 
-const BAZJodiEdit: React.FC<AppProps> = ({ placeholder, value, onChange }) => {
+const BAZJodiEdit: React.FC<AppProps> = ({ placeholder, value, onChange, managementName }) => {
   const editor = useRef<any>(null);
   const [content, setContent] = useState<string>(value || "");
-
   // Sync external value → internal state
   useEffect(() => {
     if (value !== undefined && value !== content) {
@@ -18,22 +18,26 @@ const BAZJodiEdit: React.FC<AppProps> = ({ placeholder, value, onChange }) => {
     }
   }, [value]);
 
+  // Get token from localStorage
+  const token = localStorage.getItem('token');
   // Jodit config
   const config = useMemo(
-  () =>
-    ({
-      readonly: false,
-      placeholder: placeholder || "Start typing...",
-      uploader: {
-        insertImageAsBase64URI: false, // Base64 remove
-        url: "http://localhost:5001/api/Uploads/image", // your upload API
-        method: "POST",
-        filesVariableName: () => "image", // multer field name
-        withCredentials: false,
-      },
-    } as any),
-  [placeholder]
-);
+    () =>
+      ({
+        readonly: false,
+        placeholder: placeholder || "Start typing...",
+        uploader: {
+          insertImageAsBase64URI: false, 
+          url: `${ImportedURL.API.templateImage}image`, 
+          method: "POST",
+          filesVariableName: () => "image", 
+          withCredentials: false,
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          extraData: managementName ? { managementName } : {},
+        },
+      } as any),
+    [placeholder, token, managementName]
+  );
   // Handle change → update state + trigger parent onChange
   const handleChange = (newContent: string) => {
     setContent(newContent);
