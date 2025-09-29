@@ -64,7 +64,7 @@ const API = {
   refresh: `${ROOTURL}auth/refresh`,
 
   // Template Images
-  templateImage:`${ROOTURL}Uploads/`
+  templateImage:`${ROOTURL}editer/image`
 };
 
 const ImportedURL = { API, LIVEURL, FILEURL, SETTINGS_ID };

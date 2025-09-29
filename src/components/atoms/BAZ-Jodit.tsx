@@ -28,7 +28,7 @@ const BAZJodiEdit: React.FC<AppProps> = ({ placeholder, value, onChange, managem
         placeholder: placeholder || "Start typing...",
         uploader: {
           insertImageAsBase64URI: false, 
-          url: `${ImportedURL.API.templateImage}image`, 
+          url: `${ImportedURL.API.templateImage}`, 
           method: "POST",
           filesVariableName: () => "image", 
           withCredentials: false,
