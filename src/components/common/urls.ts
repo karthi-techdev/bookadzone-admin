@@ -1,7 +1,7 @@
 const LIVE = false;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
-const LIVEURL = LIVE ? SITEURL : 'http://localhost:5001/';
+const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
 const ROOTURL = `${LIVEURL}api/v1/`;
 const FILEURL = LIVEURL;
 const SETTINGS_ID = '68ad8844bfdf0cec7f623bc2';
@@ -43,6 +43,10 @@ const API = {
   trashconfiglist: `${ROOTURL}configs/trash`,
   restoreconfig: `${ROOTURL}configs/restore/`,
   permanentDeleteconfig: `${ROOTURL}configs/permanentDelete/`,
+
+  //Banner Management endpoints
+  getBanner: `${ROOTURL}banners/`,
+  updateBanner: `${ROOTURL}banners/`,
 
   // Auth endpoints
   login: `${ROOTURL}auth/login`,

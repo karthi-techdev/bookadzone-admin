@@ -6,12 +6,12 @@ import type { FieldConfig } from '../types/common';
 interface FormFieldProps {
   field: FieldConfig;
   value: any;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  onChange?: (e: { target: { name: string; value: any; removedFiles?: string[] } }) => void;
   error?: string;
   togglePassword?: () => void;
   showPassword?: boolean;
   isAuth?: boolean;
-  existingFiles?: string | string[]; // Support for existing files
+  existingFiles?: string | string[];
 }
 
 const FormField: React.FC<FormFieldProps> = ({ 
@@ -32,8 +32,7 @@ const FormField: React.FC<FormFieldProps> = ({
       )
     : undefined;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    // Clear errors for this field
+  const handleChange = (e: { target: { name: string; value: any; removedFiles?: string[] } }) => {
     clearErrors(field.name);
     if (onChange) {
       onChange(e);

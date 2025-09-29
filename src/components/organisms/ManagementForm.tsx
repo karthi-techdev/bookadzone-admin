@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FiCheck, FiPlus, FiTrash2 } from 'react-icons/fi';
@@ -7,22 +7,35 @@ import type { FieldConfig } from '../types/common';
 import Button from '../atoms/BAZ-Button';
 import { toast } from 'react-toastify';
 
-interface ManagementFormProps {
+interface TabConfig {
+  id: number;
   label: string;
   fields: FieldConfig[];
+  isDynamic?: boolean;
+  dynamicFieldName?: string;
+  dynamicFieldConfig?: FieldConfig[];
+}
+
+interface ManagementFormProps {
+  label: string;
+  fields?: FieldConfig[];
   isSubmitting?: boolean;
   onSubmit?: React.FormEventHandler<HTMLFormElement>;
   ['data-testid']?: string;
   onButtonClick?: () => void;
-  existingFileName?: string; // Deprecated - kept for backward compatibility
-  existingFiles?: { [key: string]: string | string[] }; // Enhanced for multiple files
+  existingFileName?: string;
+  existingFiles?: { [key: string]: string | string[] };
   isAuth?: boolean;
   isDynamic?: boolean;
   dynamicFieldName?: string;
   dynamicFieldConfig?: FieldConfig[];
+  tabs?: TabConfig[];
+  initialTab?: number;
   onFieldChange?: { [key: string]: (e: { target: { name: string; value: any } }) => void };
   toastErrorMessage?: string;
   extraProps?: { togglePassword?: () => void; showPassword?: boolean };
+  onTabChange?: (tabId: number) => void;
+  activeTab?: number;
 }
 
 const ManagementForm: React.FC<ManagementFormProps> = ({
@@ -31,22 +44,69 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   isSubmitting,
   onSubmit,
   onButtonClick,
-  existingFileName, // Deprecated
+  existingFileName,
   existingFiles = {},
   isAuth = false,
   isDynamic = false,
   dynamicFieldName = 'dynamicFields',
   dynamicFieldConfig = [],
+  tabs,
+  initialTab = 1,
   ['data-testid']: dataTestId,
   onFieldChange = {},
   toastErrorMessage = 'Please fill out the previous field completely before adding a new one.',
   extraProps = {},
+  onTabChange,
+  activeTab: propActiveTab,
 }) => {
-  const { control, formState: { errors }, getValues, setValue } = useFormContext();
+  const [activeTab, setActiveTab] = useState(propActiveTab || initialTab);
+  const { control, formState: { errors }, getValues, setValue, watch } = useFormContext();
+  
+  // Use the active tab from props if provided, otherwise use local state
+  const currentActiveTab = propActiveTab !== undefined ? propActiveTab : activeTab;
+  
+  // For dynamic fields, use the config from the active tab if tabs are present
+  const tabConfig = tabs ? tabs.find(tab => tab.id === currentActiveTab) : undefined;
+  const dynamicFieldNameToUse = tabConfig?.dynamicFieldName || dynamicFieldName;
+  const dynamicFieldConfigToUse = tabConfig?.dynamicFieldConfig || dynamicFieldConfig;
+  const isDynamicToUse = tabConfig?.isDynamic ?? isDynamic;
+  
   const { fields: dynamicFields, append, remove } = useFieldArray({
     control,
-    name: dynamicFieldName,
+    name: dynamicFieldNameToUse,
   });
+
+  // Watch the dynamic fields for changes
+  const watchedDynamicFields = watch(dynamicFieldNameToUse);
+
+  // Update local activeTab when propActiveTab changes
+  useEffect(() => {
+    if (propActiveTab !== undefined) {
+      setActiveTab(propActiveTab);
+    }
+  }, [propActiveTab]);
+
+  // Initialize dynamic fields only when needed and avoid duplication
+  useEffect(() => {
+    if (isDynamicToUse) {
+      const existingValues = getValues(dynamicFieldNameToUse)
+      
+      // If we have no dynamic fields registered but we have existing values, we need to register them
+      if (dynamicFields.length === 0 && existingValues && Array.isArray(existingValues) && existingValues.length > 0) {
+        // Append existing values to the field array
+        existingValues.forEach(value => {
+          append(value);
+        });
+      } else if (dynamicFields.length === 0 && (!existingValues || existingValues.length === 0)) {
+        // Add one empty field if no existing values
+        const emptyField: Record<string, string> = {};
+        dynamicFieldConfigToUse.forEach(config => {
+          emptyField[config.name] = '';
+        });
+        append(emptyField);
+      }
+    }
+  }, [isDynamicToUse, dynamicFields.length, dynamicFieldConfigToUse, append, getValues, dynamicFieldNameToUse, watchedDynamicFields]);
 
   const getNestedError = (errors: any, name: string): string | undefined => {
     const parts = name.split('.');
@@ -68,10 +128,19 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   };
 
   const canAddNewField = () => {
-    if (dynamicFields.length === 0) return true;
+    if (!isDynamicToUse || dynamicFields.length === 0) return true;
+    
     const lastIndex = dynamicFields.length - 1;
-    const lastFieldValues = getValues(`${dynamicFieldName}[${lastIndex}]`) || {};
-    return lastFieldValues.key && lastFieldValues.value;
+    const lastFieldValues = getValues(`${dynamicFieldNameToUse}[${lastIndex}]`) || {};
+    
+    // Check if all required fields in the last entry are filled
+    return dynamicFieldConfigToUse.every(config => {
+      const value = lastFieldValues[config.name];
+      if (config.required !== false) { // Default to required if not specified
+        return value && value.toString().trim() !== '';
+      }
+      return true;
+    });
   };
 
   const handleAddField = () => {
@@ -82,7 +151,45 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
       });
       return;
     }
-    append({ key: '', value: '' });
+    
+    const emptyField: Record<string, string> = {};
+    dynamicFieldConfigToUse.forEach(config => {
+      emptyField[config.name] = '';
+    });
+    append(emptyField);
+  };
+
+  const handleRemoveField = (index: number) => {
+    // Prevent removing if it's the only field and it's empty
+    if (dynamicFields.length === 1) {
+      const fieldValues = getValues(`${dynamicFieldNameToUse}[${index}]`) || {};
+      const hasValues = dynamicFieldConfigToUse.some(config => {
+        const value = fieldValues[config.name];
+        return value && value.toString().trim() !== '';
+      });
+      
+      if (!hasValues) {
+        toast.error('At least one field is required', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+        return;
+      }
+    }
+    
+    remove(index);
+  };
+
+  const handleTabClick = (tabId: number) => {
+    setActiveTab(tabId);
+    if (onTabChange) {
+      onTabChange(tabId);
+    }
+  };
+
+  const handleDynamicFieldChange = (index: number, fieldName: string) => (e: { target: { name: string; value: any } }) => {
+    const fieldPath = `${dynamicFieldNameToUse}.${index}.${fieldName}`;
+    setValue(fieldPath, e.target.value, { shouldValidate: true });
   };
 
   if (isAuth) {
@@ -96,7 +203,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         data-testid={dataTestId || 'auth-form'}
       >
         <div className="w-full space-y-2">
-          {fields.map((field) => (
+          {(fields ?? []).map((field) => (
             <div key={field.name} className="w-full">
               <FormField
                 field={field}
@@ -133,118 +240,112 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   }
 
   return (
-    <motion.form
-      onSubmit={handleButtonClick}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded-xl shadow-sm p-6"
-      data-testid={dataTestId}
-    >
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {fields.map((field) => (
-          <div key={field.name} className={field.className || 'md:col-span-6 col-span-12'}>
-            <FormField
-              field={field}
-              value={getValues(field.name)}
-              onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-                if (field.type === 'file' && 'files' in e.target && e.target.files) {
-                  setValue(field.name, e.target.files[0], { shouldValidate: true });
-                } else if (field.type === 'checkbox') {
-                  setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
-                } else {
-                  setValue(field.name, e.target.value, { shouldValidate: true });
-                }
-              })}
-              error={getNestedError(errors, field.name)}
-              togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
-              showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
-              existingFiles={existingFiles[field.name]}
-            />
-            {/* Show previously uploaded file name if file field and prop provided */}
-            {field.type === 'file' && existingFileName && (
-              <div className="mt-2 text-xs text-[var(--light-grey-color)]">
-                <span>Previously uploaded:</span> <span>{existingFileName}</span>
-              </div>
-            )}
-          </div>
-        ))}
-        
-        {isDynamic && dynamicFieldConfig.length > 0 && (
-          <div className="md:col-span-12 col-span-12">
-            <h4 className="text-sm font-semibold text-white mb-4">Dynamic Fields</h4>
-            {dynamicFieldConfig.map((field, index) => (
-              <FormField
-                key={`${dynamicFieldName}.${index}`}
-                field={field}
-                value={getValues(`${dynamicFieldName}.${index}.${field.name}`)}
-                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-                  const updatedFields = [...(getValues(dynamicFieldName) || [])];
-                  updatedFields[index] = {
-                    ...updatedFields[index],
-                    [field.name]: field.type === 'file' && 'files' in e.target && e.target.files
-                      ? e.target.files[0]
-                      : field.type === 'checkbox'
-                      ? (e as React.ChangeEvent<HTMLInputElement>).target.checked
-                      : e.target.value,
-                  };
-                  setValue(dynamicFieldName, updatedFields, { shouldValidate: true });
-                }}
-                error={getNestedError(errors, `${dynamicFieldName}.${index}.${field.name}`)}
-              />
-            ))}
-            <div className="space-y-4">
-              {dynamicFields.map((dynamicField, index) => (
-                <div
-                  key={dynamicField.id}
-                  className="bg-[var(--dark-color)] border border-[var(--light-blur-grey-color)] rounded-lg p-4 flex flex-col md:flex-row gap-4 items-center"
-                >
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                    {dynamicFieldConfig.map((dField) => (
-                      <FormField
-                        key={`${dynamicFieldName}.${index}.${dField.name}`}
-                        field={{ ...dField, name: `${dynamicFieldName}.${index}.${dField.name}` }}
-                        value={getValues(`${dynamicFieldName}.${index}.${dField.name}`)}
-                        onChange={(e) => {
-                          setValue(`${dynamicFieldName}.${index}.${dField.name}`, e.target.value, { shouldValidate: true });
-                        }}
-                        error={getNestedError(errors, `${dynamicFieldName}.${index}.${dField.name}`)}
-                      />
-                    ))}
-                  </div>
-                  <Button
-                    type="button"
-                    onClick={() => remove(index)}
-                    className="text-red-400 hover:text-red-300 p-2"
-                    disabled={dynamicFields.length === 1}
-                  >
-                    <FiTrash2 className="h-5 w-5" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-            <Button
+    <div>
+      {tabs && tabs.length > 0 && (
+        <div className="mb-4 flex gap-2">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
               type="button"
-              onClick={handleAddField}
-              className="mt-4 flex items-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
+              className={`px-4 py-2 rounded-t-lg font-semibold border-b-2 transition-colors duration-200 ${currentActiveTab === tab.id ? 'bg-[var(--light-purple-color)] text-[var(--white-color)] border-purple-300' : 'bg-[var(--light-purple-color)] text-[var(--white-color)] border-transparent'}`}
+              onClick={() => handleTabClick(tab.id)}
+              style={{ boxShadow: currentActiveTab === tab.id ? 'bg-[var(--light-purple-color)]' : undefined }}
             >
-              <FiPlus className="mr-1" />
-              Add Field
-            </Button>
-          </div>
-        )}
-      </div>
-      <div className="mt-8 flex justify-end">
-        <Button
-          type="submit"
-          className="flex items-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
-          disabled={isSubmitting}
-        >
-          <FiCheck className="mr-1" />
-          {isSubmitting ? 'Submitting...' : label}
-        </Button>
-      </div>
-    </motion.form>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <motion.form
+        onSubmit={handleButtonClick}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded-xl shadow-sm p-6"
+        data-testid={dataTestId}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          {(tabs ? tabConfig?.fields : fields)?.map((field) => (
+            ('type' in field && field.type === 'dynamic') ? null : (
+              <div key={field.name} className={field.className || 'md:col-span-6 col-span-12'}>
+                <FormField
+                  field={field}
+                  value={getValues(field.name)}
+                  onChange={onFieldChange[field.name] || ((e) => {
+                    setValue(field.name, e.target.value, { shouldValidate: true });
+                  })}
+                  error={getNestedError(errors, field.name)}
+                  togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
+                  showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
+                  existingFiles={existingFiles[field.name]}
+                />
+                {field.type === 'file' && existingFileName && (
+                  <div className="mt-2 text-xs text-[var(--light-grey-color)]">
+                    <span>Previously uploaded:</span> <span>{existingFileName}</span>
+                  </div>
+                )}
+              </div>
+            )
+          ))}
+          {isDynamicToUse && dynamicFieldConfigToUse.length > 0 && (
+            <div className="md:col-span-12 col-span-12">
+              <h4 className="text-sm font-semibold text-white mb-4">
+                {dynamicFieldNameToUse === 'features' ? 'Features' : 'Dynamic Fields'}
+              </h4>
+              <div className="space-y-4">
+                {dynamicFields.map((dynamicField, index) => (
+                  <div
+                    key={dynamicField.id}
+                    className="bg-[var(--dark-color)] border border-[var(--light-blur-grey-color)] rounded-lg p-4 flex flex-col md:flex-row gap-4 items-center"
+                  >
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                      {dynamicFieldConfigToUse.map((dField) => {
+                        const fieldPath = `${dynamicFieldNameToUse}.${index}.${dField.name}`;
+                        return (
+                          <FormField
+                            key={fieldPath}
+                            field={{ ...dField, name: fieldPath }}
+                            value={getValues(fieldPath)}
+                            onChange={handleDynamicFieldChange(index, dField.name)}
+                            error={getNestedError(errors, fieldPath)}
+                          />
+                        );
+                      })}
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => handleRemoveField(index)}
+                      className="text-red-400 hover:text-red-300 p-2"
+                    >
+                      <FiTrash2 className="h-5 w-5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <Button
+                type="button"
+                onClick={handleAddField}
+                className="mt-4 flex items-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
+                disabled={!canAddNewField()}
+              >
+                <FiPlus className="mr-1" />
+                Add {dynamicFieldNameToUse === 'features' ? 'Feature' : 'Field'}
+              </Button>
+            </div>
+          )}
+        </div>
+        <div className="mt-8 flex justify-end">
+          <Button
+            type="submit"
+            className="flex items-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
+            disabled={isSubmitting}
+          >
+            <FiCheck className="mr-1" />
+            {isSubmitting ? 'Submitting...' : label}
+          </Button>
+        </div>
+      </motion.form>
+    </div>
   );
 };
 
