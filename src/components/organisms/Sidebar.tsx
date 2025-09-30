@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import BAZButton from "../atoms/BAZ-Button";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { IoGrid } from "react-icons/io5";
+import { TbCategoryPlus } from "react-icons/tb";
 import { RiListIndefinite ,RiAdvertisementFill,RiShieldUserFill} from "react-icons/ri";
 import { MdSettings } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
@@ -35,6 +36,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
   const navItems = [
     { icon: <IoGrid />, text: "Dashboard", path: "/", special: true },
+    { icon: <TbCategoryPlus />, text: "Category", path: "/category", special: true },
+
     { icon: <RiShieldUserFill />, text: "Agency", path: "/agency", special: true },
     { icon: <RiAdvertisementFill />, text: "Banners", path: "#",
       children: [
@@ -42,7 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "About Page", path: "/banner/about" },
       ]
     },
-    { icon: <BsUiChecks />, text: "Site Setting", path: "#",
+    {
+      icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
         { icon: <RiListIndefinite />, text: "Config", path: "/config" },
@@ -50,7 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
       ]
     },
-    { icon: <MdSettings />, text: "Setting", path: "#",
+    {
+      icon: <MdSettings />, text: "Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "General Settings", path: "/settings/general" },
         { icon: <RiListIndefinite />, text: "Contact Info", path: "/settings/contact" },
@@ -59,12 +64,14 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "OG Configuration", path: "/settings/og" },
       ]
     },
-    { icon: <FaTrashCan />, text: "Trash", path: "#",
+    {
+      icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "Agency", path: "/trash/agency" },
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
+        { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
         { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
       ]
     },
@@ -143,7 +150,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                 </li>
               );
             }
-
             return (
               <li key={idx} className="flex flex-col justify-center items-center">
                 {collapsed ? (

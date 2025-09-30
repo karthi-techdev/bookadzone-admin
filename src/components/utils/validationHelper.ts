@@ -28,6 +28,8 @@ export class ValidationHelper {
     return null;
   }
   static isRequired(value: any, field: string): ValidationError | null {
+    console.log(">>>?>?>>?>",field,value);
+    
     if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) {
       const capField = ValidationHelper.capitalize(field);
       return { field, message: `${capField} is required` };
@@ -91,6 +93,17 @@ export class ValidationHelper {
   static validate(rules: (ValidationError | null)[]): ValidationError[] {
     return rules.filter((error): error is ValidationError => error !== null);
   }
+
+
+  static getFileType = (photo: string | File | (string | File)[] | undefined, filePath: string | undefined): 'image' | 'pdf' | 'other' => {
+    if (!filePath) return 'other';
+    const ext = filePath.split('.').pop()?.toLowerCase();
+    if (!ext) return 'other';
+    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
+    if (['pdf'].includes(ext)) return 'pdf';
+    return 'other';
+  };
+
 }
 
 export default ValidationHelper;

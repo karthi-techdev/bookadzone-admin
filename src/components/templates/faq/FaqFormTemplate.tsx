@@ -119,6 +119,9 @@ const FaqFormTemplate: React.FC = () => {
   }, [id, fetchFaqById, reset, isInitialized]);
 
   const onSubmit = async (data: FaqFormData) => {
+
+     
+
     clearErrors();
 
     const trimmedData = {

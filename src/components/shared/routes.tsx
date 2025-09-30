@@ -14,6 +14,12 @@ const NewsLetterFormPage = lazy(() => import('../pages/newsLetter/NewsLetterForm
 const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
 
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+
+// Category
+const CategoryListPage = lazy(() => import('../pages/category/CategoryListPage'));
+const CategoryFormPage = lazy(() => import('../pages/category/CategoryFormPage'));
+const CategoryTrashListPage = lazy(() => import('../pages/trash/category/CategoryTrashListPage'));
+
 const FooterInfoListPage = lazy(() => import('../pages/footerinfo/FooterInfoListPage'));
 const FooterInfoFormPage = lazy(() => import('../pages/footerinfo/FooterInfoFormPage'));
 const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
@@ -173,6 +179,29 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Trash FooterInfo',
       component: <FaqTrashListPage />,
     },
+
+    // Category routes
+    {
+      path: '/category',
+      pageTitle: 'Category List',
+      component: <CategoryListPage />,
+    },
+     {
+      path: '/category/add',
+      pageTitle: ' Add Category ',
+      component: <CategoryFormPage />,
+    },
+    {
+      path: '/categorys/edit/:id',
+      pageTitle: 'Edit Category',
+      component: <CategoryFormPage />,
+    },
+     {
+      path: '/trash/categorys',
+      pageTitle: 'Trash Category',
+      component: <CategoryTrashListPage />,
+    },
+
     {
       path: '/trash/newsletter',
       pageTitle: 'Trash NewsLetterInfo',

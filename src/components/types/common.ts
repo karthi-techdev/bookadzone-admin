@@ -162,6 +162,18 @@ export interface FooterInfo {
   priority: number;
 };
 
+export interface Category {
+  length: number;
+  _id?: string;
+  name: string;
+  slug: string,
+  description: string;
+  photo: string | File;
+  isFeatured: boolean | undefined;
+  status?: boolean;
+  CategoryFields: { key: string; value: string }[];
+}
+
 export interface Config {
   _id?: string;
   name: string;

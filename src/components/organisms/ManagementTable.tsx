@@ -82,6 +82,9 @@ const ManagementTable = <T extends Record<string, any>>({
       animate="visible"
       className="bg-[var(--light-dark-color)] rounded-xl shadow-sm border border-[var(--light-blur-grey-color)] overflow-hidden"
     >
+
+
+      
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="text-left text-xs font-medium text-[var(--light-grey-color)] uppercase tracking-wider border-b border-[var(--light-blur-grey-color)]">

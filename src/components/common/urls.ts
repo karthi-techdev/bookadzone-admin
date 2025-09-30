@@ -65,6 +65,19 @@ const API = {
   restoreconfig: `${ROOTURL}configs/restore/`,
   permanentDeleteconfig: `${ROOTURL}configs/permanentDelete/`,
 
+
+
+  // Category endpoints
+  addcategory: `${ROOTURL}category/`,
+  listcategory: `${ROOTURL}category/`,
+  getcategorybyId: `${ROOTURL}category/getcategoryById/`,
+  updatecategory: `${ROOTURL}category/updatecategory/`,
+  deletecategory: `${ROOTURL}category/softDeletecategory/`,
+  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,
+  trashcategorylist: `${ROOTURL}category/trash`,
+  restorecategory: `${ROOTURL}category/restore/`,
+  permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
+  
   //Banner Management endpoints
   getBanner: `${ROOTURL}banners/`,
   updateBanner: `${ROOTURL}banners/`,
