@@ -223,7 +223,7 @@ const BlogCategoryFormTemplate: React.FC = () => {
           isSubmitting={isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
           data-testid="blogCategory-form"
-          onNameClick={{
+          onFieldChange={{
             name: handleFieldClick('name', 5),
             slug: handleFieldClick('slug', 3),
 
