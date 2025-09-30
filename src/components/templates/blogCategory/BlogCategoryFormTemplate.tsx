@@ -143,7 +143,8 @@ const BlogCategoryFormTemplate: React.FC = () => {
         'Status',
         ['active', 'inactive']
       ),
-     
+
+
     ]);
 
     if (validationErrors.length > 0) {
