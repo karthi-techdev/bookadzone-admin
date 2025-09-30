@@ -234,6 +234,12 @@ const onSubmit = async (data: CategoryFormData) => {
           isSubmitting={methods.formState.isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
           data-testid="category-form"
+            existingFiles={{
+            agencyLogo: existingAgencyData?.agencyLogo ?? '',
+            photo: existingAgencyData?.photo ?? '',
+            uploadIdProof: existingAgencyData?.uploadIdProof ?? '',
+            uploadBusinessProof: existingAgencyData?.uploadBusinessProof ?? '',
+          }}
           onFieldChange={{
             name: handleFieldChange('name', 5),
             slug: handleFieldChange('slug', 5),

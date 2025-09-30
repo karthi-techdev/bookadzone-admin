@@ -13,6 +13,7 @@ export const aboutBannerFourTitleField = {
   name: 'aboutBannerFourTitle',
   label: 'Title',
   type: 'text',
+  className: 'md:col-span-12',
 };
 export const aboutSubmenu1Fields = [
   { name: 'aboutSubmenu1Title', label: 'Title', type: 'text' },

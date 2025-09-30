@@ -10,6 +10,16 @@ const SETTINGS_ID = '68ad8844bfdf0cec7f623bc2';
 
 
 const API = {
+  // Agency endpoints
+  addAgency: `${ROOTURL}agencies/`,
+  listAgency: `${ROOTURL}agencies/`,
+  getAgency: `${ROOTURL}agencies/`, // Usage: getAgency + id
+  updateAgency: `${ROOTURL}agencies/`, // Usage: updateAgency + id
+  deleteAgency: `${ROOTURL}agencies/softDelete/`, // Usage: deleteAgency + id
+  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`, // Usage: toggleStatusAgency + id
+  trashAgencyList: `${ROOTURL}agencies/trash`,
+  restoreAgency: `${ROOTURL}agencies/restore/`, // Usage: restoreAgency + id
+  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, // Usage: permanentDeleteAgency + id
 
   // FAQ endpoints
   addfaq: `${ROOTURL}faqs/`,

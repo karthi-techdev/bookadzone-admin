@@ -34,7 +34,9 @@ const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
 const BannerPage = lazy(() => import('../pages/banner/HomeBannerPage'));
 const AboutBannerPage = lazy(() => import('../pages/banner/AboutBannerPage'));
-
+  const AgencyListPage = lazy(() => import('../pages/agency/AgencyListPage'));
+  const AgencyFormPage = lazy(() => import('../pages/agency/AgencyFormPage'));
+  const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -42,6 +44,7 @@ export interface RouteData {
 }
 
 export const routesData = (): RouteData[] => {
+
   const Routes: RouteData[] = [
     {
       path: '/banner/homepage',
@@ -83,6 +86,27 @@ export const routesData = (): RouteData[] => {
       path: '/faq',
       pageTitle: 'FAQ List',
       component: <FaqListPage />,
+    },
+    // Agency routes
+    {
+      path: '/agency',
+      pageTitle: 'Agency List',
+      component: <AgencyListPage />,
+    },
+    {
+      path: '/agency/add',
+      pageTitle: 'Add Agency',
+      component: <AgencyFormPage />,
+    },
+    {
+      path: '/agency/edit/:id',
+      pageTitle: 'Edit Agency',
+      component: <AgencyFormPage />,
+    },
+    {
+      path: '/trash/agency',
+      pageTitle: 'Agency Trash',
+      component: <AgencyTrashListPage />,
     },
     {
       path: '/faq/add',

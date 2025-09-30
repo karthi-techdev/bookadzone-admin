@@ -1,3 +1,51 @@
+export interface Agency {
+  _id?: string;
+  agencyName: string;
+  agencyLogo?: string | File;
+  name: string;
+  photo?: string | File;
+  position?: string;
+  yourEmail: string;
+  yourPhone: string;
+  companyEmail?: string;
+  companyPhone?: string;
+  companyRegistrationNumberGST?: string;
+  website?: string;
+  uploadIdProof?: string | File;
+  uploadBusinessProof?: string | File;
+  agencyAddress?: string;
+  agencyLocation?: string;
+  state?: string;
+  city?: string;
+  pincode?: string;
+  password: string;
+  status?: boolean;
+  priority?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AgencyInput {
+  agencyName: string;
+  agencyLogo?: string | File;
+  name: string;
+  photo?: string | File;
+  position?: string;
+  yourEmail: string;
+  yourPhone: string;
+  companyEmail?: string;
+  companyPhone?: string;
+  companyRegistrationNumberGST?: string;
+  website?: string;
+  uploadIdProof?: string | File;
+  uploadBusinessProof?: string | File;
+  agencyAddress?: string;
+  agencyLocation?: string;
+  state?: string;
+  city?: string;
+  pincode?: string;
+  password: string;
+}
 export interface BannerOne {
   title: string;
   highlightedText: string;
@@ -149,7 +197,6 @@ export type InputType =
   | 'state-select'
   | 'city-select'
   | 'composite'
-  | 'password'
   | 'array'
   | 'dynamic';
 

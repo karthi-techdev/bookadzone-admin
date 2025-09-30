@@ -1,12 +1,12 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import FooterListTemplate from '../FooterInfoListTemplate';
-import { useFooterStore } from '../../../stores/FooterInfoStore';
+import FooterInfoTrashListTemplate from '../FooterInfoTrashListTemplate';
+import { useFooterStore } from '../../../../stores/FooterInfoStore';
 import { BrowserRouter } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
-jest.mock('../../../stores/FooterInfoStore');
+jest.mock('../../../../stores/FooterInfoStore');
 jest.mock('react-toastify', () => ({ toast: { error: jest.fn() }, ToastContainer: () => <div /> }));
 jest.mock('sweetalert2', () => ({ fire: jest.fn() }));
 
@@ -16,20 +16,21 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-describe('FooterListTemplate', () => {
-  const mockFetchFooters = jest.fn();
-  const mockDeleteFooter = jest.fn();
+describe('FooterInfoTrashListTemplate', () => {
+  const mockFetchTrashFooters = jest.fn();
+  const mockRestoreFooterInfo = jest.fn();
+  const mockDeleteFooterInfoPermanently = jest.fn();
   const defaultFooters = [
     {
       _id: '1',
-      description: 'Footer 1',
+      description: 'Trash Footer 1',
       socialmedia: 'Facebook',
       logo: 'logo1.png',
       status: true,
     },
     {
       _id: '2',
-      description: 'Footer 2',
+      description: 'Trash Footer 2',
       socialmedia: 'Twitter',
       logo: 'logo2.png',
       status: false,
@@ -41,8 +42,9 @@ describe('FooterListTemplate', () => {
     jest.clearAllMocks();
     ((useFooterStore as unknown) as jest.Mock).mockReturnValue({
       footers: defaultFooters,
-      fetchFooters: mockFetchFooters,
-      deleteFooter: mockDeleteFooter,
+      fetchTrashFooters: mockFetchTrashFooters,
+      restoreFooterInfo: mockRestoreFooterInfo,
+      deleteFooterInfoPermanently: mockDeleteFooterInfoPermanently,
       loading: false,
       error: '',
       stats: defaultStats,
@@ -52,17 +54,16 @@ describe('FooterListTemplate', () => {
   function renderWithRouter() {
     return render(
       <BrowserRouter>
-        <FooterListTemplate />
+        <FooterInfoTrashListTemplate />
       </BrowserRouter>
     );
   }
 
-  it('renders table header and footers', () => {
-  renderWithRouter();
-  // There are multiple 'Footer' elements (header and breadcrumb), so use getAllByText
-  expect(screen.getAllByText('Footer').length).toBeGreaterThan(0);
-  expect(screen.getByText('Footer 1')).toBeInTheDocument();
-  expect(screen.getByText('Footer 2')).toBeInTheDocument();
+  it('renders table header and trash footers', () => {
+    renderWithRouter();
+    expect(screen.getAllByText('Footer Info').length).toBeGreaterThan(0);
+    expect(screen.getByText('Trash Footer 1')).toBeInTheDocument();
+    expect(screen.getByText('Trash Footer 2')).toBeInTheDocument();
   });
 
   it('shows loader when loading', () => {
@@ -71,7 +72,6 @@ describe('FooterListTemplate', () => {
       loading: true,
     });
     renderWithRouter();
-    // Loader is a custom component, check for its test id or fallback to class
     expect(screen.getByTestId('baz-loader')).toBeInTheDocument();
   });
 
@@ -84,36 +84,34 @@ describe('FooterListTemplate', () => {
     expect(toast.error).toHaveBeenCalledWith('Test error', expect.any(Object));
   });
 
-  it('filters footers by search term', async () => {
+  it('filters trash footers by search term', () => {
     renderWithRouter();
     const searchInput = screen.getByPlaceholderText(/search/i);
-    fireEvent.change(searchInput, { target: { value: 'Footer 1' } });
-    expect(screen.getByText('Footer 1')).toBeInTheDocument();
-    expect(screen.queryByText('Footer 2')).not.toBeInTheDocument();
+    fireEvent.change(searchInput, { target: { value: 'Trash Footer 1' } });
+    expect(screen.getByText('Trash Footer 1')).toBeInTheDocument();
+    expect(screen.queryByText('Trash Footer 2')).not.toBeInTheDocument();
   });
 
-  it('navigates to add page on add button click', () => {
-  renderWithRouter();
-  // The add button is a link styled as a button
-  const addLink = screen.getByRole('link', { name: /add/i });
-  expect(addLink).toHaveAttribute('href', '/footerinfo/add');
-  });
-
-  it('navigates to edit page on edit', () => {
+  it('calls restoreFooterInfo and shows Swal on restore', async () => {
+    (Swal.fire as jest.Mock).mockResolvedValueOnce({ isConfirmed: true });
     renderWithRouter();
-    const editButtons = screen.getAllByRole('button', { name: /edit/i });
-    fireEvent.click(editButtons[0]);
-    expect(mockNavigate).toHaveBeenCalledWith('/footerinfo/edit/1');
+    const restoreButtons = screen.getAllByRole('button', { name: /restore/i });
+    fireEvent.click(restoreButtons[0]);
+    await waitFor(() => {
+      expect(Swal.fire).toHaveBeenCalled();
+      expect(mockRestoreFooterInfo).toHaveBeenCalledWith('1');
+    });
   });
 
-  it('calls deleteFooter and shows Swal on delete', async () => {
-    (Swal.fire as jest.Mock).mockResolvedValue({ isConfirmed: true });
+  it('calls deleteFooterInfoPermanently and shows Swal on permanent delete', async () => {
+    (Swal.fire as jest.Mock).mockResolvedValueOnce({ isConfirmed: true });
     renderWithRouter();
-    const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
+    // The button label is 'Permanent Delete'
+    const deleteButtons = screen.getAllByRole('button', { name: /permanent delete/i });
     fireEvent.click(deleteButtons[0]);
     await waitFor(() => {
       expect(Swal.fire).toHaveBeenCalled();
-      expect(mockDeleteFooter).toHaveBeenCalledWith('1');
+      expect(mockDeleteFooterInfoPermanently).toHaveBeenCalledWith('1');
     });
   });
 

@@ -57,7 +57,7 @@ const aboutTabs: TabConfig[] = [
   {
     id: 3,
     label: 'Banner Three',
-    fields: [...aboutSubmenu3Fields, aboutSmallBoxDynamicField],
+    fields: [...aboutSubmenu3Fields],
     isDynamic: true,
     dynamicFieldName: 'aboutSmallBoxes',
     dynamicFieldConfig: aboutSmallBoxDynamicField.config,
@@ -66,7 +66,7 @@ const aboutTabs: TabConfig[] = [
   {
     id: 4,
     label: 'Banner Four',
-    fields: [aboutBannerFourTitleField, aboutBannerFourDynamicField],
+    fields: [aboutBannerFourTitleField],
     isDynamic: true,
     dynamicFieldName: 'aboutBannerFourHistory',
     dynamicFieldConfig: aboutBannerFourDynamicField.config,
@@ -306,6 +306,13 @@ const AboutBannertTemplate: React.FC = () => {
             aboutSubmenu1Images: handleImageFieldChange('aboutSubmenu1Images', 'aboutSubmenu1RemovedImages'),
             aboutSubmenu2Images: handleImageFieldChange('aboutSubmenu2Images', 'aboutSubmenu2RemovedImages'),
           }}
+          dynamicSectionLabel={
+            activeTab === 3
+              ? aboutSmallBoxDynamicField.label
+              : activeTab === 4
+              ? aboutBannerFourDynamicField.label
+              : undefined
+          }
         />
       </FormProvider>
     </div>
