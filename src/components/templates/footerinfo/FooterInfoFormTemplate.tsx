@@ -17,7 +17,6 @@ type FooterFormData = {
   google?: string;
   appstore?: string;
   status?: boolean;
-  priority: number;
 };
 
 const getNestedError = (errors: any, path: string): any => {
@@ -50,33 +49,28 @@ const FooterFormTemplate: React.FC = () => {
       google: '',
       appstore: '',
       status: true,
-      priority: 1,
     },
     mode: 'onSubmit',
   });
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
 
-  const handleFieldChange = (fieldName: keyof FooterFormData, minLengthValue?: number, maxValue?: number) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  const handleFieldChange = (fieldName: keyof FooterFormData, minLengthValue?: number) => (
+    e: { target: { name: string; value: any; files?: FileList; checked?: boolean } }
   ) => {
-    let value: any = fieldName === 'logo' && 'files' in e.target && e.target.files ? e.target.files[0] : e.target.value;
+    let value: any = fieldName === 'logo' && e.target.files ? e.target.files[0] : e.target.value;
     if (fieldName === 'logo') {
       console.log(`Logo field changed:`, {
         value: value instanceof File ? { name: value.name, size: value.size, type: value.type } : value,
         isFile: value instanceof File,
       });
     }
-    if (fieldName === 'status' && 'checked' in e.target) {
+    if (fieldName === 'status' && typeof e.target.checked !== 'undefined') {
       value = e.target.checked;
       console.log(`Status field changed:`, { value });
-    } else if (fieldName === 'priority') {
-      value = parseInt(e.target.value, 10) || 1;
-      console.log(`Priority field changed:`, { value });
     }
 
     const validations = [];
-    
     // Logo validation - only required for new entries (not updates)
     if (fieldName === 'logo') {
       // For new entries, logo file is required
@@ -100,12 +94,9 @@ const FooterFormTemplate: React.FC = () => {
       // Other field validations
       validations.push(ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1)));
     }
-    
+
     if (minLengthValue && typeof value === 'string') {
       validations.push(ValidationHelper.minLength(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), minLengthValue));
-    }
-    if (maxValue && typeof value === 'number') {
-      validations.push(ValidationHelper.maxValue(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), maxValue));
     }
 
     const errorsArr = ValidationHelper.validate(validations.filter(Boolean));
@@ -139,7 +130,6 @@ const FooterFormTemplate: React.FC = () => {
               google: footer.google || '',
               appstore: footer.appstore || '',
               status: typeof footer.status === 'boolean' ? footer.status : footer.status === 'active',
-              priority: footer.priority || 1,
             });
             setIsInitialized(true);
           } else {
@@ -189,13 +179,12 @@ const FooterFormTemplate: React.FC = () => {
     if (data.google) formData.append('google', data.google.trim());
     if (data.appstore) formData.append('appstore', data.appstore.trim());
     formData.append('status', data.status ? 'active' : 'inactive');
-    formData.append('priority', data.priority.toString());
+
 
     
 
 
     const validationErrors = ValidationHelper.validate([
-   
       !id && !(data.logo instanceof File) ? ValidationHelper.isRequired(data.logo, 'Logo') : null,
       ValidationHelper.isRequired(data.description, 'Description'),
       data.description ? ValidationHelper.minLength(data.description, 'Description', 5) : null,
@@ -208,8 +197,6 @@ const FooterFormTemplate: React.FC = () => {
       data.google ? ValidationHelper.maxLength(data.google, 'Google', 500) : null,
       data.appstore ? ValidationHelper.minLength(data.appstore, 'App Store', 1) : null,
       data.appstore ? ValidationHelper.maxLength(data.appstore, 'App Store', 500) : null,
-      ValidationHelper.isRequired(data.priority, 'Priority'),
-      ValidationHelper.maxValue(data.priority, 'Priority', 100),
       ValidationHelper.isValidEnum(
         data.status ? 'active' : 'inactive',
         'Status',
@@ -220,7 +207,7 @@ const FooterFormTemplate: React.FC = () => {
     if (validationErrors.length > 0) {
       console.log(`Form validation errors:`, validationErrors);
       validationErrors.forEach((err) => {
-        const fieldName = err.field.toLowerCase() as keyof FooterFormData;
+          const fieldName = err.field.toLowerCase() as keyof FooterFormData;
         setError(fieldName, {
           type: 'manual',
           message: err.message,
@@ -314,7 +301,6 @@ const FooterFormTemplate: React.FC = () => {
             google: handleFieldChange('google', 1),
             appstore: handleFieldChange('appstore', 1),
             status: handleFieldChange('status'),
-            priority: handleFieldChange('priority', undefined, 100),
           }}
         />
         {hasErrors() && (

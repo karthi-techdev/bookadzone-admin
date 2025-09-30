@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>9/11</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">31.25% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/16</span>
+                <span class='fraction'>10/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/4</span>
+                <span class='fraction'>3/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.81% </span>
+                <span class="strong">90.9% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/11</span>
+                <span class='fraction'>10/11</span>
             </div>
         
             
@@ -189,10 +189,10 @@
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -216,7 +216,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -228,9 +228,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -276,7 +276,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -287,7 +287,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -313,7 +313,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
+<span class="cline-any cline-yes">5x</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
 import { FiSearch, FiPlus, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -370,10 +370,10 @@ const TableHeader: React.FC&lt;TableHeaderProps&gt; = ({
                 &lt;FiChevronRight className="mx-1 text-[var(--light-grey-color)] text-sm" /&gt;
               &lt;/li&gt;
               {isTrashView ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >                &lt;&gt;</span>
+                &lt;&gt;
                   &lt;li className="flex items-center"&gt;
-                    &lt;Link to={`/${module || 'faq'}`} className="text-[var(--light-grey-color)] hover:text-white font-medium"&gt;
-                      {module ? module.charAt(0).toUpperCase() + module.slice(1) : 'FAQ'}
+                    &lt;Link to={`/${module || <span class="branch-1 cbranch-no" title="branch not covered" >'faq'}</span>`} className="text-[var(--light-grey-color)] hover:text-white font-medium"&gt;
+                      {module ? module.charAt(0).toUpperCase() + module.slice(1) : <span class="branch-1 cbranch-no" title="branch not covered" >'FAQ'}</span>
                     &lt;/Link&gt;
                   &lt;/li&gt;
                   &lt;li className="flex items-center"&gt;
@@ -405,14 +405,14 @@ const TableHeader: React.FC&lt;TableHeaderProps&gt; = ({
             /&gt;
           &lt;/div&gt;
           {statFilters.length &gt; 0 &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;div className="relative"&gt;</span>
+            &lt;div className="relative"&gt;
               &lt;select
                 className="appearance-none bg-[var(--dark-color)] border border-[var(--light-blur-grey-color)] rounded-lg pl-3 pr-10 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[var(--puprle-color)] focus:border-transparent"
                 value={selectedFilterId}
                 onChange={<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >onSelectFilter?.(e.target.value)}</span>
               &gt;
-                {statFilters.map(<span class="fstat-no" title="function not covered" >(f</span>ilter) =&gt; (
-<span class="cstat-no" title="statement not covered" >                  &lt;option key={filter.id} v</span>alue={filter.id}&gt;
+                {statFilters.map((filter) =&gt; (
+                  &lt;option key={filter.id} value={filter.id}&gt;
                     {filter.title}
                   &lt;/option&gt;
                 ))}
@@ -423,7 +423,7 @@ const TableHeader: React.FC&lt;TableHeaderProps&gt; = ({
             &lt;/div&gt;
           )}
           {addButtonLink &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}&gt;</span>
+            &lt;motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}&gt;
               &lt;Link
                 to={addButtonLink}
                 className="flex items-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
@@ -445,11 +445,7 @@ export default TableHeader;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-<<<<<<< HEAD
-                at 2025-09-29T10:43:16.801Z
-=======
-                at 2025-09-29T10:30:41.254Z
->>>>>>> 23f5a28e370edcc10e4d8e1501dee020774b9e9b
+                at 2025-09-30T17:50:10.681Z
             </div>
         <script src="../prettify.js"></script>
         <script>
