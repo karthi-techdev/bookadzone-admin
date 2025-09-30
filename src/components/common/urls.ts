@@ -1,7 +1,7 @@
 const LIVE = false;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
-const LIVEURL = LIVE ? SITEURL : 'http://localhost:5001/';
+const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
 const ROOTURL = `${LIVEURL}api/v1/`;
 const FILEURL = LIVEURL;
 const SETTINGS_ID = '68ad8844bfdf0cec7f623bc2';
@@ -22,6 +22,17 @@ const API = {
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
   
+    // NewsLetter endpoints
+  addNewsLetter: `${ROOTURL}newsletters/`,
+  listNewsLetter: `${ROOTURL}newsLetters/`,
+  getNewsLetter: `${ROOTURL}newsletters/getNewsLetterById/`,
+  updateNewsLetter: `${ROOTURL}newsletters/updateNewsLetter/`,
+  deleteNewsLetter: `${ROOTURL}newsletters/softDeleteNewsLetter/`,
+  toggleStatusNewsLetter: `${ROOTURL}newsletters/togglestatus/`,
+  trashNewsLetterList: `${ROOTURL}newsletters/trash`,
+  restoreNewsLetter: `${ROOTURL}newsletters/restore/`,
+  permanentDeleteNewsLetter: `${ROOTURL}newsletters/permanentDelete/`,
+
 // Footer endpoints
   addfooterinfo: `${ROOTURL}footerinfo/`,
   listfooterinfo: `${ROOTURL}footerinfo/`,
@@ -56,11 +67,17 @@ const API = {
   trashcategorylist: `${ROOTURL}category/trash`,
   restorecategory: `${ROOTURL}category/restore/`,
   permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
+  
+  //Banner Management endpoints
+  getBanner: `${ROOTURL}banners/`,
+  updateBanner: `${ROOTURL}banners/`,
 
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,
 
+  // Template Images
+  templateImage:`${ROOTURL}editer/image`
 };
 
 const ImportedURL = { API, LIVEURL, FILEURL, SETTINGS_ID };

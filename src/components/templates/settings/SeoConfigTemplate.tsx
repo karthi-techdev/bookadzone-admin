@@ -1,4 +1,6 @@
+
 import React from 'react';
+import ValidationHelper from '../../utils/validationHelper';
 import { useForm, FormProvider } from 'react-hook-form';
 import { toast, ToastContainer } from 'react-toastify';
 import { useSettingsStore } from '../../stores/settingsStore';
@@ -6,14 +8,18 @@ import { seoConfigFields } from '../../utils/fields/seoConfigFields';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
 
+type SeoConfigFormValues = {
+  [key: string]: any;
+};
+
 const SeoConfigTemplate: React.FC = () => {
-  const methods = useForm({ defaultValues: {}, mode: 'onSubmit' });
-  const { handleSubmit, reset, clearErrors, formState: { isSubmitting } } = methods;
+  const methods = useForm<SeoConfigFormValues>({ defaultValues: {}, mode: 'onSubmit' });
+  const { handleSubmit, reset, setError, clearErrors, setValue, formState: { isSubmitting } } = methods;
 
   const fetchSettings = useSettingsStore(state => state.fetchSettings);
   const settings = useSettingsStore(state => state.settings);
   const loading = useSettingsStore(state => state.loading);
-  const error = useSettingsStore(state => state.error);
+  // Removed unused error variable
   const updateSettings = useSettingsStore(state => state.updateSettings);
 
   React.useEffect(() => {
@@ -26,8 +32,71 @@ const SeoConfigTemplate: React.FC = () => {
     }
   }, [settings, reset]);
 
+  // Validation logic for a single field
+  const validateField = (field: any, value: any) => {
+    let error = null;
+    if (field.required) {
+      if (field.type === 'file') {
+        if (value === '__invalid_file_type__') {
+          return { field: field.name, message: `${field.label} must be of type: ${field.accept}` };
+        }
+        if (settings?.seo?.[field.name as keyof typeof settings.seo]) {
+          if (!value) return null;
+        }
+        error = ValidationHelper.isRequired(value, field.name);
+        if (!error && field.accept) {
+          error = ValidationHelper.isValidFileType(value, field.name, field.accept);
+        }
+      } else {
+        error = ValidationHelper.isRequired(value, field.name);
+      }
+    }
+    if (!error && field.minLength) {
+      error = ValidationHelper.minLength(value, field.name, field.minLength);
+    }
+    if (!error && field.maxLength) {
+      error = ValidationHelper.maxLength(value, field.name, field.maxLength);
+    }
+    if (!error && field.type === 'email') {
+      error = ValidationHelper.isValidEmail(value, field.name);
+    }
+    if (!error && Array.isArray(field.options)) {
+      const allowedValues = field.options.map((opt: any) => opt.value);
+      error = ValidationHelper.isValidEnum(value, field.name, allowedValues);
+    }
+    return error;
+  };
+
+  // Handle field change and validate
+  const handleFieldChange = (field: any, value: any) => {
+    setValue(field.name, value, { shouldValidate: true });
+    const error = validateField(field, value);
+    if (error) {
+      setError(field.name, { type: 'manual', message: error.message });
+    } else {
+      clearErrors(field.name);
+    }
+  };
+
   const onSubmit = async (formData: any) => {
     clearErrors();
+    // Collect validation errors using ValidationHelper
+    const validationErrors = seoConfigFields.map(field => {
+      const value = formData[field.name];
+      return validateField(field, value);
+    }).filter(e => e);
+
+    if (validationErrors.length > 0) {
+      // Set errors in react-hook-form
+      validationErrors.forEach(err => {
+        if (err) {
+          setError(err.field as any, { type: 'manual', message: err.message });
+        }
+      });
+      toast.error('Please fix validation errors');
+      return;
+    }
+
     try {
       await updateSettings({ seo: formData });
       toast.success('SEO configuration updated successfully');
@@ -49,6 +118,12 @@ const SeoConfigTemplate: React.FC = () => {
           isSubmitting={isSubmitting || loading}
           onSubmit={handleSubmit(onSubmit)}
           data-testid="seo-config-form"
+          onFieldChange={Object.fromEntries(
+            seoConfigFields.map(field => [
+              field.name,
+              (e: { target: { value: any } }) => handleFieldChange(field, e.target.value)
+            ])
+          )}
         />
       </FormProvider>
     </div>

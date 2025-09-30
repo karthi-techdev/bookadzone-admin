@@ -38,7 +38,7 @@ export const CategoryFields: FieldConfig[] = [
     name: 'isFeatured',
     label: 'Is Featured.',
     type: 'checkbox',
-    required: true,
+    required: false,
     className: 'md:col-span-12',
     placeholder: 'Pick the Checkbox...',
   }

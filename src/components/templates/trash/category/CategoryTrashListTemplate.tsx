@@ -79,7 +79,7 @@ const CategoryTrashListTemplate: React.FC = () => {
   const statFilters: StatFilter[] = [
     {
       id: 'total',
-      title: 'All CATEGORYs',
+      title: 'All Categories',
       value: stats.total,
       trend: 'up',
       change: '2%',
@@ -87,7 +87,7 @@ const CategoryTrashListTemplate: React.FC = () => {
     },
     {
       id: 'active',
-      title: 'Active CATEGORYs',
+      title: 'Active Categories',
       value: stats.active,
       trend: 'up',
       change: '1%',
@@ -95,7 +95,7 @@ const CategoryTrashListTemplate: React.FC = () => {
     },
     {
       id: 'inactive',
-      title: 'Inactive CATEGORYs',
+      title: 'Inactive Categories',
       value: stats.inactive,
       trend: 'down',
       change: '1%',
@@ -189,7 +189,7 @@ const CategoryTrashListTemplate: React.FC = () => {
           if (isBase64) {
             imageUrl = value;
           } else {
-            imageUrl = `${ImportedURL.FILEURL}uploads/category/logo/${value}`;
+            imageUrl = `${ImportedURL.FILEURL}uploads/categorys/photo/${value}`;
           }
           console.log(`Rendering photo image: ${isBase64 ? 'base64' : 'URL'} - ${imageUrl.substring(0, 50)}...`);
           return (
@@ -216,7 +216,7 @@ const CategoryTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Category"
+        managementName="Categories"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         statFilters={statFilters}
@@ -225,7 +225,7 @@ const CategoryTrashListTemplate: React.FC = () => {
           setSelectedFilter(id as 'total' | 'active' | 'inactive');
           setCurrentPage(1);
         }}
-        module="category"
+        module="categories"
         isTrashView={true}
       />
 
@@ -237,7 +237,7 @@ const CategoryTrashListTemplate: React.FC = () => {
         onPermanentDelete={handlePermanentDelete}
         currentPage={currentPage}
         limit={itemsPerPage}
-        module="category"
+        module="categories"
       />
 
       {filteredTotalPages > 1 && (

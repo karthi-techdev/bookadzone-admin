@@ -2,8 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import BAZButton from "../atoms/BAZ-Button";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { IoGrid } from "react-icons/io5";
+import { RiListIndefinite, RiAdvertisementFill } from "react-icons/ri";
 import { TbCategoryPlus } from "react-icons/tb";
-import { RiListIndefinite } from "react-icons/ri";
 import { MdSettings } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
 import { FaTrashCan } from "react-icons/fa6";
@@ -36,36 +36,43 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
   const navItems = [
     { icon: <IoGrid />, text: "Dashboard", path: "/", special: true },
-     { icon: <TbCategoryPlus />, text: "Category", path: "/category", special: true },
+    { icon: <TbCategoryPlus />, text: "Category", path: "/category", special: true },
     {
-      icon: < BsUiChecks />, text: "Site Setting", path: "#",
+      icon: <RiAdvertisementFill />, text: "Banners", path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "Home Page", path: "/banner/homepage" },
+        { icon: <RiListIndefinite />, text: "About Page", path: "/banner/about" },
+      ]
+    },
+    {
+      icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
         { icon: <RiListIndefinite />, text: "Config", path: "/config" },
+        { icon: <RiListIndefinite />, text: "NewsLetter", path: "/newsletter" },
+        { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
       ]
     },
     {
       icon: <MdSettings />, text: "Setting", path: "#",
       children: [
-        { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
-        { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
-        { icon: <RiListIndefinite />, text: "Config", path: "/config" },
         { icon: <RiListIndefinite />, text: "General Settings", path: "/settings/general" },
         { icon: <RiListIndefinite />, text: "Contact Info", path: "/settings/contact" },
         { icon: <RiListIndefinite />, text: "Email Configuration", path: "/settings/email" },
         { icon: <RiListIndefinite />, text: "SEO Configuration", path: "/settings/seo" },
         { icon: <RiListIndefinite />, text: "OG Configuration", path: "/settings/og" },
       ]
-     },
-    { icon: <FaTrashCan />, text: "Trash", path: "#",
+    },
+    {
+      icon: <FaTrashCan />, text: "Trash", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
         { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
-
+        { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
       ]
-     },
+    },
     // Example: Add more special items
     // { icon: <SomeIcon />, text: "User Management", path: "/users", special: true },
   ];

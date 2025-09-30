@@ -292,7 +292,7 @@ const FooterFormTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <FormHeader
-        managementName="Footer"
+         managementName="Footer"
         addButtonLink="/footer"
         type={id ? 'Edit' : 'Add'}
       />

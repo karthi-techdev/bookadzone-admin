@@ -14,7 +14,7 @@ type CategoryFormData = {
   slug: string;
   isFeatured?: boolean;
   description: string;
-  photo?: string | File | (string | File)[];
+  photo?: string | File ;
   // priority?: number; // Add this line if 'priority' is needed elsewhere in the form
 };
 

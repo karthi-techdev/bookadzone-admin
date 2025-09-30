@@ -1,3 +1,20 @@
+/* Hide vertical scrollbar in textarea */
+textarea::-webkit-scrollbar {
+  display: none;
+}
+textarea {
+  scrollbar-width: none; /* Firefox */
+}
+/* Hide spinner controls for number inputs (Tailwind compatible) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
 @import "tailwindcss";
 @import 'typeface-poppins';
 
