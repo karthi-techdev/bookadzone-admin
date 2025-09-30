@@ -51,7 +51,9 @@ test('renders with accept and multiple', () => {
 
 test('renders non-image file as link', () => {
   render(<BAZFileInput name="file" existingFiles="/doc.pdf" />);
-  expect(screen.getByText(/view doc.pdf/i)).toBeInTheDocument();
+  const link = screen.getByText('doc.pdf');
+  expect(link).toBeInTheDocument();
+  expect(link.tagName).toBe('A');
 });
 
 test('removes preview on trash button click', () => {

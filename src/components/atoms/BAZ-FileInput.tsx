@@ -275,6 +275,7 @@ const BAZFileInput: React.FC<FileInputProps> = ({
         <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-3">
           {previews.map((preview, index) => (
             <div key={`${preview.url}-${index}`} className="relative group">
+              
               {preview.isImage ? (
                 <img
                   src={preview.url}
@@ -288,10 +289,9 @@ const BAZFileInput: React.FC<FileInputProps> = ({
                   rel="noopener noreferrer"
                   className="text-xs text-[var(--puprle-color)] hover:text-[var(--puprle-color)]/90 underline"
                 >
-                  View {preview.name}
+                 {preview.name}
                 </a>
               )}
-              
               {/* Only show remove button for multiple uploads or if there are multiple files */}
               {(multiple || previews.length > 1) && (
                 <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 rounded">
@@ -304,9 +304,8 @@ const BAZFileInput: React.FC<FileInputProps> = ({
                   </button>
                 </div>
               )}
-              
               {preview.isExisting && (
-                <div className="absolute top-1 left-1 bg-[var(--puprle-color)] text-white text-xs px-1 rounded">
+                <div className="mb-1 bg-[var(--puprle-color)] text-white text-xs px-1 rounded inline-block">
                   Existing
                 </div>
               )}

@@ -1,5 +1,5 @@
 import { act } from 'react';
-import { useBannerStore } from './bannerStore';
+import { useBannerStore } from '../bannerStore';
 import axios from 'axios';
 
 jest.mock('axios');

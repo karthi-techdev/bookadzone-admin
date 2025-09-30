@@ -287,6 +287,7 @@ const HomeBannerTemplate: React.FC = () => {
               (e: { target: { value: any } }) => handleFieldChange(field, e.target.value)
             ]))
           )}
+           dynamicSectionLabel={activeTab === 2 ? 'Features' : undefined}
         />
       </FormProvider>
     </div>

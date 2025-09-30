@@ -43,6 +43,7 @@ interface ManagementFormProps {
   extraProps?: { togglePassword?: () => void; showPassword?: boolean };
   onTabChange?: (tabId: number) => void;
   activeTab?: number;
+  dynamicSectionLabel?: string;
 }
 
 const ManagementForm: React.FC<ManagementFormProps> = ({
@@ -67,6 +68,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   extraProps = {},
   onTabChange,
   activeTab: propActiveTab,
+  dynamicSectionLabel,
 }) => {
   const { control, formState: { errors }, getValues, setValue, register, watch } = useFormContext();
   const [isEditorOpen, setIsEditorOpen] = useState(false);
@@ -393,7 +395,9 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
           {isDynamicToUse && dynamicFieldConfigToUse.length > 0 && (
             <div className="md:col-span-12 col-span-12">
               <h4 className="text-sm font-semibold text-white mb-4">
-                {dynamicFieldNameToUse === 'features' ? 'Features' : 'Dynamic Fields'}
+                {dynamicSectionLabel
+                  ? dynamicSectionLabel
+                  : 'Dynamic Fields'}
               </h4>
               <div className="space-y-4">
                 {dynamicFields.map((dynamicField, index) => (
@@ -432,7 +436,11 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                 disabled={!canAddNewField()}
               >
                 <FiPlus className="mr-1" />
-                Add {dynamicFieldNameToUse === 'features' ? 'Feature' : 'Field'}
+                Add {dynamicFieldNameToUse === 'features'
+                  ? 'Feature'
+                  : dynamicFieldNameToUse === 'aboutSmallBoxes'
+                  ? 'Small Box'
+                  : 'Field'}
               </Button>
             </div>
           )}
