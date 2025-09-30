@@ -1,5 +1,5 @@
-import { lazy } from 'react';
 import type { ReactNode } from 'react';
+import { lazy } from 'react';
 
 const Dashboard = lazy(() => import('../pages/Dashboard'));
 const Properties = lazy(() => import('../pages/Properties'));
@@ -12,7 +12,16 @@ const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
 const BlogCategoryListPage=lazy(()=> import('../pages/blogCategory/BlogCaategoryListPage'))
 const BlogCategoryFormPage=lazy(()=>import ('../pages/blogCategory/BlogCategoryFormPage'))
+const BlogCategoryTrashListPage=lazy(()=>import('../pages/trash/blogCategory/BlogTrashListPage'))
 
+const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
+const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
+const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
+const GeneralSettingsPage = lazy(() => import('../pages/settings/GeneralSettingsPage'));
+const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
+const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
+const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
+const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -65,37 +74,90 @@ export const routesData = (): RouteData[] => {
       component: <FaqFormPage />,
     },
     {
+     path: '/config',
+      pageTitle: 'Config List',
+      component: <ConfigListPage />,
+    },
+    {
+      path: '/config/add',
+      pageTitle: 'Add Config',
+      component: <ConfigFormPage />,
+    },
+    {
+      path: '/config/edit/:id',
+      pageTitle: 'Edit Config',
+      component: <ConfigFormPage />,
+    },
+    {
+      path: '/trash/config',
+      pageTitle: 'Trash Config',
+      component: <ConfigTrashListPage />,
+    },
+    {
       path: '/Login',
       pageTitle: 'Login',
       component: <Login />,
     },
     {
       path: '/trash/faq',
-      pageTitle: 'Trash FAQ',
+      pageTitle: 'Trash FooterInfo',
       component: <FaqTrashListPage />,
     },
 
 
     //Blog routes
     {
-      path: '/blog',
-      pageTitle: 'Blog List',
+      path: '/blogcategory',
+      pageTitle: 'Blog Category List',
       component: <BlogCategoryListPage />,
     },
     {
-      path: '/blog/add',
-      pageTitle: 'add Blog',
+      path: '/blogcategory/add',
+      pageTitle: 'add Blogcategory',
       component: <BlogCategoryFormPage />,
     },
+    {
+      path: '/blogcategory/edit/:id',
+      pageTitle: 'Edit Blogcategory',
+      component: <BlogCategoryFormPage />,
+    },
+    {
+      path: '/trash/blogcategory',
+      pageTitle: 'Trash blogcategory',
+      component: <BlogCategoryTrashListPage />,
+    },
+
     {
       path: '/Login',
       pageTitle: 'Login',
       component: <Login />,
     },
+    
+    // Settings routes
     {
-      path: '/trash/blog',
-      pageTitle: 'Trash Blog',
-      component: <BlogCategoryListPage />,
+      path: '/settings/general',
+      pageTitle: 'General Settings',
+      component: <GeneralSettingsPage />,
+    },
+    {
+      path: '/settings/contact',
+      pageTitle: 'Contact Info',
+      component: <ContactInfoPage />,
+    },
+    {
+      path: '/settings/email',
+      pageTitle: 'Email Configuration',
+      component: <EmailConfigPage />,
+    },
+    {
+      path: '/settings/seo',
+      pageTitle: 'SEO Configuration',
+      component: <SeoConfigPage />,
+    },
+    {
+      path: '/settings/og',
+      pageTitle: 'OG Configuration',
+      component: <OgConfigPage />,
     },
   ];
   return Routes;

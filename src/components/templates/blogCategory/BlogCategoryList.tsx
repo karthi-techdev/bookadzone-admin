@@ -24,7 +24,7 @@ interface StatFilter {
 const BlogCategoryListTemplate: React.FC =()=>{
   const navigate = useNavigate();
   const {
-    blog,
+    blogCategory,
     fetchBlog,
     deleteBlog,
     toggleStatusBlog,
@@ -32,10 +32,12 @@ const BlogCategoryListTemplate: React.FC =()=>{
     error,
     stats,
   }=useBlogCategoryStore();
+  console.log(blogCategory,"=======");
+  
   const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedFilter, setSelectedFilter] = useState<'total' | 'active' | 'inactive'>('total');
-    const itemsPerPage = 3;
+    const itemsPerPage = 4;
 
     const getTotalItems = () => {
     if (selectedFilter === 'active') return stats.active;
@@ -57,14 +59,16 @@ const BlogCategoryListTemplate: React.FC =()=>{
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  const searchedFaqs = blog.filter((blog) =>
-    blog.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+  const searchedBlogCategories = blogCategory.filter((blogCategory) =>
+    blogCategory.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    blogCategory.slug.toLowerCase().includes(searchTerm.toLowerCase())
+
   );
 
   const statFilters: StatFilter[] = [
     {
       id: 'total',
-      title: 'All Blog',
+      title: 'All BlogCategory',
       value: stats.total,
       trend: 'up',
       change: '2%',
@@ -72,7 +76,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
     },
     {
       id: 'active',
-      title: 'Active Blog',
+      title: 'Active BlogCategory',
       value: stats.active,
       trend: 'up',
       change: '1%',
@@ -80,7 +84,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
     },
     {
       id: 'inactive',
-      title: 'Inactive Blog',
+      title: 'Inactive BlogCategory',
       value: stats.inactive,
       trend: 'down',
       change: '1%',
@@ -88,10 +92,10 @@ const BlogCategoryListTemplate: React.FC =()=>{
     },
   ];
 
-  const handleDelete = (faq: BlogCategory) => {
+  const handleDelete = (BlogCategory: BlogCategory) => {
       Swal.fire({
         title: 'Are you sure?',
-        text: `You are about to delete "${faq.name}"`,
+        text: `You are about to delete "${BlogCategory.name}"`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: 'var(--puprle-color)',
@@ -99,10 +103,10 @@ const BlogCategoryListTemplate: React.FC =()=>{
         confirmButtonText: 'Yes, delete it!',
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await deleteBlog(faq._id!);
+          await deleteBlog(BlogCategory._id!);
   
-          const updatedLength = searchedFaqs.length - 1;
-          const newTotalItems = blog.length - 1;
+          const updatedLength = searchedBlogCategories.length - 1;
+          const newTotalItems = blogCategory.length - 1;
           const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
   
           // Adjust current page if necessary
@@ -112,7 +116,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
             await fetchBlog(currentPage, itemsPerPage, selectedFilter);
           }
   
-          Swal.fire('Deleted!', 'The Blog has been removed.', 'success');
+          Swal.fire('Deleted!', 'The BlogCategory has been removed.', 'success');
         }
       });
     };
@@ -123,7 +127,11 @@ const BlogCategoryListTemplate: React.FC =()=>{
           label: 'Name',
           render: (value) => truncate(value, 40),
         },
-        
+        {
+          key: 'slug',
+          label: 'Slug',
+          render: (value) => truncate(value, 40),
+        }
       ];
 
  
@@ -132,29 +140,29 @@ const BlogCategoryListTemplate: React.FC =()=>{
   return (
     <div className="p-6">
       <TableHeader
-        managementName="BLOG"
+        managementName="BlogCategory"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Add"
-        addButtonLink="/blog/add"
+        addButtonLink="/blogcategory/add"
         statFilters={statFilters}
         selectedFilterId={selectedFilter}
         onSelectFilter={(id) => {
           setSelectedFilter(id as 'total' | 'active' | 'inactive');
           setCurrentPage(1);
         }}
-        module="blog"
+        module="blogCategory"
       />
 
       <ManagementTable
-        data={searchedFaqs}
+        data={searchedBlogCategories}
         columns={columns}
-        onEdit={(row) => navigate(`/blog/edit/${row._id}`)}
+        onEdit={(row) => navigate(`/blogcategory/edit/${row._id}`)}
         onToggleStatus={(row) => toggleStatusBlog(row._id!)}
         onDelete={handleDelete}
         currentPage={currentPage}
         limit={itemsPerPage}
-                module="faq"
+        module="blogCategory"
 
       />
 

@@ -11,7 +11,7 @@ import ManagementTable from '../../../organisms/ManagementTable';
 import Loader from '../../../atoms/BAZ-Loader';
 import BAZPagination from '../../../atoms/BAZ-Pagination';
 
-import { useFaqStore } from '../../../stores/faqStore';
+import { useFaqStore } from '../../../stores/FaqStore';
 import type { ColumnConfig, Faq } from '../../../types/common';
 import { truncate } from '../../../utils/helper'
 
@@ -51,9 +51,9 @@ const FaqTrashListTemplate: React.FC = () => {
   const filteredTotalPages = Math.max(1, Math.ceil(getTotalItems() / itemsPerPage));
 
   // Fetch data on page or filter change
-    useEffect(() => {
-      fetchTrashFaqs(currentPage, itemsPerPage, selectedFilter);
-    }, [currentPage, selectedFilter, itemsPerPage, selectedFilter]);
+  useEffect(() => {
+    fetchTrashFaqs(currentPage, itemsPerPage, selectedFilter);
+  }, [currentPage, selectedFilter, itemsPerPage, selectedFilter]);
 
   // Show error toast
   useEffect(() => {
@@ -61,11 +61,11 @@ const FaqTrashListTemplate: React.FC = () => {
   }, [error]);
 
   // Handle pagination
-    const handlePageChange = (selectedItem: { selected: number }) => {
-      const newPage = selectedItem.selected + 1;
-      setCurrentPage(newPage);
-      fetchTrashFaqs(newPage, itemsPerPage, selectedFilter); // Fetch FAQs on page change
-    };
+  const handlePageChange = (selectedItem: { selected: number }) => {
+    const newPage = selectedItem.selected + 1;
+    setCurrentPage(newPage);
+    fetchTrashFaqs(newPage, itemsPerPage, selectedFilter); // Fetch FAQs on page change
+  };
 
   // Filter search term locally (after API filter is applied)
   const searchedFaqs = faqs.filter((faq) =>

@@ -1,20 +1,19 @@
-import type { ReactNode, FC } from "react";
+// removed duplicate import
 
 // Define props interface for the Button component
-interface ButtonProps {
-  type?: "button" | "submit" | "reset";
-  className?: string;
-  onClick?: () => void;
+
+import type { ButtonHTMLAttributes, ReactNode, FC } from "react";
+
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  disabled?: boolean;
 }
 
-const BAZButton: FC<ButtonProps> = ({ type = "button", className = "", onClick, children, disabled = false }) => (
+
+const BAZButton: FC<ButtonProps> = ({ type = "button", className = "", children, ...rest }) => (
   <button
     type={type}
     className={`button cursor-pointer ${className}`}
-    onClick={onClick}
-    disabled={disabled}
+    {...rest}
   >
     {children}
   </button>

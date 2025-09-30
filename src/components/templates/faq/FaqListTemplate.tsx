@@ -8,7 +8,7 @@ import ManagementTable from '../../organisms/ManagementTable';
 import BAZLoader from '../../atoms/BAZ-Loader';
 import Pagination from '../../atoms/BAZ-Pagination';
 
-import { useFaqStore } from '../../stores/faqStore';
+import { useFaqStore } from '../../stores/FaqStore';
 import type { ColumnConfig, Faq } from '../../types/common';
 import { truncate } from '../../utils/helper'
 
@@ -166,7 +166,7 @@ const FaqListTemplate: React.FC = () => {
         onDelete={handleDelete}
         currentPage={currentPage}
         limit={itemsPerPage}
-                module="faq"
+        module="faq"
 
       />
 

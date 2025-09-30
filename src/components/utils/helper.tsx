@@ -1,3 +1,15 @@
+/**
+ * Generates a slug from a string (e.g., 'My Name' -> 'my-name').
+ */
+export const generateSlug = (str: string): string => {
+  if (!str) return '';
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
 // helper.tsx
 import { Country, State, City } from 'country-state-city';
 

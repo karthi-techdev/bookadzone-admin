@@ -32,17 +32,17 @@ function App() {
       {showContent && (
         <Suspense fallback={null}>
           <Routes>
-            {routes.map((route, idx) => {
+            {routes.map((route) => {
               if (route.path === "/Login") {
-                return <Route key={idx} path={route.path} element={route.component} />;
+                return <Route key={route.path} path={route.path} element={route.component} />;
               }
               return (
                 <Route
-                  key={idx}
+                  key={route.path}
                   path={route.path}
                   element={<ProtectedRoute>{route.component}</ProtectedRoute>}
                 />
-              );
+              ); 
             })}
           </Routes>
         </Suspense>
