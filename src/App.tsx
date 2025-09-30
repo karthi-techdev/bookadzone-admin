@@ -58,3 +58,18 @@ function App() {
 }
 
 export default App;
+
+// import React from 'react';
+// import './App.css';
+// import BAZJodiEdit from './components/atoms/BAZ-Jodit';
+
+// const App: React.FC = () => {
+//     return (
+//         <div className="App">
+//            <BAZJodiEdit/>
+//         </div>
+//     );
+// };
+
+// export default App;
+

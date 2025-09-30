@@ -41,30 +41,56 @@ const FaqFormTemplate: React.FC = () => {
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
 
-  const handleFieldChange = (fieldName: keyof FaqFormData, minLengthValue?: number, maxValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
+  // Validation config for each field
+  const fieldValidations: Record<string, any> = {
+    question: { required: true, min: 5, max: 500 },
+    answer: { required: true, min: 5, max: 2000 },
+    priority: { required: true, max: 100 },
+    status: { enum: ['active', 'inactive'] },
+  };
+
+  // Generic field validation
+  const validateField = (field: keyof FaqFormData, value: any) => {
+    const config = fieldValidations[field];
+    const label = field.charAt(0).toUpperCase() + field.slice(1);
+    if (config?.required) {
+      const err = ValidationHelper.isRequired(value, label);
+      if (err) return err;
+    }
+    if (config?.min && typeof value === 'string') {
+      const err = ValidationHelper.minLength(value, label, config.min);
+      if (err) return err;
+    }
+    if (config?.max && typeof value === 'string') {
+      const err = ValidationHelper.maxLength(value, label, config.max);
+      if (err) return err;
+    }
+    if (config?.max && typeof value === 'number') {
+      const err = ValidationHelper.maxValue(value, label, config.max);
+      if (err) return err;
+    }
+    if (config?.enum) {
+      const err = ValidationHelper.isValidEnum(
+        typeof value === 'boolean' ? (value ? 'active' : 'inactive') : value,
+        label,
+        config.enum
+      );
+      if (err) return err;
+    }
+    return null;
+  };
+
+  // Optimized field change handler
+  const handleFieldChange = (fieldName: keyof FaqFormData) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
     let value = e.target.value;
     if (typeof methods.getValues(fieldName) === 'boolean' && typeof e.target.checked === 'boolean') {
       value = e.target.checked;
-    } else if (fieldName === 'priority') {
-      value = parseInt(value, 10);
     }
-
-    // Build validation rules for this field
-    const validations = [
-      ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1)),
-    ];
-    if (minLengthValue && typeof value === 'string') {
-      validations.push(ValidationHelper.minLength(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), minLengthValue));
-    }
-    if (maxValue && typeof value === 'number') {
-      validations.push(ValidationHelper.maxValue(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), maxValue));
-    }
-
-    const errorsArr = ValidationHelper.validate(validations);
-    if (errorsArr.length > 0) {
+    const error = validateField(fieldName, value);
+    if (error) {
       setError(fieldName, {
         type: 'manual',
-        message: errorsArr[0].message,
+        message: error.message,
       });
     } else {
       clearErrors(fieldName);
@@ -93,6 +119,9 @@ const FaqFormTemplate: React.FC = () => {
   }, [id, fetchFaqById, reset, isInitialized]);
 
   const onSubmit = async (data: FaqFormData) => {
+
+     
+
     clearErrors();
 
     const trimmedData = {
@@ -103,32 +132,18 @@ const FaqFormTemplate: React.FC = () => {
     };
 
     // Frontend validation
-    const validationErrors = ValidationHelper.validate([
-      ValidationHelper.isRequired(trimmedData.question, 'Question'),
-      ValidationHelper.minLength(trimmedData.question, 'Question', 5),
-      ValidationHelper.maxLength(trimmedData.question, 'Question', 500),
-      ValidationHelper.isRequired(trimmedData.answer, 'Answer'),
-      ValidationHelper.minLength(trimmedData.answer, 'Answer', 5),
-      ValidationHelper.maxLength(trimmedData.answer, 'Answer', 2000),
-      ValidationHelper.isValidEnum(
-        typeof trimmedData.status === 'boolean' ? (trimmedData.status ? 'active' : 'inactive') : trimmedData.status,
-        'Status',
-        ['active', 'inactive']
-      ),
-      ValidationHelper.isRequired(trimmedData.priority, 'Priority'),
-      ValidationHelper.maxValue(trimmedData.priority, 'Priority', 100),
-    ]);
-
+    const validationErrors: any[] = [];
+    (Object.keys(fieldValidations) as (keyof FaqFormData)[]).forEach((field) => {
+      const error = validateField(field, trimmedData[field]);
+      if (error) validationErrors.push({ field, message: error.message });
+    });
     if (validationErrors.length > 0) {
       validationErrors.forEach((err) => {
-        const fieldName = err.field.toLowerCase() as keyof FaqFormData;
-        setError(fieldName, {
+        setError(err.field, {
           type: 'manual',
           message: err.message,
         });
       });
-      // Only show the first error in toast for clarity
-      // toast.error(validationErrors[0].message);
       return;
     }
 
@@ -197,9 +212,10 @@ const FaqFormTemplate: React.FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           data-testid="faq-form"
           onFieldChange={{
-            question: handleFieldChange('question', 5),
-            answer: handleFieldChange('answer', 5),
-            priority: handleFieldChange('priority', undefined, 100),
+            question: handleFieldChange('question'),
+            answer: handleFieldChange('answer'),
+            status: handleFieldChange('status'),
+            priority: handleFieldChange('priority'),
           }}
         />
         {hasErrors() && (

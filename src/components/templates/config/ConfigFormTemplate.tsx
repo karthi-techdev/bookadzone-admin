@@ -5,7 +5,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { useConfigStore } from '../../stores/configStore';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
-import { configFields } from '../../utils/fields/configFields';
+import { configFields, configFieldsDynamic } from '../../utils/fields/configFields';
 import { generateSlug } from '../../utils/helper';
 import ValidationHelper from '../../utils/validationHelper';
 import Swal from 'sweetalert2';
@@ -42,10 +42,8 @@ const ConfigFormTemplate: React.FC = () => {
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting }, setValue } = methods;
 
-  const dynamicFieldConfig: FieldConfig[] = [
-    { name: 'key', label: 'Key', type: 'text', required: true, placeholder: 'Enter key' },
-    { name: 'value', label: 'Value', type: 'text', required: true, placeholder: 'Enter value' },
-  ];
+  // Use dynamic field config from utils
+  const dynamicFieldConfig: FieldConfig[] = configFieldsDynamic;
 
   // Prepare fields: for edit, make name and slug read-only
   // For add: disable slug if it has a value (auto-generated)
