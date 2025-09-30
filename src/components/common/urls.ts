@@ -47,15 +47,15 @@ const API = {
 
 
   // Category endpoints
-  addcategory: `${ROOTURL}categorys/`,
-  listcategory: `${ROOTURL}categorys/`,
-  getcategory: `${ROOTURL}categorys/getcategoryById/`,
-  updatecategory: `${ROOTURL}categorys/updatecategory/`,
-  deletecategory: `${ROOTURL}categorys/softDeletecategory/`,
-  toggleStatuscategory: `${ROOTURL}categorys/togglestatus/`,
-  trashcategorylist: `${ROOTURL}categorys/trash`,
-  restorecategory: `${ROOTURL}categorys/restore/`,
-  permanentDeletecategory: `${ROOTURL}categorys/permanentDelete/`,
+  addcategory: `${ROOTURL}category/`,
+  listcategory: `${ROOTURL}category/`,
+  getcategorybyId: `${ROOTURL}category/getcategoryById/`,
+  updatecategory: `${ROOTURL}category/updatecategory/`,
+  deletecategory: `${ROOTURL}category/softDeletecategory/`,
+  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,
+  trashcategorylist: `${ROOTURL}category/trash`,
+  restorecategory: `${ROOTURL}category/restore/`,
+  permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
 
   // Auth endpoints
   login: `${ROOTURL}auth/login`,

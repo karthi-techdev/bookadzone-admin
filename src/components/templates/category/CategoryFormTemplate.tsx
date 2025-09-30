@@ -74,7 +74,7 @@ const CategoryFormTemplate: React.FC = () => {
       clearErrors(fieldName);
     }
     if (fieldName === 'name') {
-      methods.setValue('slug', value.replaceAll(" ", "-"), { shouldValidate: false });
+      methods.setValue('slug', value.replaceAll(" ", "-").toLowerCase(), { shouldValidate: false });
     }
     methods.setValue(fieldName, value, { shouldValidate: false });
 
@@ -89,7 +89,7 @@ const CategoryFormTemplate: React.FC = () => {
             name: category.name || '',
             slug: category.slug || '',
             description: category.description || '',
-            photo: category.photo || '',
+            // photo: category.photo || '',
 
 
             isFeatured: typeof category.isFeatured === 'boolean' ? category.isFeatured : category.isFeatured === 'active',
@@ -117,30 +117,27 @@ const onSubmit = async (data: CategoryFormData) => {
   };
 
 
-
     // Frontend validation
     const validationErrors = ValidationHelper.validate([
       ValidationHelper.isRequired(trimmedData.name, 'name'),
       ValidationHelper.minLength(trimmedData.name, 'name', 5),
       ValidationHelper.maxLength(trimmedData.name, 'name', 500),
 
-      // ValidationHelper.isRequired(trimmedData.slug, 'Slug'),
-      // ValidationHelper.minLength(trimmedData.slug, 'Slug', 5),
-      // ValidationHelper.maxLength(trimmedData.slug, 'Slug', 2000),
+      ValidationHelper.isRequired(trimmedData.description, 'description'),
+      ValidationHelper.minLength(trimmedData.description, 'description', 5),
+      ValidationHelper.maxLength(trimmedData.description, 'description', 2000),
 
-
-      ValidationHelper.isRequired(trimmedData.description, 'Description'),
-      ValidationHelper.minLength(trimmedData.description, 'Description', 5),
-      ValidationHelper.maxLength(trimmedData.description, 'Description', 2000),
+      ValidationHelper.isRequired(trimmedData.isFeatured, 'isFeatured'),
 
       ValidationHelper.isValidEnum(
         typeof trimmedData.isFeatured === 'boolean' ? (trimmedData.isFeatured ? 'active' : 'inactive') : trimmedData.isFeatured,
         'Status',
         ['active', 'inactive']
       ),
-      // ValidationHelper.isRequired(trimmedData.priority, 'Priority'),
-      // ValidationHelper.maxValue(trimmedData.priority, 'Priority', 100),
-    ]);
+
+      ValidationHelper.isRequired(trimmedData.photo, 'photo'),
+     
+    ].filter(Boolean));
     console.log("validationErrors ", validationErrors);
 
     if (validationErrors.length > 0) {
@@ -158,8 +155,25 @@ const onSubmit = async (data: CategoryFormData) => {
 
     // Only reach here if frontend validation passes
     try {
+      // Convert trimmedData to FormData
+      const formData = new FormData();
+      formData.append('name', trimmedData.name);
+      formData.append('slug', trimmedData.slug);
+      formData.append('description', trimmedData.description);
+      formData.append('isFeatured', String(trimmedData.isFeatured));
+      formData.append('length', String(trimmedData.length));
+      if (trimmedData.photo) {
+        if (Array.isArray(trimmedData.photo)) {
+          trimmedData.photo.forEach((file, idx) => {
+            formData.append('photo', file as Blob);
+          });
+        } else {
+          formData.append('photo', trimmedData.photo as Blob);
+        }
+      }
+
       if (id) {
-        await updateCategory(id, trimmedData);
+        await updateCategory(id, formData);
         await Swal.fire({
           title: 'Success!',
           text: 'Category updated successfully',
@@ -167,7 +181,7 @@ const onSubmit = async (data: CategoryFormData) => {
           confirmButtonColor: 'var(--puprle-color)',
         });
       } else {
-        await addCategory(trimmedData);
+        await addCategory(formData);
         await Swal.fire({
           title: 'Success!',
           text: 'Category added successfully',

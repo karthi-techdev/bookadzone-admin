@@ -5,6 +5,8 @@ interface ValidationError {
 
 export class ValidationHelper {
   static isRequired(value: any, field: string): ValidationError | null {
+    console.log(">>>?>?>>?>",field,value);
+    
     if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) {
       return { field, message: `${field} is required` };
     }
@@ -63,7 +65,7 @@ export class ValidationHelper {
   }
 
 
-  static getFileType = (filePath: string | undefined): 'image' | 'pdf' | 'other' => {
+  static getFileType = (photo: string | File | (string | File)[] | undefined, filePath: string | undefined): 'image' | 'pdf' | 'other' => {
     if (!filePath) return 'other';
     const ext = filePath.split('.').pop()?.toLowerCase();
     if (!ext) return 'other';

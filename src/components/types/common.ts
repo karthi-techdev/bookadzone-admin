@@ -58,6 +58,17 @@ export interface Faq {
   status?: boolean;
   priority: number;
 }
+export interface FooterInfo {
+  _id?: string;
+  logo: string | File;
+  description: string;
+  socialmedia: string;
+  socialmedialinks: string;
+  google: string;
+  appstore: string;
+  status?: boolean;
+  priority: number;
+};
 
 export interface Category {
   length: number;
@@ -65,9 +76,10 @@ export interface Category {
   name: string;
   slug: string,
   description: string;
-  photo?: string | File | (string | File)[];
+  photo: string | File;
   isFeatured: boolean | undefined;
   status?: boolean;
+  CategoryFields: { key: string; value: string }[];
 }
 
 export interface Config {

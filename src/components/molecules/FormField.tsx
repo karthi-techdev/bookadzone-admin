@@ -1,13 +1,12 @@
 import React from 'react';
 import { useFormContext } from 'react-hook-form';
-import { FiAlertCircle } from 'react-icons/fi';
 import LabeledInput from './LabeledInput';
 import type { FieldConfig } from '../types/common';
 
 interface FormFieldProps {
   field: FieldConfig;
   value: any;
-  onChange?: (e: { target: { name: string; value: any } }) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   error?: string;
   togglePassword?: () => void;
   showPassword?: boolean;
@@ -33,7 +32,8 @@ const FormField: React.FC<FormFieldProps> = ({
       )
     : undefined;
 
-  const handleChange = (e: { target: { name: string; value: any } }) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    // Clear errors for this field
     clearErrors(field.name);
     if (onChange) {
       onChange(e);

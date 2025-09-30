@@ -103,8 +103,14 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
               <FormField
                 field={field}
                 value={getValues(field.name)}
-                onChange={onFieldChange[field.name] || ((e) => {
-                  setValue(field.name, e.target.value, { shouldValidate: true });
+                onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                  if (field.type === 'file' && 'files' in e.target && e.target.files) {
+                    setValue(field.name, e.target.files[0], { shouldValidate: true });
+                  } else if (field.type === 'checkbox') {
+                    setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
+                  } else {
+                    setValue(field.name, e.target.value, { shouldValidate: true });
+                  }
                 })}
                 error={getNestedError(errors, field.name)}
                 togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
@@ -143,8 +149,14 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
             <FormField
               field={field}
               value={getValues(field.name)}
-              onChange={onFieldChange[field.name] || ((e) => {
-                setValue(field.name, e.target.value, { shouldValidate: true });
+              onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                if (field.type === 'file' && 'files' in e.target && e.target.files) {
+                  setValue(field.name, e.target.files[0], { shouldValidate: true });
+                } else if (field.type === 'checkbox') {
+                  setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
+                } else {
+                  setValue(field.name, e.target.value, { shouldValidate: true });
+                }
               })}
               error={getNestedError(errors, field.name)}
               togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
@@ -163,6 +175,26 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         {isDynamic && dynamicFieldConfig.length > 0 && (
           <div className="md:col-span-12 col-span-12">
             <h4 className="text-sm font-semibold text-white mb-4">Dynamic Fields</h4>
+            {dynamicFieldConfig.map((field, index) => (
+              <FormField
+                key={`${dynamicFieldName}.${index}`}
+                field={field}
+                value={getValues(`${dynamicFieldName}.${index}.${field.name}`)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                  const updatedFields = [...(getValues(dynamicFieldName) || [])];
+                  updatedFields[index] = {
+                    ...updatedFields[index],
+                    [field.name]: field.type === 'file' && 'files' in e.target && e.target.files
+                      ? e.target.files[0]
+                      : field.type === 'checkbox'
+                      ? (e as React.ChangeEvent<HTMLInputElement>).target.checked
+                      : e.target.value,
+                  };
+                  setValue(dynamicFieldName, updatedFields, { shouldValidate: true });
+                }}
+                error={getNestedError(errors, `${dynamicFieldName}.${index}.${field.name}`)}
+              />
+            ))}
             <div className="space-y-4">
               {dynamicFields.map((dynamicField, index) => (
                 <div

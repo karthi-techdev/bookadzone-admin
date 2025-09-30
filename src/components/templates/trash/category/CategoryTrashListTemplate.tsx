@@ -29,7 +29,7 @@ interface StatFilter {
 const CategoryTrashListTemplate: React.FC = () => {
   const navigate = useNavigate();
   const {
-    category,
+    categorys,
     fetchTrashCategorys,
     totalPages,
     loading,
@@ -70,9 +70,9 @@ const CategoryTrashListTemplate: React.FC = () => {
   };
 
   // Filter search term locally (after API filter is applied)
-  const searchedCategorys = category.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    category.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  const searchedCategorys = categorys.filter((categorys) =>
+    categorys.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    categorys.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Stats for filter buttons
@@ -175,18 +175,39 @@ const CategoryTrashListTemplate: React.FC = () => {
       render: (value) => truncate(value, 40),
     },
     {
+      key: 'description',
+      label: 'Description',
+      render: (value) => truncate(value, 40),
+    },
+    {
       key: 'photo',
-      label: 'Image',
-      render: (value) =>
-        value ? (
-          <img
-            src={`${ImportedURL.FILEURL}${value}`}
-            alt="Category"
-            className="w-10 h-10 object-cover rounded-full border"
-          />
-        ) : (
-          <span className="text-gray-400 text-xs">No image</span>
-        ),
+      label: 'Photo',
+      render: (value) => {
+        if (typeof value === 'string' && value) {
+          const isBase64 = value.startsWith('data:image/');
+          let imageUrl;
+          if (isBase64) {
+            imageUrl = value;
+          } else {
+            imageUrl = `${ImportedURL.FILEURL}uploads/category/logo/${value}`;
+          }
+          console.log(`Rendering photo image: ${isBase64 ? 'base64' : 'URL'} - ${imageUrl.substring(0, 50)}...`);
+          return (
+            <img
+              src={imageUrl}
+              alt="Category photo"
+              className="h-12 w-12 object-contain rounded-full border"
+              onError={(e) => {
+                console.error(`Failed to load photo: ${imageUrl}`, e);
+                e.currentTarget.src = '/placeholder-image.png';
+              }}
+              onLoad={() => console.log(`Successfully loaded photo: ${imageUrl}`)}
+            />
+          );
+        }
+        console.warn(`No valid photo value for rendering: ${value}`);
+        return <span className="text-gray-400 text-xs">No Image</span>;
+      },
     },
   ];
 
