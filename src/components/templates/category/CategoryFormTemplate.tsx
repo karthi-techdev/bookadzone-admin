@@ -10,250 +10,188 @@ import ValidationHelper from '../../utils/validationHelper';
 import Swal from 'sweetalert2';
 
 type CategoryFormData = {
-  name: string;
-  slug: string;
-  isFeatured?: boolean;
-  description: string;
-  photo?: string | File ;
-  // priority?: number; // Add this line if 'priority' is needed elsewhere in the form
-};
-
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
+	name: string;
+	slug: string;
+	isFeatured?: boolean;
+	description: string;
+	photo: File | string;
 };
 
 const CategoryFormTemplate: React.FC = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { fetchCategoryById, addCategory, updateCategory } = useCategoryStore();
-  const [isInitialized, setIsInitialized] = useState(false);
+	const { id } = useParams();
+	const navigate = useNavigate();
+	const { fetchCategoryById, addCategory, updateCategory } = useCategoryStore();
+	const [isInitialized, setIsInitialized] = useState(false);
+	const [existingCategoryData, setExistingCategoryData] = useState<any>(null);
 
-  const methods = useForm<CategoryFormData>({
-    defaultValues: {
-      name: '',
-      slug: '',
-      isFeatured: true,
-      description: '',
-      photo: '',
-    },
-    mode: 'onSubmit',
-  });
+	const methods = useForm<CategoryFormData>({
+		defaultValues: {
+			name: '',
+			slug: '',
+			isFeatured: true,
+			description: '',
+			photo: '',
+		},
+		mode: 'onSubmit',
+	});
 
-  const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
+	const { handleSubmit, reset, setError, clearErrors, setValue, formState: { errors, isSubmitting } } = methods;
 
-  const handleFieldChange = (fieldName: keyof CategoryFormData, minLengthValue?: number, maxValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
+	useEffect(() => {
+		if (id && !isInitialized) {
+			const fetchData = async () => {
+				const category = await fetchCategoryById(id);
+				if (category) {
+					setExistingCategoryData(category);
+					reset({
+						name: category.name || '',
+						slug: category.slug || '',
+						description: category.description || '',
+						isFeatured: typeof category.isFeatured === 'boolean' ? category.isFeatured : category.isFeatured === 'active',
+						photo: category.photo || '',
+					});
+					setIsInitialized(true);
+				} else {
+					toast.error('Failed to load category data');
+				}
+			};
+			fetchData();
+		}
+	}, [id, fetchCategoryById, reset, isInitialized]);
 
-    let value = e.target.value;
+	const handleFieldChange = (fieldName: keyof CategoryFormData, minLength?: number) => (e: { target: { name: string; value: any } }) => {
+			let value = e.target.value;
+			const field = CategoryFields.find(f => f.name === fieldName);
+			if (!field) return;
 
-    if (typeof methods.getValues(fieldName) === 'boolean' && typeof e.target.checked === 'boolean') {
-      value = e.target.checked;
-    } else if (fieldName === 'name') {
-      value = e.target.value;  // keep as string ✅
-    }
+			// Auto-generate slug from name
+			if (fieldName === 'name' && typeof value === 'string') {
+				const slugValue = value.replace(/\s+/g, '-').toLowerCase();
+				setValue('slug', slugValue, { shouldValidate: false });
+			}
 
-    // Build validation rules for this field
-    const validations = [
-      ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1)),
-    ];
-    if (minLengthValue && typeof value === 'string') {
-      validations.push(ValidationHelper.minLength(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), minLengthValue));
-    }
-    if (maxValue && typeof value === 'number') {
-      validations.push(ValidationHelper.maxValue(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), maxValue));
-    }
+			const validations = [];
+			if (field.required) {
+				const requiredError = ValidationHelper.isRequired(value, fieldName);
+				if (requiredError) {
+					setError(fieldName, {
+						type: 'manual',
+						message: requiredError.message,
+					});
+					setValue(fieldName, value, { shouldValidate: false });
+					return;
+				}
+			}
+			if (value) {
+				if (minLength && typeof value === 'string') {
+					validations.push(ValidationHelper.minLength(value, fieldName, minLength));
+				}
+			}
+			if (field.type === 'file' && value instanceof File) {
+				validations.push(ValidationHelper.isValidFileType(value, fieldName, field.accept || ''));
+			}
+			const errorsArr = ValidationHelper.validate(validations);
+			if (errorsArr.length > 0) {
+				setError(fieldName, {
+					type: 'manual',
+					message: errorsArr[0].message,
+				});
+			} else {
+				clearErrors(fieldName);
+			}
+			setValue(fieldName, value, { shouldValidate: false });
+	};
 
-    const errorsArr = ValidationHelper.validate(validations);
-    if (errorsArr.length > 0) {
-      setError(fieldName, {
-        type: 'manual',
-        message: errorsArr[0].message,
-      });
-    } else {
-      clearErrors(fieldName);
-    }
-    if (fieldName === 'name') {
-      methods.setValue('slug', value.replaceAll(" ", "-").toLowerCase(), { shouldValidate: false });
-    }
-    methods.setValue(fieldName, value, { shouldValidate: false });
+	const onSubmit = async (data: CategoryFormData) => {
+		clearErrors();
+		const validationErrors = ValidationHelper.validate([
+			ValidationHelper.isRequired(data.name, 'name'),
+			ValidationHelper.minLength(data.name, 'name', 3),
+			ValidationHelper.isRequired(data.slug, 'slug'),
+			ValidationHelper.isRequired(data.description, 'description'),
+			ValidationHelper.minLength(data.description, 'description', 5),
+			ValidationHelper.isRequired(data.photo, 'photo'),
+			data.photo instanceof File ? ValidationHelper.isValidFileType(data.photo, 'photo', 'image/*') : null,
+		]);
+		if (validationErrors.length > 0) {
+			validationErrors.forEach((err) => {
+				const fieldName = err.field as keyof CategoryFormData;
+				setError(fieldName, {
+					type: 'manual',
+					message: err.message,
+				});
+			});
+			toast.error('Please fix all validation errors');
+			return;
+		}
+		try {
+			const formData = new FormData();
+			Object.entries(data).forEach(([key, value]) => {
+				if (value instanceof File) {
+					formData.append(key, value);
+				} else {
+					formData.append(key, String(value));
+				}
+			});
+			if (id) {
+				await updateCategory(id, formData);
+				await Swal.fire({
+					title: 'Success!',
+					text: 'Category updated successfully',
+					icon: 'success',
+					confirmButtonColor: 'var(--puprle-color)',
+				});
+			} else {
+				await addCategory(formData);
+				await Swal.fire({
+					title: 'Success!',
+					text: 'Category added successfully',
+					icon: 'success',
+					confirmButtonColor: 'var(--puprle-color)',
+				});
+			}
+			navigate('/category');
+		} catch (error: any) {
+			const errorData = error?.response?.data || {};
+			if (errorData.errors && Array.isArray(errorData.errors)) {
+				errorData.errors.forEach((err: { path: string; message: string }) => {
+					toast.error(`${err.path}: ${err.message}`);
+				});
+			} else {
+				toast.error(errorData.message || 'Something went wrong');
+			}
+		}
+	};
 
-  };
-
-  useEffect(() => {
-    if (id && !isInitialized) {
-      const fetchData = async () => {
-        const category = await fetchCategoryById(id);
-        if (category) {
-          reset({
-            name: category.name || '',
-            slug: category.slug || '',
-            description: category.description || '',
-            // photo: category.photo || '',
-
-
-            isFeatured: typeof category.isFeatured === 'boolean' ? category.isFeatured : category.isFeatured === 'active',
-          });
-          setIsInitialized(true);
-        } else {
-          toast.error('Failed to load CATEGORY data');
-        }
-      };
-      fetchData();
-    }
-  }, [id, fetchCategoryById, reset, isInitialized]);
-
-const onSubmit = async (data: CategoryFormData) => {
-  clearErrors();
-
-  // Prepare trimmed data object matching Category type
-  const trimmedData = {
-    name: data.name.trim(),
-    slug: data.slug.trim(),
-    description: data.description?.trim() ?? "",
-    photo: data.photo,
-    isFeatured: data.isFeatured ?? false,
-    length: 0, // or set as needed for your Category type
-  };
-
-
-    // Frontend validation
-    const validationErrors = ValidationHelper.validate([
-      ValidationHelper.isRequired(trimmedData.name, 'name'),
-      ValidationHelper.minLength(trimmedData.name, 'name', 5),
-      ValidationHelper.maxLength(trimmedData.name, 'name', 500),
-
-      ValidationHelper.isRequired(trimmedData.description, 'description'),
-      ValidationHelper.minLength(trimmedData.description, 'description', 5),
-      ValidationHelper.maxLength(trimmedData.description, 'description', 2000),
-
-      ValidationHelper.isRequired(trimmedData.isFeatured, 'isFeatured'),
-
-      ValidationHelper.isValidEnum(
-        typeof trimmedData.isFeatured === 'boolean' ? (trimmedData.isFeatured ? 'active' : 'inactive') : trimmedData.isFeatured,
-        'Status',
-        ['active', 'inactive']
-      ),
-
-      ValidationHelper.isRequired(trimmedData.photo, 'photo'),
-     
-    ].filter(Boolean));
-    console.log("validationErrors ", validationErrors);
-
-    if (validationErrors.length > 0) {
-      validationErrors.forEach((err) => {
-        const fieldName = err.field?.toLowerCase() as keyof CategoryFormData;
-        setError(fieldName, {
-          type: 'manual',
-          message: err.message,
-        });
-      });
-      // Only show the first error in toast for clarity
-      // toast.error(validationErrors[0].message);
-      return;
-    }
-
-    // Only reach here if frontend validation passes
-    try {
-      // Convert trimmedData to FormData
-      const formData = new FormData();
-      formData.append('name', trimmedData.name);
-      formData.append('slug', trimmedData.slug);
-      formData.append('description', trimmedData.description);
-      formData.append('isFeatured', String(trimmedData.isFeatured));
-      formData.append('length', String(trimmedData.length));
-      if (trimmedData.photo) {
-        if (Array.isArray(trimmedData.photo)) {
-          trimmedData.photo.forEach((file, idx) => {
-            formData.append('photo', file as Blob);
-          });
-        } else {
-          formData.append('photo', trimmedData.photo as Blob);
-        }
-      }
-
-      if (id) {
-        await updateCategory(id, formData);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Category updated successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      } else {
-        await addCategory(formData);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Category added successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      }
-      navigate('/category');
-    } catch (error: any) {
-      // Show backend errors only in toast, do not set as field errors
-      const errorData = error?.response?.data || {};
-      if (error?.response?.status === 409 && errorData.message?.includes('already exists')) {
-        toast.error(errorData.message);
-        return;
-      }
-      if (errorData.errors && Array.isArray(errorData.errors)) {
-        errorData.errors.forEach((err: { path: string; message: string }) => {
-          toast.error(`${err.path}: ${err.message}`);
-        });
-      } else if (typeof error === 'string') {
-        toast.error(error);
-      } else if (error?.message) {
-        toast.error(error.message);
-      } else {
-        const message = errorData.message || 'Something went wrong';
-        toast.error(message);
-      }
-    }
-  };
-
-  const hasErrors = () => {
-    return CategoryFields.some(field => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
-  };
-
-  return (
-    <div className="p-6">
-      <FormHeader
-        managementName="Category"
-        addButtonLink="/category"
-        type={id ? 'Edit' : 'Add'}
-      />
-      <ToastContainer position="top-right" autoClose={3000} />
-      <FormProvider {...methods}>
-        <ManagementForm
-          label={id ? 'Update' : 'Save'}
-          fields={CategoryFields}
-          isSubmitting={methods.formState.isSubmitting}
-          onSubmit={handleSubmit(onSubmit)}
-          data-testid="category-form"
-            existingFiles={{
-            agencyLogo: existingAgencyData?.agencyLogo ?? '',
-            photo: existingAgencyData?.photo ?? '',
-            uploadIdProof: existingAgencyData?.uploadIdProof ?? '',
-            uploadBusinessProof: existingAgencyData?.uploadBusinessProof ?? '',
-          }}
-          onFieldChange={{
-            name: handleFieldChange('name', 5),
-            slug: handleFieldChange('slug', 5),
-            // priority: handleFieldChange('priority', undefined, 100),
-          }}
-        />
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
-      </FormProvider>
-    </div>
-  );
+	return (
+		<div className="p-6">
+			<FormHeader
+				managementName="Category"
+				addButtonLink="/category"
+				type={id ? 'Edit' : 'Add'}
+			/>
+			<ToastContainer position="top-right" autoClose={3000} />
+			<FormProvider {...methods}>
+				<ManagementForm
+					label={id ? 'Update' : 'Save'}
+					fields={CategoryFields}
+					isSubmitting={isSubmitting}
+					onSubmit={handleSubmit(onSubmit)}
+					data-testid="category-form"
+					existingFiles={{
+						photo: existingCategoryData?.photo ?? '',
+					}}
+					onFieldChange={{
+						name: handleFieldChange('name', 3),
+						slug: handleFieldChange('slug', 3),
+						description: handleFieldChange('description', 5),
+						photo: handleFieldChange('photo'),
+						isFeatured: handleFieldChange('isFeatured'),
+					}}
+				/>
+			</FormProvider>
+		</div>
+	);
 };
 
 export default CategoryFormTemplate;

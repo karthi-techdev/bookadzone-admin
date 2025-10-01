@@ -33,6 +33,7 @@ export const CategoryFields: FieldConfig[] = [
     required: true,
     className: 'md:col-span-12',
     placeholder: 'Enter the Photo...',
+    accept: 'image/*',
   },
   {
     name: 'isFeatured',
