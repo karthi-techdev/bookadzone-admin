@@ -15,7 +15,7 @@ interface BlogState{
   error:string|null;
   page:number;
   totalPages:number;
-  fetchBlog:(
+  fetchBlogCategory:(
     page?:number,
     limit?:number,
     filter?:'total'|'active'|'inactive'
@@ -23,9 +23,9 @@ interface BlogState{
   fetchBlogCategoryById:(id:string)=> Promise<BlogCategory|null>;
   addBlogCategory:(blogCategory:BlogCategory )=>Promise<void>;
   updateBlogCategory:(id:string,blogCategory:BlogCategory)=>Promise<void>;
-  deleteBlog:(id:string)=>Promise<void>;
+  deleteBlogCategory:(id:string)=>Promise<void>;
   restoreBlogCategory: (id: string) => Promise<void>;
-  toggleStatusBlog:(id:string)=>Promise<void>;
+  toggleStatusBlogCategory:(id:string)=>Promise<void>;
   deleteBlogCategoryPermanently:(id:string)=>Promise<void>;
   fetchTrashBlogCategory:(page?:number,limit?:number,filter?:'total'|'active'|'inactive')=>Promise<void>;
 }
@@ -45,7 +45,7 @@ export const useBlogCategoryStore =create <BlogState>((set)=>({
   error:null,
   page:1,
   totalPages:1,
-    fetchBlog: async (page = 1, limit = 20, filter = 'total') => {
+    fetchBlogCategory: async (page = 1, limit = 20, filter = 'total') => {
     try {
       set({ loading: true, error: null });
       const statusParam =
@@ -131,7 +131,7 @@ export const useBlogCategoryStore =create <BlogState>((set)=>({
       throw errorMessage;
     }
   },
-   deleteBlog: async (id: string) => {
+   deleteBlogCategory: async (id: string) => {
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.deleteBlogCategory}${id}`);
@@ -146,7 +146,7 @@ export const useBlogCategoryStore =create <BlogState>((set)=>({
       throw errorMessage;
     }
   },
-  toggleStatusBlog: async (id: string) => {
+  toggleStatusBlogCategory: async (id: string) => {
     try {
       set({ loading: true, error: null });
       const res = await axios.patch(`${API.toggleStatusBlogCategory}${id}`);

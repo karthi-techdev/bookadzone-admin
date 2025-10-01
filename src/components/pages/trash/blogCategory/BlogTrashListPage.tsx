@@ -1,5 +1,5 @@
 import React from 'react';
-import BlogCategoryTrashListTemplate from '../../../templates/trash/blogCategory/BlogCategoryListTemplate';
+import BlogCategoryTrashListTemplate from '../../../templates/trash/blogCategory/blogCategoryTrashListTemplate';
 
 const BlogCategoryTrashListPage: React.FC = () => {
   return (

@@ -25,9 +25,9 @@ const BlogCategoryListTemplate: React.FC =()=>{
   const navigate = useNavigate();
   const {
     blogCategory,
-    fetchBlog,
-    deleteBlog,
-    toggleStatusBlog,
+    fetchBlogCategory,
+    deleteBlogCategory,
+    toggleStatusBlogCategory,
     loading,
     error,
     stats,
@@ -48,7 +48,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
   const filteredTotalPages = Math.max(1,Math.ceil(getTotalItems()/itemsPerPage))
 
   useEffect(() => {
-      fetchBlog(currentPage, itemsPerPage, selectedFilter);
+      fetchBlogCategory(currentPage, itemsPerPage, selectedFilter);
     }, [currentPage, selectedFilter]);
 
     useEffect(() => {
@@ -103,7 +103,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
         confirmButtonText: 'Yes, delete it!',
       }).then(async (result) => {
         if (result.isConfirmed) {
-          await deleteBlog(BlogCategory._id!);
+          await deleteBlogCategory(BlogCategory._id!);
   
           const updatedLength = searchedBlogCategories.length - 1;
           const newTotalItems = blogCategory.length - 1;
@@ -113,7 +113,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
           if (updatedLength === 0 && currentPage > newTotalPages) {
             setCurrentPage(newTotalPages || 1); // Go to the last page or page 1 if no pages remain
           } else {
-            await fetchBlog(currentPage, itemsPerPage, selectedFilter);
+            await fetchBlogCategory(currentPage, itemsPerPage, selectedFilter);
           }
   
           Swal.fire('Deleted!', 'The BlogCategory has been removed.', 'success');
@@ -158,7 +158,7 @@ const BlogCategoryListTemplate: React.FC =()=>{
         data={searchedBlogCategories}
         columns={columns}
         onEdit={(row) => navigate(`/blogcategory/edit/${row._id}`)}
-        onToggleStatus={(row) => toggleStatusBlog(row._id!)}
+        onToggleStatus={(row) => toggleStatusBlogCategory(row._id!)}
         onDelete={handleDelete}
         currentPage={currentPage}
         limit={itemsPerPage}
