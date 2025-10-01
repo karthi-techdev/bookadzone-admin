@@ -171,6 +171,8 @@ describe("BlogCategoryFormTemplate", () => {
     });
   });
 
+  
+
   it("shows toast error for backend string error", async () => {
     mockAddBlogCategory.mockRejectedValueOnce("string error");
 
