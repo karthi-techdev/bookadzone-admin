@@ -85,6 +85,17 @@ const API = {
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,
 
+  //BlogCategory endpoints
+  addBlogCategory:`${ROOTURL}blogCategory/`,
+  listBlogCategory:`${ROOTURL}blogCategory/`,
+  getBlogCategory:`${ROOTURL}blogCategory/getblogCategoryById/`,
+  updateBlogCategory:`${ROOTURL}blogCategory/updateblogCategory/`,
+  deleteBlogCategory:`${ROOTURL}blogCategory/softDeleteblogCategory/`,
+  toggleStatusBlogCategory:`${ROOTURL}blogCategory/togglestatus/`,
+  trashBlogCategoryList:`${ROOTURL}blogCategory/trash`,
+  restoreBlogCategory:`${ROOTURL}blogCategory/restore/`,
+  permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
+
   // Template Images
   templateImage:`${ROOTURL}editer/image`
 };

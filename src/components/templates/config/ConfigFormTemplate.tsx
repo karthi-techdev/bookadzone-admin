@@ -194,7 +194,7 @@ const ConfigFormTemplate: React.FC = () => {
           isSubmitting={isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
           data-testid="config-form"
-          onFieldChange={{
+          onNameClick={{
             name: handleFieldChange('name', 3),
             slug: handleFieldChange('slug', 3),
             status: handleFieldChange('status'),

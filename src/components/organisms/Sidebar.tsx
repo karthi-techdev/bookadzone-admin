@@ -13,6 +13,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from "react";
+import { TbCategoryFilled } from "react-icons/tb";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -45,6 +46,11 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "About Page", path: "/banner/about" },
       ]
     },
+    { icon: <BsUiChecks />, text: "Manage Blog", path: "#",
+      children: [
+        { icon: <TbCategoryFilled />, text: "Blog Category", path: "/blogcategory" },
+      ]
+     },
     {
       icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
@@ -73,6 +79,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
         { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
         { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
+        { icon: <RiListIndefinite />, text: "BlogCategory", path: "/trash/blogcategory" },
+
       ]
     },
     // Example: Add more special items

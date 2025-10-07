@@ -42,7 +42,7 @@ function App() {
                   path={route.path}
                   element={<ProtectedRoute>{route.component}</ProtectedRoute>}
                 />
-              );
+              ); 
             })}
           </Routes>
         </Suspense>
