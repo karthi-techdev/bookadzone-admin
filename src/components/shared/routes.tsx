@@ -14,6 +14,9 @@ const NewsLetterFormPage = lazy(() => import('../pages/newsLetter/NewsLetterForm
 const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
 
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+const BlogCategoryListPage=lazy(()=> import('../pages/blogCategory/BlogCaategoryListPage'))
+const BlogCategoryFormPage=lazy(()=>import ('../pages/blogCategory/BlogCategoryFormPage'))
+const BlogCategoryTrashListPage=lazy(()=>import('../pages/trash/blogCategory/BlogTrashListPage'))
 
 // Category
 const CategoryListPage = lazy(() => import('../pages/category/CategoryListPage'));
@@ -81,6 +84,8 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Campaign Details',
       component: <CampaignDetails />,
     },
+
+
     // FAQ routes
     {
       path: '/faq',
@@ -180,6 +185,35 @@ export const routesData = (): RouteData[] => {
       component: <FaqTrashListPage />,
     },
 
+
+    //Blog routes
+    {
+      path: '/blogcategory',
+      pageTitle: 'Blog Category List',
+      component: <BlogCategoryListPage />,
+    },
+    {
+      path: '/blogcategory/add',
+      pageTitle: 'add Blogcategory',
+      component: <BlogCategoryFormPage />,
+    },
+    {
+      path: '/blogcategory/edit/:id',
+      pageTitle: 'Edit Blogcategory',
+      component: <BlogCategoryFormPage />,
+    },
+    {
+      path: '/trash/blogcategory',
+      pageTitle: 'Trash blogcategory',
+      component: <BlogCategoryTrashListPage />,
+    },
+
+    {
+      path: '/Login',
+      pageTitle: 'Login',
+      component: <Login />,
+    },
+    
     // Category routes
     {
       path: '/category',
