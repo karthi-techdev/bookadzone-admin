@@ -11,10 +11,10 @@ import Swal from 'sweetalert2';
 
 type CategoryFormData = {
 	name: string;
+	photo: File | string;
 	slug: string;
 	isFeatured?: boolean;
 	description: string;
-	photo: File | string;
 };
 
 const CategoryFormTemplate: React.FC = () => {
@@ -28,15 +28,15 @@ const CategoryFormTemplate: React.FC = () => {
 		defaultValues: {
 			name: '',
 			slug: '',
-			isFeatured: true,
 			description: '',
-			photo: '',
+			isFeatured: true,
 		},
 		mode: 'onSubmit',
 	});
 
 	const { handleSubmit, reset, setError, clearErrors, setValue, formState: { errors, isSubmitting } } = methods;
 
+	// Fetch agency data if editing
 	useEffect(() => {
 		if (id && !isInitialized) {
 			const fetchData = async () => {
@@ -45,10 +45,10 @@ const CategoryFormTemplate: React.FC = () => {
 					setExistingCategoryData(category);
 					reset({
 						name: category.name || '',
+						photo: category.photo || '',
 						slug: category.slug || '',
 						description: category.description || '',
-						isFeatured: typeof category.isFeatured === 'boolean' ? category.isFeatured : category.isFeatured === 'active',
-						photo: category.photo || '',
+						isFeatured: category.isFeatured || true,
 					});
 					setIsInitialized(true);
 				} else {
@@ -60,59 +60,67 @@ const CategoryFormTemplate: React.FC = () => {
 	}, [id, fetchCategoryById, reset, isInitialized]);
 
 	const handleFieldChange = (fieldName: keyof CategoryFormData, minLength?: number) => (e: { target: { name: string; value: any } }) => {
-			let value = e.target.value;
-			const field = CategoryFields.find(f => f.name === fieldName);
-			if (!field) return;
+		const value = e.target.value;
+		const field = CategoryFields.find(f => f.name === fieldName);
 
-			// Auto-generate slug from name
-			if (fieldName === 'name' && typeof value === 'string') {
-				const slugValue = value.replace(/\s+/g, '-').toLowerCase();
-				setValue('slug', slugValue, { shouldValidate: false });
-			}
+		if (!field) return;
 
-			const validations = [];
-			if (field.required) {
-				const requiredError = ValidationHelper.isRequired(value, fieldName);
-				if (requiredError) {
-					setError(fieldName, {
-						type: 'manual',
-						message: requiredError.message,
-					});
-					setValue(fieldName, value, { shouldValidate: false });
-					return;
-				}
-			}
-			if (value) {
-				if (minLength && typeof value === 'string') {
-					validations.push(ValidationHelper.minLength(value, fieldName, minLength));
-				}
-			}
-			if (field.type === 'file' && value instanceof File) {
-				validations.push(ValidationHelper.isValidFileType(value, fieldName, field.accept || ''));
-			}
-			const errorsArr = ValidationHelper.validate(validations);
-			if (errorsArr.length > 0) {
+		if (fieldName === 'name' && typeof value === 'string') {
+			const slugValue = value.replace(/\s+/g, '-').toLowerCase();
+			setValue('slug', slugValue, { shouldValidate: false });
+		}
+
+		const validations = [];
+
+		if (field.required) {
+			const requiredError = ValidationHelper.isRequired(value, fieldName);
+			if (requiredError) {
 				setError(fieldName, {
 					type: 'manual',
-					message: errorsArr[0].message,
+					message: requiredError.message,
 				});
-			} else {
-				clearErrors(fieldName);
+				setValue(fieldName, value, { shouldValidate: false });
+				return;
 			}
-			setValue(fieldName, value, { shouldValidate: false });
+		}
+
+		if (value) {
+
+			if (minLength && typeof value === 'string') {
+				validations.push(ValidationHelper.minLength(value, fieldName, minLength));
+			}
+		}
+
+		if (field.type === 'file' && value instanceof File) {
+			validations.push(ValidationHelper.isValidFileType(value, fieldName, field.accept || ''));
+		}
+
+		const errorsArr = ValidationHelper.validate(validations);
+
+		if (errorsArr.length > 0) {
+			setError(fieldName, {
+				type: 'manual',
+				message: errorsArr[0].message,
+			});
+		} else {
+			clearErrors(fieldName);
+		}
+
+		setValue(fieldName, value, { shouldValidate: false });
 	};
 
 	const onSubmit = async (data: CategoryFormData) => {
 		clearErrors();
+
 		const validationErrors = ValidationHelper.validate([
 			ValidationHelper.isRequired(data.name, 'name'),
 			ValidationHelper.minLength(data.name, 'name', 3),
-			ValidationHelper.isRequired(data.slug, 'slug'),
 			ValidationHelper.isRequired(data.description, 'description'),
-			ValidationHelper.minLength(data.description, 'description', 5),
+			ValidationHelper.minLength(data.description, 'description', 20),
 			ValidationHelper.isRequired(data.photo, 'photo'),
 			data.photo instanceof File ? ValidationHelper.isValidFileType(data.photo, 'photo', 'image/*') : null,
 		]);
+
 		if (validationErrors.length > 0) {
 			validationErrors.forEach((err) => {
 				const fieldName = err.field as keyof CategoryFormData;
@@ -124,6 +132,7 @@ const CategoryFormTemplate: React.FC = () => {
 			toast.error('Please fix all validation errors');
 			return;
 		}
+
 		try {
 			const formData = new FormData();
 			Object.entries(data).forEach(([key, value]) => {
@@ -133,6 +142,7 @@ const CategoryFormTemplate: React.FC = () => {
 					formData.append(key, String(value));
 				}
 			});
+
 			if (id) {
 				await updateCategory(id, formData);
 				await Swal.fire({
@@ -162,6 +172,7 @@ const CategoryFormTemplate: React.FC = () => {
 			}
 		}
 	};
+
 
 	return (
 		<div className="p-6">
@@ -195,3 +206,4 @@ const CategoryFormTemplate: React.FC = () => {
 };
 
 export default CategoryFormTemplate;
+
