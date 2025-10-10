@@ -1,139 +1,129 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+// import React from 'react';
+import { render as rtlRender, screen, fireEvent, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+// Custom render to wrap with router
+const render = (ui: React.ReactElement) => rtlRender(ui, { wrapper: MemoryRouter });
+
 import CategoryTrashListTemplate from '../CategoryTrashListTemplate';
-import { BrowserRouter } from 'react-router-dom';
 import { useCategoryStore } from '../../../../stores/categoryStore';
 import Swal from 'sweetalert2';
 import { toast } from 'react-toastify';
 
-// Mocks
 jest.mock('../../../../stores/categoryStore');
-jest.mock('sweetalert2', () => ({
-  fire: jest.fn(() => Promise.resolve({ isConfirmed: true })),
-}));
-jest.mock('react-toastify', () => ({
-  toast: { error: jest.fn() },
-}));
+jest.mock('sweetalert2');
+jest.mock('react-toastify', () => ({ toast: { error: jest.fn() } }));
 
-const mockedUseCategoryStore = useCategoryStore as jest.MockedFunction<typeof useCategoryStore>;
+const mockCategories = [
+  {
+    _id: '1',
+    name: 'Test Category',
+    slug: 'test-category',
+    description: 'This is a test category',
+    status: 'active',
+    isFeatured: false,
+    photo: '/test.jpg',
+    CategoryFields: [{ key: 'color', value: 'red' }],
+    length: 1,
+  },
+  {
+    _id: '2',
+    name: 'Another Category',
+    slug: 'another-category',
+    description: 'Another description',
+    status: 'inactive',
+    isFeatured: false,
+    photo: '/another.jpg',
+    CategoryFields: [{ key: 'size', value: 'large' }],
+    length: 1,
+  },
+];
 
 describe('CategoryTrashListTemplate', () => {
+  let fetchTrashCategories: jest.Mock;
   let restoreCategory: jest.Mock;
   let deleteCategoryPermanently: jest.Mock;
 
   beforeEach(() => {
+    fetchTrashCategories = jest.fn();
     restoreCategory = jest.fn();
     deleteCategoryPermanently = jest.fn();
-
-    mockedUseCategoryStore.mockReturnValue({
-      categorys: [
-        {
-          _id: '1',
-          name: 'Archived Electronics',
-          slug: 'archived-electronics',
-          description: 'Old gadgets',
-          photo: 'sample.jpg',
-        },
-      ],
-      fetchTrashCategorys: jest.fn(),
+    (useCategoryStore as unknown as jest.Mock).mockReturnValue({
+      categories: mockCategories,
+      fetchTrashCategories,
       restoreCategory,
       deleteCategoryPermanently,
       totalPages: 1,
       loading: false,
-      error: null,
-      stats: { total: 1, active: 0, inactive: 1 },
+      error: '',
     });
-    jest.clearAllMocks();
+    (Swal.fire as jest.Mock).mockResolvedValue({ isConfirmed: true });
+    (toast.error as jest.Mock).mockClear();
   });
 
-  it('renders trash list with category data', () => {
-    render(
-      <BrowserRouter>
-        <CategoryTrashListTemplate />
-      </BrowserRouter>
-    );
-
-    expect(screen.getByText('Archived Electronics')).toBeInTheDocument();
-    expect(screen.getByText('archived-electronics')).toBeInTheDocument();
-    expect(screen.getByText('Old gadgets')).toBeInTheDocument();
-  });
-
-  it('shows loader when loading is true', () => {
-    mockedUseCategoryStore.mockReturnValue({
-      ...mockedUseCategoryStore(),
+  it('renders loader when loading', () => {
+    (useCategoryStore as unknown as jest.Mock).mockReturnValueOnce({
+      ...useCategoryStore(),
       loading: true,
     });
-
-    render(
-      <BrowserRouter>
-        <CategoryTrashListTemplate />
-      </BrowserRouter>
-    );
-
-    // Adjust based on Loader component implementation
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    render(<CategoryTrashListTemplate />);
+    expect(screen.getByTestId('baz-loader')).toBeInTheDocument();
   });
 
-  it('shows error toast when error exists', async () => {
-    mockedUseCategoryStore.mockReturnValue({
-      ...mockedUseCategoryStore(),
-      error: 'Failed to fetch trash',
-    });
-
-    render(
-      <BrowserRouter>
-        <CategoryTrashListTemplate />
-      </BrowserRouter>
-    );
-
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Failed to fetch trash');
-    });
+  it('renders table with categories', () => {
+    render(<CategoryTrashListTemplate />);
+    expect(screen.getByText('Test Category')).toBeInTheDocument();
+    expect(screen.getByText('test-category')).toBeInTheDocument();
+    expect(screen.getByText('Another Category')).toBeInTheDocument();
+    expect(screen.getByText('another-category')).toBeInTheDocument();
   });
 
-  it('filters category by search term', () => {
-    render(
-      <BrowserRouter>
-        <CategoryTrashListTemplate />
-      </BrowserRouter>
-    );
-
-    fireEvent.change(screen.getByPlaceholderText(/search/i), {
-      target: { value: 'Archived' },
-    });
-
-    expect(screen.getByText('Archived Electronics')).toBeInTheDocument();
+  it('filters categories by search', () => {
+    render(<CategoryTrashListTemplate />);
+    const searchInput = screen.getByPlaceholderText(/search/i);
+    fireEvent.change(searchInput, { target: { value: 'Another' } });
+    expect(screen.getByText('Another Category')).toBeInTheDocument();
+    expect(screen.queryByText('Test Category')).not.toBeInTheDocument();
   });
 
-  it('restores a category when confirmed', async () => {
-    render(
-      <BrowserRouter>
-        <CategoryTrashListTemplate />
-      </BrowserRouter>
-    );
-
-    // depends on ManagementTable: adjust selector
-    const restoreButton = screen.getByRole('button', { name: /restore/i });
-    fireEvent.click(restoreButton);
-
+  it('handles restore action', async () => {
+    render(<CategoryTrashListTemplate />);
+    const restoreBtn = screen.getAllByRole('button', { name: /restore/i })[0];
+    fireEvent.click(restoreBtn);
     await waitFor(() => {
       expect(restoreCategory).toHaveBeenCalledWith('1');
+      expect(fetchTrashCategories).toHaveBeenCalled();
     });
   });
 
-  it('permanently deletes a category when confirmed', async () => {
-    render(
-      <BrowserRouter>
-        <CategoryTrashListTemplate />
-      </BrowserRouter>
-    );
-
-    // depends on ManagementTable: adjust selector
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
-    fireEvent.click(deleteButton);
-
+  it('handles permanent delete action', async () => {
+    render(<CategoryTrashListTemplate />);
+    const deleteBtn = screen.getAllByRole('button', { name: /delete/i })[0];
+    fireEvent.click(deleteBtn);
     await waitFor(() => {
       expect(deleteCategoryPermanently).toHaveBeenCalledWith('1');
+      expect(fetchTrashCategories).toHaveBeenCalled();
     });
+  });
+
+  it('shows error toast if error exists', () => {
+    (useCategoryStore as unknown as jest.Mock).mockReturnValueOnce({
+      ...useCategoryStore(),
+      error: 'Some error',
+      loading: false,
+    });
+    render(<CategoryTrashListTemplate />);
+    expect(toast.error).toHaveBeenCalledWith('Some error');
+  });
+
+  it('handles pagination', () => {
+    (useCategoryStore as unknown as jest.Mock).mockReturnValueOnce({
+      ...useCategoryStore(),
+      totalPages: 2,
+      categories: mockCategories,
+      loading: false,
+      error: '',
+    });
+    render(<CategoryTrashListTemplate />);
+    expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
   });
 });

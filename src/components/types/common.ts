@@ -168,7 +168,7 @@ export interface Category {
   name: string;
   slug: string,
   description: string;
-  photo: string | File;
+  photo?: string | File;
   isFeatured: boolean | undefined;
   status?: boolean;
   CategoryFields: { key: string; value: string }[];

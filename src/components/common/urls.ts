@@ -1,4 +1,4 @@
-const LIVE = true;
+const LIVE = false;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
@@ -13,13 +13,13 @@ const API = {
   // Agency endpoints
   addAgency: `${ROOTURL}agencies/`,
   listAgency: `${ROOTURL}agencies/`,
-  getAgency: `${ROOTURL}agencies/`, 
-  updateAgency: `${ROOTURL}agencies/`, 
+  getAgency: `${ROOTURL}agencies/`,
+  updateAgency: `${ROOTURL}agencies/`,
   deleteAgency: `${ROOTURL}agencies/softDelete/`,
   toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`,
   trashAgencyList: `${ROOTURL}agencies/trash`,
   restoreAgency: `${ROOTURL}agencies/restore/`,
-  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, 
+  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`,
   // FAQ endpoints
   addfaq: `${ROOTURL}faqs/`,
   listfaq: `${ROOTURL}faqs/`,
@@ -30,8 +30,8 @@ const API = {
   trashfaqlist: `${ROOTURL}faqs/trash`,
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
-  
-    // NewsLetter endpoints
+
+  // NewsLetter endpoints
   addNewsLetter: `${ROOTURL}newsletters/`,
   listNewsLetter: `${ROOTURL}newsLetters/`,
   getNewsLetter: `${ROOTURL}newsletters/getNewsLetterById/`,
@@ -42,7 +42,7 @@ const API = {
   restoreNewsLetter: `${ROOTURL}newsletters/restore/`,
   permanentDeleteNewsLetter: `${ROOTURL}newsletters/permanentDelete/`,
 
-// Footer endpoints
+  // Footer endpoints
   addfooterinfo: `${ROOTURL}footerinfo/`,
   listfooterinfo: `${ROOTURL}footerinfo/`,
   getfooterinfobyid: `${ROOTURL}footerinfo/getfooterinfoById/`,
@@ -69,14 +69,14 @@ const API = {
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
-  getcategorybyId: `${ROOTURL}category/getcategoryById/`,
-  updatecategory: `${ROOTURL}category/updatecategory/`,
-  deletecategory: `${ROOTURL}category/softDeletecategory/`,
-  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,
+  getcategorybyId: `${ROOTURL}category/`,
+  updatecategory: `${ROOTURL}category/`,
+  deletecategory: `${ROOTURL}category/softDelete/`,
+  toggleStatuscategory: `${ROOTURL}category/toggleStatus/`,
   trashcategorylist: `${ROOTURL}category/trash`,
   restorecategory: `${ROOTURL}category/restore/`,
   permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
-  
+
   //Banner Management endpoints
   getBanner: `${ROOTURL}banners/`,
   updateBanner: `${ROOTURL}banners/`,
@@ -97,7 +97,7 @@ const API = {
   permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
 
   // Template Images
-  templateImage:`${ROOTURL}editer/image`
+  templateImage: `${ROOTURL}editer/image`
 };
 
 const ImportedURL = { API, LIVEURL, FILEURL, SETTINGS_ID };

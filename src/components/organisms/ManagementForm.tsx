@@ -44,6 +44,7 @@ interface ManagementFormProps {
   onTabChange?: (tabId: number) => void;
   activeTab?: number;
   dynamicSectionLabel?: string;
+  imagePreview?: string;
 }
 
 const ManagementForm: React.FC<ManagementFormProps> = ({
@@ -459,6 +460,9 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         </div>
       </motion.form>
     </div>
+
+
+    
   );
 };
 
