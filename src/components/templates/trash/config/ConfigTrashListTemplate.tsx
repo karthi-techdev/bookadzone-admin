@@ -164,12 +164,8 @@ const ConfigTrashListTemplate: React.FC = () => {
         managementName="Config"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statFilters={statFilters}
-        selectedFilterId={selectedFilter}
-        onSelectFilter={(id) => {
-          setSelectedFilter(id as 'total' | 'active' | 'inactive');
-          setCurrentPage(1);
-        }}
+        addButtonLabel="Back to List"
+        addButtonLink="/config"
         module="config"
         isTrashView={true}
       />

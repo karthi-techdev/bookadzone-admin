@@ -59,8 +59,8 @@ describe('FooterListTemplate', () => {
 
   it('renders table header and footers', () => {
   renderWithRouter();
-  // There are multiple 'Footer' elements (header and breadcrumb), so use getAllByText
-  expect(screen.getAllByText('Footer').length).toBeGreaterThan(0);
+  // Check for the header text - we expect multiple instances
+  expect(screen.getAllByText('Footer Info')).toHaveLength(2);
   expect(screen.getByText('Footer 1')).toBeInTheDocument();
   expect(screen.getByText('Footer 2')).toBeInTheDocument();
   });
@@ -126,6 +126,6 @@ describe('FooterListTemplate', () => {
       stats: { total: 0, active: 0, inactive: 0 },
     });
     renderWithRouter();
-    expect(screen.getByText(/no footers found/i)).toBeInTheDocument();
+    expect(screen.getByText('No data available')).toBeInTheDocument();
   });
 });

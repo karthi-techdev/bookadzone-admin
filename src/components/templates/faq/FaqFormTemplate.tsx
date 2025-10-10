@@ -82,11 +82,19 @@ const FaqFormTemplate: React.FC = () => {
 
   // Optimized field change handler
   const handleFieldChange = (fieldName: keyof FaqFormData) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
-    let value = e.target.value;
+    let rawValue: any = e.target.value;
+    // Handle boolean switch
     if (typeof methods.getValues(fieldName) === 'boolean' && typeof e.target.checked === 'boolean') {
-      value = e.target.checked;
+      rawValue = e.target.checked;
     }
-    const error = validateField(fieldName, value);
+    // Normalize numeric fields if necessary
+    const isNumberField = fieldName === 'priority';
+    const valueForValidation = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+    const normalizedForValidation = isNumberField && typeof valueForValidation === 'string' && valueForValidation !== ''
+      ? Number(valueForValidation)
+      : valueForValidation;
+
+    const error = validateField(fieldName, normalizedForValidation);
     if (error) {
       setError(fieldName, {
         type: 'manual',
@@ -95,7 +103,7 @@ const FaqFormTemplate: React.FC = () => {
     } else {
       clearErrors(fieldName);
     }
-    methods.setValue(fieldName, value, { shouldValidate: false });
+    methods.setValue(fieldName, rawValue, { shouldValidate: false });
   };
 
   useEffect(() => {
@@ -189,6 +197,12 @@ const FaqFormTemplate: React.FC = () => {
     }
   };
 
+  // Ensure centralized submit validation runs even when form is invalid
+  const onInvalid = () => {
+    const values = methods.getValues();
+    return onSubmit(values);
+  };
+
   const hasErrors = () => {
     return faqFields.some(field => {
       const error = getNestedError(errors, field.name);
@@ -209,7 +223,7 @@ const FaqFormTemplate: React.FC = () => {
           label={id ? 'Update' : 'Save'}
           fields={faqFields}
           isSubmitting={isSubmitting}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
           data-testid="faq-form"
           onFieldChange={{
             question: handleFieldChange('question'),

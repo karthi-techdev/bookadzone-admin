@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FiCheck, FiPlus, FiTrash2 } from 'react-icons/fi';
@@ -40,7 +40,7 @@ interface ManagementFormProps {
   initialTab?: number;
   onFieldChange?: { [key: string]: (e: { target: { name: string; value: any } }) => void };
   toastErrorMessage?: string;
-  extraProps?: { togglePassword?: () => void; showPassword?: boolean };
+  extraProps?: { togglePassword?: () => void; showPassword?: boolean; countryOptions?: { label: string; value: string }[]; stateOptions?: { label: string; value: string }[]; cityOptions?: { label: string; value: string }[]; };
   onTabChange?: (tabId: number) => void;
   activeTab?: number;
   dynamicSectionLabel?: string;
@@ -84,42 +84,43 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   const dynamicFieldConfigToUse = tabConfig?.dynamicFieldConfig || dynamicFieldConfig;
   const isDynamicToUse = tabConfig?.isDynamic ?? isDynamic;
   
-  const { fields: dynamicFields, append, remove } = useFieldArray({
+  const { fields: dynamicFields, append, remove, replace } = useFieldArray({
     control,
     name: dynamicFieldNameToUse,
   });
 
-  // Watch the dynamic fields for changes
-  const watchedDynamicFields = watch(dynamicFieldNameToUse);
+  // Track if we've already initialized to prevent duplicates
+  const initializedRef = useRef(false);
 
   // Update local activeTab when propActiveTab changes
   useEffect(() => {
     if (propActiveTab !== undefined) {
       setActiveTab(propActiveTab);
+      // Reset initialization when tab changes
+      initializedRef.current = false;
     }
   }, [propActiveTab]);
 
-  // Initialize dynamic fields only when needed and avoid duplication
+  // Initialize dynamic fields only once when data loads
   useEffect(() => {
-    if (isDynamicToUse) {
+    if (isDynamicToUse && !initializedRef.current) {
       const existingValues = getValues(dynamicFieldNameToUse);
       
-      // If we have no dynamic fields registered but we have existing values, we need to register them
-      if (dynamicFields.length === 0 && existingValues && Array.isArray(existingValues) && existingValues.length > 0) {
-        // Append existing values to the field array
-        existingValues.forEach(value => {
-          append(value);
-        });
-      } else if (dynamicFields.length === 0 && (!existingValues || existingValues.length === 0)) {
+      if (existingValues && Array.isArray(existingValues) && existingValues.length > 0) {
+        // Replace all fields at once instead of appending
+        replace(existingValues);
+        initializedRef.current = true;
+      } else if (dynamicFields.length === 0) {
         // Add one empty field if no existing values
         const emptyField: Record<string, string> = {};
         dynamicFieldConfigToUse.forEach(config => {
           emptyField[config.name] = '';
         });
         append(emptyField);
+        initializedRef.current = true;
       }
     }
-  }, [isDynamicToUse, dynamicFields.length, dynamicFieldConfigToUse, append, getValues, dynamicFieldNameToUse, watchedDynamicFields]);
+  }, [isDynamicToUse, dynamicFieldConfigToUse, append, replace, getValues, dynamicFieldNameToUse, dynamicFields.length]);
 
   const getNestedError = (errors: any, name: string): string | undefined => {
     const parts = name.split('.');
@@ -192,6 +193,8 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
 
   const handleTabClick = (tabId: number) => {
     setActiveTab(tabId);
+    // Reset initialization when switching tabs
+    initializedRef.current = false;
     if (onTabChange) {
       onTabChange(tabId);
     }
@@ -221,28 +224,40 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         data-testid={dataTestId || 'auth-form'}
       >
         <div className="w-full space-y-2">
-          {fields.map((field) => (
-            <div key={field.name} className="w-full">
-              <FormField
-                field={field}
-                value={getValues(field.name)}
-                onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-                  if (field.type === 'file' && 'files' in e.target && e.target.files) {
-                    setValue(field.name, e.target.files[0], { shouldValidate: true });
-                  } else if (field.type === 'checkbox') {
-                    setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
-                  } else {
-                    setValue(field.name, e.target.value, { shouldValidate: true });
-                  }
-                })}
-                error={getNestedError(errors, field.name)}
-                togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
-                showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
-                isAuth={isAuth}
-                existingFiles={existingFiles[field.name]}
-              />
-            </div>
-          ))}
+          {fields.map((field) => {
+            let fieldWithOptions = field;
+            if (field.name === 'country' && field.type === 'select') {
+              fieldWithOptions = { ...field, options: extraProps.countryOptions || [] };
+            }
+            if (field.name === 'state' && field.type === 'select') {
+              fieldWithOptions = { ...field, options: extraProps.stateOptions || [] };
+            }
+            if (field.name === 'city' && field.type === 'select') {
+              fieldWithOptions = { ...field, options: extraProps.cityOptions || [] };
+            }
+            return (
+              <div key={field.name} className="w-full">
+                <FormField
+                  field={fieldWithOptions}
+                  value={getValues(field.name)}
+                  onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+                    if (field.type === 'file' && 'files' in e.target && e.target.files) {
+                      setValue(field.name, e.target.files[0], { shouldValidate: true });
+                    } else if (field.type === 'checkbox') {
+                      setValue(field.name, (e as React.ChangeEvent<HTMLInputElement>).target.checked, { shouldValidate: true });
+                    } else {
+                      setValue(field.name, e.target.value, { shouldValidate: true });
+                    }
+                  })}
+                  error={getNestedError(errors, field.name)}
+                  togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
+                  showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
+                  isAuth={isAuth}
+                  existingFiles={existingFiles[field.name]}
+                />
+              </div>
+            );
+          })}
         </div>
         <div className="mt-4 w-full flex justify-center">
           <Button
@@ -367,10 +382,20 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
               );
             }
 
+            let fieldWithOptions = field;
+            if (field.name === 'country' && field.type === 'select') {
+              fieldWithOptions = { ...field, options: extraProps.countryOptions || [] };
+            }
+            if (field.name === 'state' && field.type === 'select') {
+              fieldWithOptions = { ...field, options: extraProps.stateOptions || [] };
+            }
+            if (field.name === 'city' && field.type === 'select') {
+              fieldWithOptions = { ...field, options: extraProps.cityOptions || [] };
+            }
             return (
               <div key={field.name} className={field.className || 'md:col-span-6 col-span-12'}>
                 <FormField
-                  field={field}
+                  field={fieldWithOptions}
                   value={getValues(field.name)}
                   onChange={onFieldChange[field.name] || ((e) => {
                     setValue(field.name, e.target.value, { shouldValidate: true });

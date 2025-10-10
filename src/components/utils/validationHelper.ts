@@ -103,7 +103,15 @@ export class ValidationHelper {
     if (['pdf'].includes(ext)) return 'pdf';
     return 'other';
   };
-
+static passwordMatch(password: string, confirmPassword: string): ValidationError | null {
+  if (password !== confirmPassword) {
+    return {
+      field: 'confirmPassword',
+      message: 'Passwords do not match'
+    };
+  }
+  return null;
+}
 }
 
 export default ValidationHelper;

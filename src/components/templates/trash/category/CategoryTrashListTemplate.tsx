@@ -219,12 +219,8 @@ const CategoryTrashListTemplate: React.FC = () => {
         managementName="Categories"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statFilters={statFilters}
-        selectedFilterId={selectedFilter}
-        onSelectFilter={(id) => {
-          setSelectedFilter(id as 'total' | 'active' | 'inactive');
-          setCurrentPage(1);
-        }}
+        addButtonLabel="Back to List"
+        addButtonLink="/category"
         module="categories"
         isTrashView={true}
       />

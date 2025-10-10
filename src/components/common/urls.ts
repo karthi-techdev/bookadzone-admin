@@ -1,4 +1,4 @@
-const LIVE = true;
+const LIVE = false;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
@@ -13,13 +13,13 @@ const API = {
   // Agency endpoints
   addAgency: `${ROOTURL}agencies/`,
   listAgency: `${ROOTURL}agencies/`,
-  getAgency: `${ROOTURL}agencies/`, // Usage: getAgency + id
-  updateAgency: `${ROOTURL}agencies/`, // Usage: updateAgency + id
-  deleteAgency: `${ROOTURL}agencies/softDelete/`, // Usage: deleteAgency + id
-  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`, // Usage: toggleStatusAgency + id
+  getAgency: `${ROOTURL}agencies/`, 
+  updateAgency: `${ROOTURL}agencies/`, 
+  deleteAgency: `${ROOTURL}agencies/softDelete/`, 
+  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`, 
   trashAgencyList: `${ROOTURL}agencies/trash`,
-  restoreAgency: `${ROOTURL}agencies/restore/`, // Usage: restoreAgency + id
-  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, // Usage: permanentDeleteAgency + id
+  restoreAgency: `${ROOTURL}agencies/restore/`, 
+  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, 
 
   // FAQ endpoints
   addfaq: `${ROOTURL}faqs/`,
@@ -85,6 +85,8 @@ const API = {
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,
+  forgotPassword: `${ROOTURL}auth/forgot-password`,
+  resetPassword: `${ROOTURL}auth/reset-password`,
 
   // Template Images
   templateImage:`${ROOTURL}editer/image`

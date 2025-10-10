@@ -15,14 +15,7 @@ import { useFaqStore } from '../../../stores/FaqStore';
 import type { ColumnConfig, Faq } from '../../../types/common';
 import { truncate } from '../../../utils/helper'
 
-interface StatFilter {
-  id: string;
-  title: string;
-  value: number;
-  trend: 'up' | 'down';
-  change: string;
-  icon: React.ReactNode;
-}
+// Remove unused interface
 
 const FaqTrashListTemplate: React.FC = () => {
   const navigate = useNavigate();
@@ -52,8 +45,15 @@ const FaqTrashListTemplate: React.FC = () => {
 
   // Fetch data on page or filter change
   useEffect(() => {
-    fetchTrashFaqs(currentPage, itemsPerPage, selectedFilter);
-  }, [currentPage, selectedFilter, itemsPerPage, selectedFilter]);
+    const loadTrashFaqs = async () => {
+      try {
+        await fetchTrashFaqs(currentPage, itemsPerPage, selectedFilter);
+      } catch (err) {
+        console.error('Error fetching trash FAQs:', err);
+      }
+    };
+    loadTrashFaqs();
+  }, [currentPage, selectedFilter, itemsPerPage, fetchTrashFaqs]);
 
   // Show error toast
   useEffect(() => {
@@ -73,33 +73,7 @@ const FaqTrashListTemplate: React.FC = () => {
     faq.answer.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Stats for filter buttons
-  const statFilters: StatFilter[] = [
-    {
-      id: 'total',
-      title: 'All FAQs',
-      value: stats.total,
-      trend: 'up',
-      change: '2%',
-      icon: null,
-    },
-    {
-      id: 'active',
-      title: 'Active FAQs',
-      value: stats.active,
-      trend: 'up',
-      change: '1%',
-      icon: null,
-    },
-    {
-      id: 'inactive',
-      title: 'Inactive FAQs',
-      value: stats.inactive,
-      trend: 'down',
-      change: '1%',
-      icon: null,
-    },
-  ];
+  // Remove unused statFilters
 
   // Restore handler
   const handleRestore = (faq: Faq) => {
@@ -187,12 +161,8 @@ const FaqTrashListTemplate: React.FC = () => {
         managementName="Faq"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statFilters={statFilters}
-        selectedFilterId={selectedFilter}
-        onSelectFilter={(id) => {
-          setSelectedFilter(id as 'total' | 'active' | 'inactive');
-          setCurrentPage(1);
-        }}
+        addButtonLabel="Back to List"
+        addButtonLink="/faq"
         module="faq"
         isTrashView={true}
       />

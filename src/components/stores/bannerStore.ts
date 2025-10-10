@@ -9,12 +9,15 @@ export interface BannerState {
   error: string | null;
   fetchBanner: () => Promise<void>;
   updateBanner: (data: Partial<Banner> | FormData) => Promise<void>;
+  clearError: () => void; 
 }
 
 export const useBannerStore = create<BannerState>((set) => ({
   banner: null,
   loading: false,
   error: null,
+
+  clearError: () => set({ error: null }),
 
   fetchBanner: async () => {
     try {
@@ -23,7 +26,7 @@ export const useBannerStore = create<BannerState>((set) => ({
       const bannerData = res.data as Banner;
       set({ banner: bannerData, loading: false, error: null });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch banner management';
+      const errorMessage = error?.response?.data?.error || error?.response?.data?.message || error?.message || 'Failed to fetch banner management';
       set({ error: errorMessage, loading: false });
       throw errorMessage;
     }
@@ -43,7 +46,7 @@ export const useBannerStore = create<BannerState>((set) => ({
       const responseData = res.data as Banner;
       set({ banner: responseData, loading: false, error: null });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update banner management';
+      const errorMessage = error?.response?.data?.error || error?.response?.data?.message || error?.message || 'Failed to update banner management';
       set({ error: errorMessage, loading: false });
       throw errorMessage;
     }

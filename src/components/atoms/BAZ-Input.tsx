@@ -24,6 +24,7 @@ const BAZInput: React.FC<InputProps> = memo(({ className = '', error, isAuth = f
     >
       <input
         {...props}
+        data-testid={props.id ? `${props.id}-input` : undefined}
         className={`w-full px-3 py-2 ${autoCompleted ? 'bg-purple-100' : 'bg-[var(--dark-color)]'} border ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
         } ${borderRadiusClass} text-[.75rem] text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}

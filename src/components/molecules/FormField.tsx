@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { memo, useCallback } from 'react';
 import { useFormContext } from 'react-hook-form';
 import LabeledInput from './LabeledInput';
-import type { FieldConfig } from '../types/common';
+import { useMemoizedField } from '../hooks/useMemoizedField';
+import type { FieldConfig, FieldValue, FormFieldChangeEvent } from '../types/common';
 
-interface FormFieldProps {
+interface FormFieldProps<T = FieldValue> {
   field: FieldConfig;
-  value: any;
-  onChange?: (e: { target: { name: string; value: any; removedFiles?: string[] } }) => void;
-  onClick?: () => void;       
+  value: T;
+  onChange?: (event: FormFieldChangeEvent<T>) => void;
+  onClick?: () => void;
   readOnly?: boolean;
   error?: string;
   togglePassword?: () => void;
@@ -16,7 +17,7 @@ interface FormFieldProps {
   existingFiles?: string | string[];
 }
 
-const FormField: React.FC<FormFieldProps> = ({ 
+const FormField = memo(<T extends FieldValue = FieldValue>({ 
   field, 
   value, 
   onChange, 
@@ -27,21 +28,22 @@ const FormField: React.FC<FormFieldProps> = ({
   showPassword, 
   isAuth,
   existingFiles
-}) => {
+}: FormFieldProps<T>) => {
   const { clearErrors } = useFormContext();
 
-  const normalizedOptions = Array.isArray(field.options)
-    ? field.options.map((opt) =>
-        typeof opt === 'string' ? { label: opt, value: opt } : opt
-      )
-    : undefined;
+  const normalizedOptions = React.useMemo(() => 
+    Array.isArray(field.options)
+      ? field.options.map((opt) =>
+          typeof opt === 'string' ? { label: opt, value: opt } : opt
+        )
+      : undefined,
+    [field.options]
+  );
 
-  const handleChange = (e: { target: { name: string; value: any; removedFiles?: string[] } }) => {
+  const handleChange = useCallback((e: FormFieldChangeEvent<T>) => {
     clearErrors(field.name);
-    if (onChange) {
-      onChange(e);
-    }
-  };
+    onChange?.(e);
+  }, [clearErrors, field.name, onChange]);
 
   return (
     <div className={field.className || 'space-y-2'}>
@@ -51,7 +53,7 @@ const FormField: React.FC<FormFieldProps> = ({
         type={field.type}
         value={value}
         onChange={handleChange}
-        onClick={onClick}               // ✅ Forward click here
+        onClick={onClick}
         readOnly={readOnly} 
         placeholder={field.placeholder}
         disabled={field.disabled}
@@ -68,6 +70,8 @@ const FormField: React.FC<FormFieldProps> = ({
       />
     </div>
   );
-};
+});
+
+FormField.displayName = 'FormField';
 
 export default FormField;

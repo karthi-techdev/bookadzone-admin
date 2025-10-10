@@ -1,42 +1,45 @@
 import type { ReactNode } from 'react';
 import { lazy } from 'react';
 
-const Dashboard = lazy(() => import('../pages/ExampleMultiStepForm'));
-const Properties = lazy(() => import('../pages/Properties'));
-const Login = lazy(() => import('../pages/auth/LoginPage'));
-const AddProperties = lazy(() => import('../pages/Add-Properties'));
-const CampaignList = lazy(() => import('../pages/Campaign-List'));
-const CampaignDetails = lazy(() => import('../pages/Campaign-Details'));
-const FaqListPage = lazy(() => import('../pages/faq/FaqListPage'));
-const FaqFormPage = lazy(() => import('../pages/faq/FaqFormPage'));
-const NewsLetterListPage = lazy(() => import('../pages/newsLetter/NewsLetterListPage'));
-const NewsLetterFormPage = lazy(() => import('../pages/newsLetter/NewsLetterFormPage'));
+// Direct imports for frequently accessed components
+import Dashboard from '../pages/Dashboard';
+import Properties from '../pages/Properties';
+import Login from '../templates/auth/loginTemplate';
+import AddProperties from '../pages/Add-Properties';
+import AgencyListPage from '../pages/agency/AgencyListPage';
+import AgencyFormPage from '../pages/agency/AgencyFormPage';
+import AgencyViewPage from '../pages/agency/AgencyViewPage';
+import FaqListPage from '../pages/faq/FaqListPage';
+import FaqFormPage from '../pages/faq/FaqFormPage';
+import NewsLetterListPage from '../pages/newsLetter/NewsLetterListPage';
+import NewsLetterFormPage from '../pages/newsLetter/NewsLetterFormPage';
+import CategoryListPage from '../pages/category/CategoryListPage';
+import CategoryFormPage from '../pages/category/CategoryFormPage';
+import BannerPage from '../pages/banner/HomeBannerPage';
+import AboutBannerPage from '../pages/banner/AboutBannerPage';
+import FooterInfoListPage from '../pages/footerinfo/FooterInfoListPage';
+import FooterInfoFormPage from '../pages/footerinfo/FooterInfoFormPage';
+import ConfigListPage from '../pages/config/ConfigListPage';
+import ConfigFormPage from '../pages/config/ConfigFormPage';
+import CampaignList from '../pages/Campaign-List';
+import CampaignDetails from '../pages/Campaign-Details';
+
+// Lazy load infrequently accessed components
+const ForgotPassword = lazy(() => import('../templates/auth/forgotPasswordTemplate'));
+const ResetPassword = lazy(() => import('../templates/auth/resetPasswordTemplate'));
 const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
-
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
-
-// Category
-const CategoryListPage = lazy(() => import('../pages/category/CategoryListPage'));
-const CategoryFormPage = lazy(() => import('../pages/category/CategoryFormPage'));
 const CategoryTrashListPage = lazy(() => import('../pages/trash/category/CategoryTrashListPage'));
-
-const FooterInfoListPage = lazy(() => import('../pages/footerinfo/FooterInfoListPage'));
-const FooterInfoFormPage = lazy(() => import('../pages/footerinfo/FooterInfoFormPage'));
 const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
-
-const ConfigListPage = lazy(() => import('../pages/config/ConfigListPage'));
-const ConfigFormPage = lazy(() => import('../pages/config/ConfigFormPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
+const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
+
+// Lazy load settings pages as they're accessed less frequently
 const GeneralSettingsPage = lazy(() => import('../pages/settings/GeneralSettingsPage'));
 const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
 const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
 const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
-const BannerPage = lazy(() => import('../pages/banner/HomeBannerPage'));
-const AboutBannerPage = lazy(() => import('../pages/banner/AboutBannerPage'));
-  const AgencyListPage = lazy(() => import('../pages/agency/AgencyListPage'));
-  const AgencyFormPage = lazy(() => import('../pages/agency/AgencyFormPage'));
-  const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -49,7 +52,7 @@ export const routesData = (): RouteData[] => {
     {
       path: '/banner/homepage',
       pageTitle: 'Banners',
-    component: <BannerPage />, // Ensure BannerPage uses BannerManagementTemplate, not BannerTemplate
+    component: <BannerPage />, 
     },
     {
       path: '/banner/about',
@@ -104,6 +107,11 @@ export const routesData = (): RouteData[] => {
       component: <AgencyFormPage />,
     },
     {
+      path: '/agency/view/:id',
+      pageTitle: 'View Agency',
+      component: <AgencyViewPage />,
+    },
+    {
       path: '/trash/agency',
       pageTitle: 'Agency Trash',
       component: <AgencyTrashListPage />,
@@ -136,17 +144,17 @@ export const routesData = (): RouteData[] => {
     },
     {
       path: '/footerinfo',
-      pageTitle: 'FAQ List',
+      pageTitle: 'Footer List',
       component: <FooterInfoListPage />,
     },
     {
       path: '/footerinfo/add',
-      pageTitle: 'Add FAQ',
+      pageTitle: 'Add Footer',
       component: <FooterInfoFormPage />,
     },
     {
       path: '/footerinfo/edit/:id',
-      pageTitle: 'Edit FAQ',
+      pageTitle: 'Edit Footer',
       component: <FooterInfoFormPage />,
     },
     {
@@ -170,9 +178,19 @@ export const routesData = (): RouteData[] => {
       component: <ConfigTrashListPage />,
     },
     {
-      path: '/Login',
+      path: '/login',
       pageTitle: 'Login',
       component: <Login />,
+    },
+    {
+      path: '/forgot-password',
+      pageTitle: 'Forgot Password',
+      component: <ForgotPassword />,
+    },
+    {
+      path: '/reset-password',
+      pageTitle: 'Reset Password',
+      component: <ResetPassword />,
     },
     {
       path: '/trash/faq',

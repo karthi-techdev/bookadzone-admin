@@ -52,23 +52,28 @@ export const useConfigStore = create<ConfigState>((set) => ({
       const statusParam =
         filter === 'active' ? 'active' :
         filter === 'inactive' ? 'inactive' : '';
-      const res = await axios.get(`${API.listconfig}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
-      const data = res.data as {
-        data: Config[];
-        meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };
-      };
-      set({
-        configs: Array.isArray(data.data) ? data.data : [],
-        stats: {
-          total: data.meta?.total ?? 0,
-          active: data.meta?.active ?? 0,
-          inactive: data.meta?.inactive ?? 0,
-        },
-        page,
-        totalPages: data.meta?.totalPages ?? 1,
-        loading: false,
-        error: null
-      });
+      // Add cache-busting parameter and fix template literal nesting
+      const res = await axios.get(
+        `${API.listconfig}?page=${page}&limit=${limit}${statusParam ? '&status=' + statusParam : ''}&_=${Date.now()}`
+      );
+      
+      if (res.data.status === true) {
+        const { data, meta } = res.data;
+        set({
+          configs: Array.isArray(data) ? data : [],
+          stats: {
+            total: meta?.total ?? 0,
+            active: meta?.active ?? 0,
+            inactive: meta?.inactive ?? 0,
+          },
+          page: meta?.page ?? page,
+          totalPages: meta?.totalPages ?? 1,
+          loading: false,
+          error: null
+        });
+      } else {
+        throw new Error(res.data.message || 'Failed to fetch configs');
+      }
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch configs';
       set({ error: errorMessage, loading: false });
@@ -125,13 +130,16 @@ export const useConfigStore = create<ConfigState>((set) => ({
         status: config.status === true ? 'active' : config.status === false ? 'inactive' : config.status,
         configFields: config.configFields || []
       };
-      const res = await axios.put(`${API.updateconfig}${id}`, payload);
+      // Add cache-busting parameter
+      const res = await axios.put(`${API.updateconfig}${id}?_=${Date.now()}`, payload);
       const responseData = res.data as { data: Config };
       set((state) => ({
         configs: state.configs.map(c => c._id === id ? { ...c, ...responseData.data } : c),
         error: null,
         loading: false
       }));
+      // Force refresh the list to get updated data
+      await useConfigStore.getState().fetchConfigs(useConfigStore.getState().page);
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update config';
       set({ error: errorMessage, loading: false });
@@ -142,12 +150,15 @@ export const useConfigStore = create<ConfigState>((set) => ({
   deleteConfig: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.delete(`${API.deleteconfig}${id}`);
+      // Add cache-busting parameter
+      await axios.delete(`${API.deleteconfig}${id}?_=${Date.now()}`);
       set((state) => ({
         configs: state.configs.filter(c => c._id !== id),
         error: null,
         loading: false
       }));
+      // Force refresh the list after deletion
+      await useConfigStore.getState().fetchConfigs(useConfigStore.getState().page);
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete config';
       set({ error: errorMessage, loading: false });
@@ -158,7 +169,8 @@ export const useConfigStore = create<ConfigState>((set) => ({
   toggleStatusConfig: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      const res = await axios.patch(`${API.toggleStatusconfig}${id}`);
+      // Add cache-busting parameter
+      const res = await axios.patch(`${API.toggleStatusconfig}${id}?_=${Date.now()}`);
       const responseData = res.data as { data: { status: string } };
       set((state) => ({
         configs: state.configs.map(c => {
@@ -173,6 +185,8 @@ export const useConfigStore = create<ConfigState>((set) => ({
         error: null,
         loading: false
       }));
+      // Force refresh the list to get updated stats
+      await useConfigStore.getState().fetchConfigs(useConfigStore.getState().page);
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to toggle status';
       set({ error: errorMessage, loading: false });
@@ -183,12 +197,17 @@ export const useConfigStore = create<ConfigState>((set) => ({
   restoreConfig: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.patch(`${API.restoreconfig}${id}`);
+      // Add cache-busting parameter
+      await axios.patch(`${API.restoreconfig}${id}?_=${Date.now()}`);
+      
       set((state) => ({
         configs: state.configs.filter(c => c._id !== id),
         error: null,
         loading: false
       }));
+
+      // Force refresh the trash list after restore
+      await useConfigStore.getState().fetchTrashConfigs(useConfigStore.getState().page);
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to restore config';
       set({ error: errorMessage, loading: false });
@@ -199,12 +218,15 @@ export const useConfigStore = create<ConfigState>((set) => ({
   deleteConfigPermanently: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.delete(`${API.permanentDeleteconfig}${id}`);
+      // Add cache-busting parameter
+      await axios.delete(`${API.permanentDeleteconfig}${id}?_=${Date.now()}`);
       set((state) => ({
         configs: state.configs.filter(c => c._id !== id),
         error: null,
         loading: false
       }));
+      // Force refresh the trash list after permanent deletion
+      await useConfigStore.getState().fetchTrashConfigs(useConfigStore.getState().page);
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to permanently delete config';
       set({ error: errorMessage, loading: false });
@@ -218,7 +240,10 @@ export const useConfigStore = create<ConfigState>((set) => ({
       const statusParam =
         filter === 'active' ? 'active' :
         filter === 'inactive' ? 'inactive' : '';
-      const res = await axios.get(`${API.trashconfiglist}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
+      // Add cache-busting parameter
+      const res = await axios.get(
+        `${API.trashconfiglist}?page=${page}&limit=${limit}${statusParam ? '&status=' + statusParam : ''}&_=${Date.now()}`
+      );
       const data = res.data as {
         data: Config[];
         meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };

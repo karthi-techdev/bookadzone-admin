@@ -10,6 +10,7 @@ import { useFooterStore } from '../../../stores/FooterInfoStore';
 import type { ColumnConfig, FooterInfo } from '../../../types/common';
 import { truncate } from '../../../utils/helper';
 import ImportedURL from '../../../common/urls';
+import { DEFAULT_ITEMS_PER_PAGE } from '../../../../constants/pagination';
 
 interface StatFilter {
   id: string;
@@ -35,7 +36,7 @@ const FooterInfoTrashListTemplate: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<'total' | 'active' | 'inactive'>('total');
-  const itemsPerPage = 3;
+  const itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
   // Debug footers state
   useEffect(() => {
@@ -223,21 +224,14 @@ const FooterInfoTrashListTemplate: React.FC = () => {
         managementName="Footer Info"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statFilters={statFilters}
-        selectedFilterId={selectedFilter}
-        onSelectFilter={(id) => {
-          console.log(`Filter changed to: ${id}`);
-          setSelectedFilter(id as 'total' | 'active' | 'inactive');
-          setCurrentPage(1);
-        }}
+        addButtonLabel="Back to List"
+        addButtonLink="/footerinfo"
         module="footerinfo"
         isTrashView={true}
       />
 
       {loading ? (
         <BAZLoader />
-      ) : searchedFooterInfos.length === 0 ? (
-        <p>No footers found for the selected filter.</p>
       ) : (
         <>
           <ManagementTable

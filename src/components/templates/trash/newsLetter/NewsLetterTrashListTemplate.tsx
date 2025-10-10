@@ -183,12 +183,8 @@ const NewsLetterTrashListTemplate: React.FC = () => {
         managementName="NewsLetter"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statFilters={statFilters}
-        selectedFilterId={selectedFilter}
-        onSelectFilter={(id) => {
-          setSelectedFilter(id as 'total' | 'active' | 'inactive');
-          setCurrentPage(1);
-        }}
+        addButtonLabel="Back to List"
+        addButtonLink="/newsletter"
         module="newsletter"
         isTrashView={true}
       />

@@ -7,7 +7,7 @@ export const footerFields: FieldConfig[] = [
     type: 'file',
     required: true,
     className: 'md:col-span-12',
-    placeholder: 'Upload logo...',
+    accept: 'image/*'  
   },
   {
     name: 'description',
