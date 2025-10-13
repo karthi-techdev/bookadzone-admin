@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import FooterInfoTrashListTemplate from '../FooterInfoTrashListTemplate';
 import { useFooterStore } from '../../../../stores/FooterInfoStore';
@@ -115,7 +114,7 @@ describe('FooterInfoTrashListTemplate', () => {
     });
   });
 
-  it('shows no footers found if list is empty', () => {
+  it('shows no data message if list is empty', () => {
     ((useFooterStore as unknown) as jest.Mock).mockReturnValue({
       ...useFooterStore(),
       footers: [],
@@ -124,6 +123,6 @@ describe('FooterInfoTrashListTemplate', () => {
       stats: { total: 0, active: 0, inactive: 0 },
     });
     renderWithRouter();
-    expect(screen.getByText(/no footers found/i)).toBeInTheDocument();
+    expect(screen.getByText(/no data available/i)).toBeInTheDocument();
   });
 });

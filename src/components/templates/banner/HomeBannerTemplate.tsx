@@ -179,6 +179,7 @@ const HomeBannerTemplate: React.FC = () => {
 
   const onSubmit = async (formData: any) => {
     clearErrors();
+    
     // Collect validation errors using ValidationHelper
     const allFields = tabs.flatMap(tab => tab.fields);
     const validationErrors = allFields.map(field => {
@@ -187,7 +188,6 @@ const HomeBannerTemplate: React.FC = () => {
     }).filter(e => e);
 
     if (validationErrors.length > 0) {
-      // Set errors in react-hook-form
       validationErrors.forEach(err => {
         if (err) {
           setError(err.field as any, { type: 'manual', message: err.message });
@@ -199,53 +199,122 @@ const HomeBannerTemplate: React.FC = () => {
 
     try {
       const formDataObj = new FormData();
+      
       if (activeTab === 1) {
-        // ...existing code for Banner One submission...
-        formDataObj.append('homepage[bannerOne][title]', formData.bannerOneTitle || '');
-        formDataObj.append('homepage[bannerOne][highlightedText]', formData.highlightedText || '');
-        formDataObj.append('homepage[bannerOne][subHead1]', formData.subHead1 || '');
-        formDataObj.append('homepage[bannerOne][subDescription1]', formData.subDescription1 || '');
-        formDataObj.append('homepage[bannerOne][subHead2]', formData.subHead2 || '');
-        formDataObj.append('homepage[bannerOne][subDescription2]', formData.subDescription2 || '');
-        formDataObj.append('homepage[bannerOne][subHead3]', formData.subHead3 || '');
-        formDataObj.append('homepage[bannerOne][subDescription3]', formData.subDescription3 || '');
-        // Handle image files
+        // ✅ NEW: Validate all required fields have values
+        const requiredFields = [
+          { key: 'bannerOneTitle', label: 'Title' },
+          { key: 'highlightedText', label: 'Highlighted Text' },
+          { key: 'subHead1', label: 'Sub Head 1' },
+          { key: 'subDescription1', label: 'Sub Description 1' },
+          { key: 'subHead2', label: 'Sub Head 2' },
+          { key: 'subDescription2', label: 'Sub Description 2' },
+          { key: 'subHead3', label: 'Sub Head 3' },
+          { key: 'subDescription3', label: 'Sub Description 3' },
+        ];
+
+        for (const field of requiredFields) {
+          if (!formData[field.key]?.trim()) {
+            toast.error(`${field.label} is required`);
+            return;
+          }
+        }
+
+        // ✅ NEW: Validate images (either existing or new file)
+        const imageFields = [
+          { key: 'image1', label: 'Image 1', existing: banner?.homepage?.bannerOne?.image1 },
+          { key: 'image2', label: 'Image 2', existing: banner?.homepage?.bannerOne?.image2 },
+          { key: 'image3', label: 'Image 3', existing: banner?.homepage?.bannerOne?.image3 },
+        ];
+
+        for (const imageField of imageFields) {
+          const hasNewFile = formData[imageField.key] instanceof File;
+          const hasExisting = imageField.existing && imageField.existing !== '';
+          
+          if (!hasNewFile && !hasExisting) {
+            toast.error(`${imageField.label} is required`);
+            return;
+          }
+        }
+
+        // Use dot notation for all Banner One fields
+        formDataObj.append('homepage.bannerOne.title', formData.bannerOneTitle || '');
+        formDataObj.append('homepage.bannerOne.highlightedText', formData.highlightedText || '');
+        formDataObj.append('homepage.bannerOne.subHead1', formData.subHead1 || '');
+        formDataObj.append('homepage.bannerOne.subDescription1', formData.subDescription1 || '');
+        formDataObj.append('homepage.bannerOne.subHead2', formData.subHead2 || '');
+        formDataObj.append('homepage.bannerOne.subDescription2', formData.subDescription2 || '');
+        formDataObj.append('homepage.bannerOne.subHead3', formData.subHead3 || '');
+        formDataObj.append('homepage.bannerOne.subDescription3', formData.subDescription3 || '');
+        
         if (formData.image1 instanceof File) {
           formDataObj.append('homepage.bannerOne.image1', formData.image1);
-        } else if (typeof formData.image1 === 'string' && formData.image1) {
-          formDataObj.append('homepage[bannerOne][image1]', formData.image1);
         }
         if (formData.image2 instanceof File) {
           formDataObj.append('homepage.bannerOne.image2', formData.image2);
-        } else if (typeof formData.image2 === 'string' && formData.image2) {
-          formDataObj.append('homepage[bannerOne][image2]', formData.image2);
         }
         if (formData.image3 instanceof File) {
           formDataObj.append('homepage.bannerOne.image3', formData.image3);
-        } else if (typeof formData.image3 === 'string' && formData.image3) {
-          formDataObj.append('homepage[bannerOne][image3]', formData.image3);
         }
+        
         await updateBanner(formDataObj);
         toast.success('Banner One updated successfully');
+        
       } else if (activeTab === 2) {
-        // ...existing code for Banner Two submission...
+        // ✅ NEW: Validate required fields for Banner Two
+        if (!formData.bannerTwoTitle?.trim()) {
+          toast.error('Title is required');
+          return;
+        }
+        if (!formData.description?.trim()) {
+          toast.error('Description is required');
+          return;
+        }
+        if (!formData.buttonName?.trim()) {
+          toast.error('Button Name is required');
+          return;
+        }
+        if (!formData.buttonUrl?.trim()) {
+          toast.error('Button URL is required');
+          return;
+        }
+
+        // ✅ NEW: Validate background image
+        const hasNewBgFile = formData.backgroundImage instanceof File;
+        const hasExistingBg = banner?.homepage?.bannerTwo?.backgroundImage && banner.homepage.bannerTwo.backgroundImage !== '';
+        
+        if (!hasNewBgFile && !hasExistingBg) {
+          toast.error('Background Image is required');
+          return;
+        }
+
+        // ✅ NEW: Validate features array
+        if (!Array.isArray(formData.features) || formData.features.length === 0) {
+          toast.error('At least one feature is required');
+          return;
+        }
+
+        const validFeatures = formData.features.filter((feature: any) => 
+          feature && (feature.icon?.trim() || feature.title?.trim())
+        );
+
+        if (validFeatures.length === 0) {
+          toast.error('At least one valid feature is required');
+          return;
+        }
+
         formDataObj.append('homepage[bannerTwo][title]', formData.bannerTwoTitle || '');
         formDataObj.append('homepage[bannerTwo][description]', formData.description || '');
         formDataObj.append('homepage[bannerTwo][buttonName]', formData.buttonName || '');
         formDataObj.append('homepage[bannerTwo][buttonUrl]', formData.buttonUrl || '');
-        // Handle features array
-        if (Array.isArray(formData.features)) {
-          const validFeatures = formData.features.filter((feature: any) => 
-            feature && (feature.icon?.trim() || feature.title?.trim())
-          );
-          formDataObj.append('homepage[bannerTwo][features]', JSON.stringify(validFeatures));
-        }
-        // Handle background image
+        formDataObj.append('homepage[bannerTwo][features]', JSON.stringify(validFeatures));
+        
         if (formData.backgroundImage instanceof File) {
           formDataObj.append('homepage.bannerTwo.backgroundImage', formData.backgroundImage);
         } else if (typeof formData.backgroundImage === 'string' && formData.backgroundImage) {
           formDataObj.append('homepage[bannerTwo][backgroundImage]', formData.backgroundImage);
         }
+        
         await updateBanner(formDataObj);
         toast.success('Banner Two updated successfully');
       }

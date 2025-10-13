@@ -21,15 +21,24 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   error: null,
 
   fetchSettings: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      set({ error: 'No authentication token', loading: false });
+      return;
+    }
+
     try {
-      set({ loading: true, error: null });
-      const res = await axios.get(API.listconfig.replace('configs/', 'settings/'));
+      set(state => ({ ...state, loading: true, error: null }));
+      const res = await axios.get(
+        API.listconfig.replace('configs/', 'settings/'),
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       const data = res.data as { data: Settings };
-      set({ settings: data.data, loading: false, error: null });
+      set(state => ({ ...state, settings: data.data, loading: false }));
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch settings';
-      set({ error: errorMessage, loading: false });
-      throw errorMessage;
+      set(state => ({ ...state, error: errorMessage, loading: false }));
+      console.error('Error fetching settings:', errorMessage);
     }
   },
 

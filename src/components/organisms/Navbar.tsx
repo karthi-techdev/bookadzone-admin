@@ -9,12 +9,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/AuthStore";
 import { motion } from "framer-motion";
 import { useDropdown } from "../hooks/useDropdown";
+import { useSettingsStore } from "../stores/settingsStore";
+import ImportedURL from "../common/urls";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuthStore();
   const notifDropdown = useDropdown();
   const profileDropdown = useDropdown();
+  // Use settings store hook for logo
+  const settings = useSettingsStore((state: any) => state.settings);
+  // Get current user from auth store
+  const user = useAuthStore(state => state.user);
 
   return (
     <motion.nav
@@ -25,7 +31,12 @@ const Navbar: React.FC = () => {
       className="z-100000 fixed top-0 left-0 right-0 w-full shadow flex items-center justify-between px-6 py-3 bg-[var(--light-dark-color)] h-[60px] border-b-[1px] border-b-[var(--light-blur-grey-color)]">
         <div className="nav-enclose flex items-center justify-between w-full">
           <motion.div className="logo flex items-center justify-center" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.97 }}>
-            <Logo className="h-[20px]" />
+            {/* Dynamic logo from settings */}
+            {settings?.general?.siteLogo ? (
+              <img src={ImportedURL.FILEURL + settings.general.siteLogo} alt="Site Logo" className="h-[30px] w-auto max-w-[120px] object-contain" />
+            ) : (
+              <Logo className="h-[20px]" />
+            )}
           </motion.div>
           <div className="nav-content flex items-center w-[80vw] justify-between">
             <div className="search-box w-[35vw] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
@@ -162,8 +173,8 @@ const Navbar: React.FC = () => {
                   <GoOrganization className="text-[1rem] text-[var(--white-color)]" />
                 </div>
                 <div className="profile-btn-content">
-                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">Focus Media</span>
-                  <span className="text-[.50rem] text-[var(--light-grey-color)] flex">Admin</span>
+                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">{user?.email?.split('@')[0] || 'Guest'}</span>
+                  <span className="text-[.50rem] text-[var(--light-grey-color)] flex">{user?.role || 'Not logged in'}</span>
                 </div>
               </Button>
               {profileDropdown.open && (

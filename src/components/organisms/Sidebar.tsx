@@ -3,7 +3,7 @@ import BAZButton from "../atoms/BAZ-Button";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { IoGrid } from "react-icons/io5";
 import { TbCategoryPlus } from "react-icons/tb";
-import { RiListIndefinite ,RiAdvertisementFill,RiShieldUserFill} from "react-icons/ri";
+import { RiListIndefinite, RiAdvertisementFill, RiShieldUserFill, RiUserSettingsLine } from "react-icons/ri";
 import { MdSettings } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
 import { FaTrashCan } from "react-icons/fa6";
@@ -61,6 +61,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       ]
     },
     {
+      icon: <RiUserSettingsLine />, text: "Profile", path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "Update Profile", path: "/profile/update" },
+        { icon: <RiListIndefinite />, text: "Change Password", path: "/profile/change-password" },
+      ]
+    },
+    {
       icon: <MdSettings />, text: "Setting", path: "#",
       children: [
         { icon: <RiListIndefinite />, text: "General Settings", path: "/settings/general" },
@@ -77,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
-        { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
+        { icon: <RiListIndefinite />, text: "Category", path: "/trash/category" },
         { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
         { icon: <RiListIndefinite />, text: "BlogCategory", path: "/trash/blogcategory" },
 

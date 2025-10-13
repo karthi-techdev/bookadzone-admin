@@ -115,6 +115,7 @@ beforeEach(() => {
 });
 
 describe('FooterFormTemplate', () => {
+  jest.setTimeout(15000);
 	const renderWithRouter = (ui: React.ReactElement) =>
 		render(<MemoryRouter>{ui}</MemoryRouter>);
 

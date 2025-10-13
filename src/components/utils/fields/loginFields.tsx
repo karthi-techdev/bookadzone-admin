@@ -8,7 +8,6 @@ export const loginFields: FieldConfig[] = [
     required: true,
     className: 'md:col-span-6 ',
     placeholder: 'Enter Your Email',
-    value:'admin@gmail.com'
   },
   {
     name: 'password',
@@ -17,6 +16,5 @@ export const loginFields: FieldConfig[] = [
     required: true,
     className: 'md:col-span-6',
     placeholder: 'Enter Your Password',
-    value:'admin@123'
   },
 ];

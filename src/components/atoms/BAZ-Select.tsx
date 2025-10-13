@@ -65,6 +65,7 @@ const BAZSelect: React.FC<CustomSelectProps> = ({
         placeholder={placeholder}
         classNamePrefix="react-select"
         isDisabled={disabled}
+        data-testid={id ? `${id}-input` : undefined}
         closeMenuOnSelect={!isMulti}
         hideSelectedOptions={isMulti ? false : undefined}
         styles={{

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import ImportedURL from '../common/urls';
-import type { Agency, AgencyInput } from '../types/common';
+import type { Agency } from '../types/common';
 
 const { API } = ImportedURL;
 
@@ -25,6 +25,7 @@ interface AgencyState {
   restoreAgency: (id: string) => Promise<void>;
   deleteAgencyPermanently: (id: string) => Promise<void>;
   fetchTrashAgencies: (page?: number, limit?: number) => Promise<void>;
+  checkEmailsExist: (yourEmail: string, companyEmail: string, currentId?: string) => Promise<{ yourEmailExists: boolean; companyEmailExists: boolean }>;
 }
 
 export const useAgencyStore = create<AgencyState>((set) => ({
@@ -37,7 +38,12 @@ export const useAgencyStore = create<AgencyState>((set) => ({
   fetchAgencies: async (page = 1, limit = 20) => {
     try {
       set({ loading: true, error: null });
-      const res = await axios.get(`${API.listAgency}?page=${page}&limit=${limit}`);
+      const res = await axios.get(`${API.listAgency}?page=${page}&limit=${limit}&_=${Date.now()}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        }
+      });
       const agencies = res.data.agencies || res.data.data || [];
       const totalPages = res.data.meta?.totalPages ?? 1;
       set({
@@ -57,7 +63,22 @@ export const useAgencyStore = create<AgencyState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.getAgency}${id}`);
-      return res.data?.data as Agency;
+      const agency = res.data?.data as Agency;
+      
+      // Update the agencies list if the fetched agency is in it
+      if (agency) {
+        set((state) => ({
+          agencies: state.agencies.map((a) => 
+            a._id === id ? { ...a, ...agency } : a
+          ),
+          loading: false,
+          error: null
+        }));
+      } else {
+        set({ loading: false });
+      }
+      
+      return agency;
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch agency', loading: false });
       return null;
@@ -78,8 +99,19 @@ export const useAgencyStore = create<AgencyState>((set) => ({
   updateAgency: async (id: string, formData: FormData) => {
     try {
       set({ loading: true, error: null });
-      await axios.put(`${API.updateAgency}${id}`, formData);
-      set({ loading: false });
+      const res = await axios.put(`${API.updateAgency}${id}`, formData);
+      const updatedAgency = res.data?.data;
+      
+      // Update the agencies list if the updated agency is in it
+      set((state) => ({
+        agencies: state.agencies.map((agency) => 
+          agency._id === id ? { ...agency, ...updatedAgency } : agency
+        ),
+        loading: false,
+        error: null
+      }));
+      
+      return updatedAgency;
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to update agency', loading: false });
       throw error;
@@ -90,7 +122,11 @@ export const useAgencyStore = create<AgencyState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.deleteAgency}${id}`);
-      set({ loading: false });
+      // Immediately remove from local state
+      set(state => ({
+        loading: false,
+        agencies: state.agencies.filter(a => a._id !== id)
+      }));
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to delete agency', loading: false });
       throw error;
@@ -125,7 +161,12 @@ export const useAgencyStore = create<AgencyState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.patch(`${API.restoreAgency}${id}`);
-      set({ loading: false });
+      // Remove from trash list
+      set(state => ({
+        loading: false,
+        error: null,
+        agencies: state.agencies.filter(a => a._id !== id)
+      }));
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to restore agency', loading: false });
       throw error;
@@ -136,7 +177,12 @@ export const useAgencyStore = create<AgencyState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.permanentDeleteAgency}${id}`);
-      set({ loading: false });
+      // Clear the deleted agency from state
+      set(state => ({
+        loading: false,
+        error: null,
+        agencies: state.agencies.filter(a => a._id !== id)
+      }));
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to permanently delete agency', loading: false });
       throw error;
@@ -146,7 +192,12 @@ export const useAgencyStore = create<AgencyState>((set) => ({
   fetchTrashAgencies: async (page = 1, limit = 20) => {
     try {
       set({ loading: true, error: null });
-      const res = await axios.get(`${API.trashAgencyList}?page=${page}&limit=${limit}`);
+      const res = await axios.get(`${API.trashAgencyList}?page=${page}&limit=${limit}&_=${Date.now()}`, {
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache',
+        }
+      });
       // Fix: use agencies from backend response
       const data = res.data as { agencies: Agency[]; total?: number; page?: number; limit?: number };
       set({
@@ -158,6 +209,22 @@ export const useAgencyStore = create<AgencyState>((set) => ({
       });
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch trashed agencies', loading: false });
+      throw error;
+    }
+  },
+
+  checkEmailsExist: async (yourEmail: string, companyEmail: string, currentId?: string) => {
+    try {
+      set({ loading: true, error: null });
+      const res = await axios.post(`${API.listAgency}/check-emails`, {
+        yourEmail,
+        companyEmail,
+        currentId // Pass the current agency ID to exclude from uniqueness check
+      });
+      set({ loading: false });
+      return res.data.data || { yourEmailExists: false, companyEmailExists: false };
+    } catch (error: any) {
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to check emails', loading: false });
       throw error;
     }
   },

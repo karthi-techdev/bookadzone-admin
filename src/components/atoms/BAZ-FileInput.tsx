@@ -268,6 +268,7 @@ const BAZFileInput: React.FC<FileInputProps> = ({
           multiple={multiple}
           className="hidden"
           disabled={disabled}
+          data-testid={`${name}-input`}
         />
       </label>
       
@@ -298,7 +299,8 @@ const BAZFileInput: React.FC<FileInputProps> = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveFile(index)}
-                    className="p-1 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 text-white-600 bg-danger-600 hover:bg-danger-700 transition"
+                    aria-label="Remove file"
+                    className="p-1 bg-white bg-opacity-20 rounded-full hover:bg-opacity-30 text-white-600 bg-danger-600 hover:bg-danger-700 transition group-hover:opacity-100"
                   >
                     <FiTrash2 className="h-4 w-4" />
                   </button>
@@ -315,7 +317,7 @@ const BAZFileInput: React.FC<FileInputProps> = ({
       )}
       
       {error && (
-        <p className="text-sm text-red-400 flex items-center mt-2 p-2 bg-red-50 rounded">
+        <p role="alert" className="text-sm text-red-400 flex items-center mt-2 p-2 bg-red-50 rounded">
           <FiAlertCircle className="mr-2" /> {error}
         </p>
       )}

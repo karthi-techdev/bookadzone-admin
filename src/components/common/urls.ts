@@ -13,13 +13,14 @@ const API = {
   // Agency endpoints
   addAgency: `${ROOTURL}agencies/`,
   listAgency: `${ROOTURL}agencies/`,
-  getAgency: `${ROOTURL}agencies/`,
-  updateAgency: `${ROOTURL}agencies/`,
-  deleteAgency: `${ROOTURL}agencies/softDelete/`,
-  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`,
+  getAgency: `${ROOTURL}agencies/`, 
+  updateAgency: `${ROOTURL}agencies/`, 
+  deleteAgency: `${ROOTURL}agencies/softDelete/`, 
+  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`, 
   trashAgencyList: `${ROOTURL}agencies/trash`,
-  restoreAgency: `${ROOTURL}agencies/restore/`,
-  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`,
+  restoreAgency: `${ROOTURL}agencies/restore/`, 
+  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, 
+
   // FAQ endpoints
   addfaq: `${ROOTURL}faqs/`,
   listfaq: `${ROOTURL}faqs/`,
@@ -69,11 +70,11 @@ const API = {
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
-  getcategorybyId: `${ROOTURL}category/`,
-  updatecategory: `${ROOTURL}category/`,
-  deletecategory: `${ROOTURL}category/softDelete/`,
-  toggleStatuscategory: `${ROOTURL}category/toggleStatus/`,
-  trashcategorylist: `${ROOTURL}category/trash`,
+  getcategorybyId: `${ROOTURL}category/getcategoryById/`,  // Make sure this matches the backend route
+  updatecategory: `${ROOTURL}category/updatecategory/`,
+  deletecategory: `${ROOTURL}category/softDeletecategory/`,
+  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,  // Fix casing to match backend
+  trashcategorylist: `${ROOTURL}category/trash`,  // Remove trailing slash
   restorecategory: `${ROOTURL}category/restore/`,
   permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
 
@@ -84,6 +85,9 @@ const API = {
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,
+  forgotPassword: `${ROOTURL}auth/forgot-password`,
+  resetPassword: `${ROOTURL}auth/reset-password`,
+  me: `${ROOTURL}auth/me`,
 
   //BlogCategory endpoints
   addBlogCategory:`${ROOTURL}blogCategory/`,
@@ -95,6 +99,13 @@ const API = {
   trashBlogCategoryList:`${ROOTURL}blogCategory/trash`,
   restoreBlogCategory:`${ROOTURL}blogCategory/restore/`,
   permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
+
+  // Profile endpoints
+  profile: {
+    me: `${ROOTURL}auth/me`,
+    update: `${ROOTURL}auth/profile`,
+    changePassword: `${ROOTURL}auth/change-password`
+  },
 
   // Template Images
   templateImage: `${ROOTURL}editer/image`

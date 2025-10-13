@@ -42,6 +42,11 @@ const CategoryListTemplate: React.FC = () => {
     }
   }, [error]);
 
+  // Log the categories for debugging
+  useEffect(() => {
+    console.log('Categories from store:', categories);
+  }, [categories]);
+
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
@@ -71,13 +76,13 @@ const CategoryListTemplate: React.FC = () => {
         return '-';
       },
     },
-    { key: 'name', label: 'Category Name', render: (value) => truncate(value, 40) },
+    { key: 'name', label: 'Name', render: (value) => truncate(value, 40) },
     { key: 'slug', label: 'Slug', render: (value) => truncate(value, 40) },
     { key: 'description', label: 'Description', render: (value) => truncate(value, 40) },
 
   ];
 
-  // Delete handler with page adjustment
+  // Delete handler with fresh data fetch
   const handleDelete = (category: Category) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -89,16 +94,39 @@ const CategoryListTemplate: React.FC = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteCategory(category._id!);
-        const updatedLength = searchedCategories.length - 1;
-        const newTotalItems = categories.length - 1;
-        const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
-        if (updatedLength === 0 && currentPage > newTotalPages) {
-          setCurrentPage(newTotalPages || 1);
-        } else {
-          await fetchCategories(currentPage, itemsPerPage);
+        try {
+          // First delete the category
+          await deleteCategory(category._id!);
+          
+          // Force a complete refresh of data
+          const currentItemCount = categories.length;
+          const newTotalPages = Math.ceil((currentItemCount - 1) / itemsPerPage);
+          
+          // If we're on a page that would now be empty, go to the previous page
+          const newPage = currentPage > newTotalPages ? Math.max(1, newTotalPages) : currentPage;
+          
+          // Fetch fresh data for the new page
+          await fetchCategories(newPage, itemsPerPage);
+          setCurrentPage(newPage);
+          
+          // Clear any filters that might prevent seeing the updated list
+          setSearchTerm('');
+          
+          Swal.fire({
+            title: 'Deleted!',
+            text: 'The category has been removed.',
+            icon: 'success',
+            confirmButtonColor: 'var(--puprle-color)',
+          });
+        } catch (error: any) {
+          console.error('Delete error:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: error?.response?.data?.message || 'Failed to delete the category.',
+            icon: 'error',
+            confirmButtonColor: 'var(--puprle-color)',
+          });
         }
-        Swal.fire('Deleted!', 'The category has been removed.', 'success');
       }
     });
   };
@@ -113,16 +141,13 @@ const CategoryListTemplate: React.FC = () => {
         onSearchChange={setSearchTerm}
         addButtonLabel="Add"
         addButtonLink="/category/add"
-        // statFilters={statFilters} // Uncomment if you add stats
-        // selectedFilterId={selectedFilter} // Uncomment if you add stats
-        // onSelectFilter={...} // Uncomment if you add stats
         module="category"
       />
 
       <ManagementTable
         data={searchedCategories}
         columns={columns}
-        onEdit={(row) => navigate(`/categorys/edit/${row._id}`)}
+        onEdit={(row) => navigate(`/category/edit/${row._id}`)}
         onToggleStatus={(row) => toggleStatusCategory(row._id!)}
         onDelete={handleDelete}
         currentPage={currentPage}

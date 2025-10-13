@@ -1,7 +1,8 @@
-import React, { memo } from 'react';
-import { FiAlertCircle } from 'react-icons/fi';
+import React, { memo, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
+import { FiAlertCircle } from 'react-icons/fi';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import FormError from '../atoms/BAZ-FormError';
 import BAZInput from '../atoms/BAZ-Input';
 import BAZTextArea from '../atoms/BAZ-TextArea';
 import BAZCheckbox from '../atoms/BAZ-Checkbox';
@@ -10,7 +11,7 @@ import BAZSelect from '../atoms/BAZ-Select';
 import BAZFileInput from '../atoms/BAZ-FileInput';
 import type { InputType, SelectOption } from '../types/common';
 
-interface LabeledInputProps {
+export interface LabeledInputProps {
   name: string;
   label?: string;
   type: InputType;
@@ -27,8 +28,6 @@ interface LabeledInputProps {
   multiple?: boolean;
   valueAsNumber?: boolean;
   error?: string;
-  togglePassword?: () => void;
-  showPassword?: boolean;
   isAuth?: boolean;
   existingFiles?: string | string[];
 }
@@ -52,10 +51,9 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
     valueAsNumber = false,
     isAuth = false,
     error,
-    togglePassword,
-    showPassword,
     existingFiles,
   }) => {
+    const [showPassword, setShowPassword] = useState(false);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value: any; removedFiles?: string[] } }) => {
       if (!onChange) return;
 
@@ -74,7 +72,8 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
       } else if (type === 'checkbox') {
         newValue = (e.target as HTMLInputElement).checked;
       } else if (type === 'number' && valueAsNumber) {
-        newValue = e.target.value === '' ? undefined : Number(e.target.value);
+        const inputValue = (e.target as HTMLInputElement).value;
+        newValue = inputValue === '' ? undefined : Number(inputValue);
       } else if (type === 'radio') {
         newValue = e.target.value;
       } else {
@@ -218,12 +217,13 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
                   error={undefined}
                   isAuth={isAuth}
                   className="outline-none w-full"
+                  data-testid={`${name}-input`}
                 />
-                {type === 'password' && togglePassword && (
+                {type === 'password' && (
                   <button
                     type="button"
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
-                    onClick={togglePassword}
+                    onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}

@@ -1,11 +1,15 @@
 import React from 'react';
 import ValidationHelper from '../../utils/validationHelper';
 import { useForm, FormProvider } from 'react-hook-form';
+import { FaFacebook, FaTwitter, FaLinkedin } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import { useSettingsStore } from '../../stores/settingsStore';
 import { ogConfigFields } from '../../utils/fields/ogConfigFields';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
+import ImportedURL from '../../common/urls';
+import OgPreviewCard from '../../atoms/OgPreviewCard';
+import SocialShareButton from '../../atoms/SocialShareButton';
 
 type OgConfigFormValues = {
   [key: string]: any;
@@ -139,7 +143,123 @@ const OgConfigTemplate: React.FC = () => {
     <div className="p-6">
       <FormHeader
         managementName="OG Configuration"
-      />      
+      />
+      <div className="mb-6 p-6 bg-[var(--light-dark-color)] rounded-lg shadow-sm border border-[var(--light-blur-grey-color)]">
+        <h3 className="text-lg font-medium mb-6 text-[var(--white-color)]">Share Preview</h3>
+        
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Preview Card */}
+          <div className="bg-[var(--dark-color)] p-4 rounded-lg border border-[var(--light-blur-grey-color)]">
+            <OgPreviewCard
+              className="w-full"
+              image={settings?.og?.ogImage ? `${ImportedURL.FILEURL}${settings.og.ogImage}` : undefined}
+              title={settings?.og?.ogTitle || settings?.seo?.metaTitle || ""}
+              description={settings?.og?.ogDescription || settings?.seo?.metaDescription || ""}
+              url={settings?.og?.ogUrl || window.location.origin}
+            />
+          </div>
+
+          {/* Share and Validate Section */}
+          <div className="space-y-6">
+            {/* Share Buttons */}
+            <div>
+              <h4 className="text-sm font-medium mb-3 text-[var(--white-color)]">Share on Social Media</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <SocialShareButton
+                  platform="facebook"
+                  onClick={() => {
+                    const url = encodeURIComponent(window.location.origin);
+                    window.open(
+                      `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+                      'facebook-share',
+                      'width=580,height=296'
+                    );
+                  }}
+                />
+
+                <SocialShareButton
+                  platform="twitter"
+                  onClick={() => {
+                    const url = encodeURIComponent(window.location.origin);
+                    const text = encodeURIComponent(settings?.og?.ogTitle || settings?.seo?.metaTitle || '');
+                    window.open(
+                      `https://twitter.com/intent/tweet?url=${url}&text=${text}`,
+                      'twitter-share',
+                      'width=550,height=235'
+                    );
+                  }}
+                />
+
+                <SocialShareButton
+                  platform="linkedin"
+                  onClick={() => {
+                    const url = encodeURIComponent(window.location.origin);
+                    const title = encodeURIComponent(settings?.og?.ogTitle || settings?.seo?.metaTitle || '');
+                    window.open(
+                      `https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}`,
+                      'linkedin-share',
+                      'width=550,height=435'
+                    );
+                  }}
+                />
+
+                <SocialShareButton
+                  platform="whatsapp"
+                  onClick={() => {
+                    const url = encodeURIComponent(window.location.origin);
+                    const text = encodeURIComponent(
+                      (settings?.og?.ogTitle || settings?.seo?.metaTitle || '') + '\n\n' +
+                      (settings?.og?.ogDescription || settings?.seo?.metaDescription || '')
+                    );
+                    // For mobile devices
+                    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                      window.location.href = `whatsapp://send?text=${text}%0A${url}`;
+                    } else {
+                      // For desktop devices
+                      window.open(
+                        `https://web.whatsapp.com/send?text=${text}%0A${url}`,
+                        'whatsapp-share',
+                        'width=600,height=700'
+                      );
+                    }
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Validator Links */}
+            <div className="bg-[var(--dark-color)] p-4 rounded-lg border border-[var(--light-blur-grey-color)]">
+              <h4 className="text-sm font-medium mb-3 text-[var(--white-color)]">Validate OG Tags</h4>
+              <div className="grid grid-cols-1 gap-3">
+                <a 
+                  href={`https://developers.facebook.com/tools/debug/?q=${encodeURIComponent(window.location.origin)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-[var(--puprle-color)] hover:text-[var(--light-purple-color)] transition-colors"
+                >
+                  <FaFacebook className="mr-2" /> Facebook Debugger
+                </a>
+                <a 
+                  href={`https://www.linkedin.com/post-inspector/inspect/${encodeURIComponent(window.location.origin)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-[var(--puprle-color)] hover:text-[var(--light-purple-color)] transition-colors"
+                >
+                  <FaLinkedin className="mr-2" /> LinkedIn Inspector
+                </a>
+                <a 
+                  href="https://cards-dev.twitter.com/validator"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-[var(--puprle-color)] hover:text-[var(--light-purple-color)] transition-colors"
+                >
+                  <FaTwitter className="mr-2" /> Twitter Validator
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <ToastContainer position="top-right" autoClose={3000} />
       <FormProvider {...methods}>
         <ManagementForm

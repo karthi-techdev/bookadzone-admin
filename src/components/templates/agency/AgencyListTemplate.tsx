@@ -31,9 +31,13 @@ const AgencyListTemplate: React.FC = () => {
   // If you add stats, you can use statFilters like FAQ
   // const statFilters: StatFilter[] = [ ... ];
 
+  // Fetch data when page changes or after operations
   useEffect(() => {
-    fetchAgencies(currentPage, itemsPerPage);
-  }, [currentPage]);
+    const fetchData = async () => {
+      await fetchAgencies(currentPage, itemsPerPage);
+    };
+    fetchData();
+  }, [currentPage, fetchAgencies]);
 
   useEffect(() => {
     if (error) toast.error(error);
@@ -71,7 +75,6 @@ const AgencyListTemplate: React.FC = () => {
     { key: 'agencyName', label: 'Agency Name', render: (value) => truncate(value, 40) },
     { key: 'name', label: 'Contact Name', render: (value) => truncate(value, 40) },
     { key: 'companyPhone', label: 'Company Phone', render: (value) => truncate(value, 40) },
- 
   ];
 
   // Delete handler with page adjustment
@@ -120,6 +123,7 @@ const AgencyListTemplate: React.FC = () => {
         data={searchedAgencies}
         columns={columns}
         onEdit={(row) => navigate(`/agency/edit/${row._id}`)}
+        onView={(row) => navigate(`/agency/view/${row._id}`)}
         onToggleStatus={(row) => toggleStatusAgency(row._id!)}
         onDelete={handleDelete}
         currentPage={currentPage}

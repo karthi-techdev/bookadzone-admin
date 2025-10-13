@@ -79,26 +79,40 @@ const AboutBannertTemplate: React.FC = () => {
   const methods = useForm<AboutBannerFormData>({ defaultValues: {}, mode: 'onSubmit' });
   const { handleSubmit, reset, clearErrors, setValue, getValues, formState: { isSubmitting } } = methods;
 
-  // Handler for image field changes (removes, dedupes)
+  // Handler for image field changes - separates new, existing and removed images
   const handleImageFieldChange = (fieldName: string, removedFieldName: string) => (e: { target: { value: any; removedFiles?: string[] } }) => {
-    let images = Array.isArray(e.target.value) ? [...e.target.value] : [];
-    // Remove deleted images
-    if (e.target.removedFiles?.length) {
-      images = images.filter(img => typeof img === 'string' ? !e.target.removedFiles!.includes(img) : true);
-      setValue(removedFieldName, e.target.removedFiles, { shouldValidate: true });
-    }
-    // Deduplicate by string path or file name+size
-    const unique: any[] = [];
-    const seen = new Set<string>();
-    images.forEach(img => {
-      if (typeof img === 'string') {
-        if (!seen.has(img)) { unique.push(img); seen.add(img); }
-      } else if (img instanceof File) {
-        const key = `${img.name}_${img.size}`;
-        if (!seen.has(key)) { unique.push(img); seen.add(key); }
+    const currentValue = getValues(fieldName) || [];
+    const newFiles: File[] = [];
+    const existingImages: { id: number; url: string }[] = [];
+    
+    // Handle existing images
+    currentValue.forEach((img: any) => {
+      if (img && typeof img === 'object' && 'url' in img && 'id' in img) {
+        // Only keep existing images that haven't been removed
+        if (!e.target.removedFiles?.includes(img.url)) {
+          existingImages.push(img);
+        }
       }
     });
-    setValue(fieldName, unique, { shouldValidate: true });
+
+    // Handle new files
+    if (Array.isArray(e.target.value)) {
+      e.target.value.forEach((file: File) => {
+        if (file instanceof File) {
+          newFiles.push(file);
+        }
+      });
+    } else if (e.target.value instanceof File) {
+      newFiles.push(e.target.value);
+    }
+
+    // Update removed files if any
+    if (e.target.removedFiles?.length) {
+      setValue(removedFieldName, e.target.removedFiles, { shouldValidate: true });
+    }
+
+    // Set the combined value but keep new files and existing images separate in the internal structure
+    setValue(fieldName, [...existingImages, ...newFiles], { shouldValidate: true });
   };
 
   const fetchBanner = useBannerStore((state) => state.fetchBanner);
@@ -116,6 +130,13 @@ const AboutBannertTemplate: React.FC = () => {
       const bannerTwo = banner.aboutBanner.bannerTwo || {};
       const bannerThree = banner.aboutBanner.bannerThree || {};
       const bannerFour = banner.aboutBanner.bannerFour || {};
+
+      // Log received data (for debugging)
+      console.log('Received banner data:', {
+        bannerThree,
+        bannerFour
+      });
+
       // Convert images to array of objects with id and url
       const bannerOneImages = Array.isArray(bannerOne.images)
         ? bannerOne.images.map((img: any, idx: number) =>
@@ -131,6 +152,12 @@ const AboutBannertTemplate: React.FC = () => {
               : img
           )
         : [];
+      // Log the raw banner data before processing
+      console.log('Raw banner data:', {
+        bannerThree,
+        bannerFour
+      });
+
       const formData = {
         aboutSubmenu1Title: bannerOne.title || '',
         aboutSubmenu1Description: bannerOne.description || '',
@@ -143,21 +170,30 @@ const AboutBannertTemplate: React.FC = () => {
         aboutSubmenu3Title: bannerThree.title || '',
         aboutSubmenu3Description: bannerThree.description || '',
         aboutSmallBoxes: Array.isArray(bannerThree.smallBoxes)
-          ? bannerThree.smallBoxes.map((box: any) => ({
-              count: box.count || '',
-              label: box.label || '',
-              description: box.description || '',
-            }))
+          ? bannerThree.smallBoxes.map((box: any) => {
+              console.log('Processing small box:', box);
+              return {
+                count: box.count?.toString() || '',
+                label: box.label || '',
+                description: box.description || '',
+              };
+            })
           : [],
         aboutBannerFourTitle: bannerFour.title || '',
         aboutBannerFourHistory: Array.isArray(bannerFour.history)
-          ? bannerFour.history.map((item: any) => ({
-              year: item.year || '',
-              month: item.month || '',
-              description: item.description || '',
-            }))
+          ? bannerFour.history.map((item: any) => {
+              console.log('Processing history item:', item);
+              return {
+                year: item.year?.toString() || '',
+                month: item.month || '',
+                description: item.description || '',
+              };
+            })
           : [],
       };
+
+      // Log the processed form data
+      console.log('Processed form data:', formData);
       reset(formData);
     }
   }, [banner, reset]);
@@ -165,6 +201,73 @@ const AboutBannertTemplate: React.FC = () => {
   const onSubmit = async (formData: AboutBannerFormData) => {
     clearErrors();
     try {
+      // Validate required fields based on active tab
+    if (activeTab === 1) {
+      if (!formData.aboutSubmenu1Title?.trim()) {
+        toast.error('Title is required for Banner One');
+        return;
+      }
+      if (!formData.aboutSubmenu1Description?.trim()) {
+        toast.error('Description is required for Banner One');
+        return;
+      }
+      
+      // Validate minimum images
+      const existingImages = Array.isArray(formData.aboutSubmenu1Images)
+        ? formData.aboutSubmenu1Images.filter((img: any) => 
+            img && typeof img === 'object' && 'url' in img
+          )
+        : [];
+      const newFiles = Array.isArray(formData.aboutSubmenu1Images)
+        ? formData.aboutSubmenu1Images.filter((img: any) => img instanceof File)
+        : [];
+      const removedCount = formData.aboutSubmenu1RemovedImages?.length || 0;
+      const totalImages = existingImages.length + newFiles.length;
+      
+      if (totalImages === 0) {
+        toast.error('Please add at least one image to Banner One');
+        return;
+      }
+    }
+
+    if (activeTab === 2) {
+      if (!formData.aboutSubmenu2Title?.trim()) {
+        toast.error('Title is required for Banner Two');
+        return;
+      }
+      if (!formData.aboutSubmenu2Description?.trim()) {
+        toast.error('Description is required for Banner Two');
+        return;
+      }
+      
+      //  Validate minimum images
+      const existingImages = Array.isArray(formData.aboutSubmenu2Images)
+        ? formData.aboutSubmenu2Images.filter((img: any) => 
+            img && typeof img === 'object' && 'url' in img
+          )
+        : [];
+      const newFiles = Array.isArray(formData.aboutSubmenu2Images)
+        ? formData.aboutSubmenu2Images.filter((img: any) => img instanceof File)
+        : [];
+      const totalImages = existingImages.length + newFiles.length;
+      
+      if (totalImages === 0) {
+        toast.error('Please add at least one image to Banner Two');
+        return;
+      }
+    }
+
+    if (activeTab === 3 && (!formData.aboutSubmenu3Title?.trim() || !formData.aboutSubmenu3Description?.trim())) {
+      toast.error('Title and Description are required for Banner Three');
+      return;
+    }
+
+    if (activeTab === 4 && !formData.aboutBannerFourTitle?.trim()) {
+      toast.error('Title is required for Banner Four');
+      return;
+    }
+
+      // Create FormData object with validation
       const formDataObj = new FormData();
       const removedBannerOneImages = formData.aboutSubmenu1RemovedImages || [];
       const removedBannerTwoImages = formData.aboutSubmenu2RemovedImages || [];
@@ -172,14 +275,20 @@ const AboutBannertTemplate: React.FC = () => {
       if (activeTab === 1) {
         formDataObj.append('aboutBanner.bannerOne.title', formData.aboutSubmenu1Title || '');
         formDataObj.append('aboutBanner.bannerOne.description', formData.aboutSubmenu1Description || '');
+        
+        // Handle background image
         if (formData.aboutSubmenu1BackgroundImage instanceof File) {
           formDataObj.append('aboutBanner.bannerOne.backgroundImage', formData.aboutSubmenu1BackgroundImage);
         } else if (typeof formData.aboutSubmenu1BackgroundImage === 'string' && formData.aboutSubmenu1BackgroundImage) {
-          formDataObj.append('aboutBanner.bannerOne.backgroundImage', formData.aboutSubmenu1BackgroundImage);
+          formDataObj.append('aboutBanner.bannerOne.backgroundImageUrl', formData.aboutSubmenu1BackgroundImage);
         }
+
+        // Handle multiple images
         if (Array.isArray(formData.aboutSubmenu1Images)) {
           const newFiles: File[] = [];
           const existingImages: { id: number; url: string }[] = [];
+          
+          // Separate new files and existing images
           formData.aboutSubmenu1Images.forEach((img: any) => {
             if (img && typeof img === 'object' && 'url' in img && 'id' in img) {
               if (!removedBannerOneImages.includes(img.url)) {
@@ -189,29 +298,41 @@ const AboutBannertTemplate: React.FC = () => {
               newFiles.push(img);
             }
           });
-          newFiles.forEach((img: any) => {
-            formDataObj.append('aboutBanner.bannerOne.images', img);
+
+          // Append new files in a separate array
+          newFiles.forEach((file: File) => {
+            formDataObj.append('aboutBanner.bannerOne.newImages', file);
           });
+
+          // Append existing images as a JSON string
           if (existingImages.length > 0) {
-            formDataObj.append('aboutBanner.bannerOne.images', JSON.stringify(existingImages));
+            formDataObj.append('aboutBanner.bannerOne.existingImages', JSON.stringify(existingImages));
           }
-        }
-        if (removedBannerOneImages.length > 0) {
-          formDataObj.append('aboutBanner.bannerOne.removedImages', JSON.stringify(removedBannerOneImages));
+
+          // Append removed images as a separate array
+          if (removedBannerOneImages.length > 0) {
+            formDataObj.append('aboutBanner.bannerOne.removedImages', JSON.stringify(removedBannerOneImages));
+          }
         }
         await updateBanner(formDataObj);
         toast.success('Banner One updated successfully');
       } else if (activeTab === 2) {
         formDataObj.append('aboutBanner.bannerTwo.title', formData.aboutSubmenu2Title || '');
         formDataObj.append('aboutBanner.bannerTwo.description', formData.aboutSubmenu2Description || '');
+        
+        // Handle background image
         if (formData.aboutSubmenu2BackgroundImage instanceof File) {
           formDataObj.append('aboutBanner.bannerTwo.backgroundImage', formData.aboutSubmenu2BackgroundImage);
         } else if (typeof formData.aboutSubmenu2BackgroundImage === 'string' && formData.aboutSubmenu2BackgroundImage) {
-          formDataObj.append('aboutBanner.bannerTwo.backgroundImage', formData.aboutSubmenu2BackgroundImage);
+          formDataObj.append('aboutBanner.bannerTwo.backgroundImageUrl', formData.aboutSubmenu2BackgroundImage);
         }
+
+        // Handle multiple images
         if (Array.isArray(formData.aboutSubmenu2Images)) {
           const newFiles: File[] = [];
           const existingImages: { id: number; url: string }[] = [];
+          
+          // Separate new files and existing images
           formData.aboutSubmenu2Images.forEach((img: any) => {
             if (img && typeof img === 'object' && 'url' in img && 'id' in img) {
               if (!removedBannerTwoImages.includes(img.url)) {
@@ -221,38 +342,89 @@ const AboutBannertTemplate: React.FC = () => {
               newFiles.push(img);
             }
           });
-          newFiles.forEach((img: any) => {
-            formDataObj.append('aboutBanner.bannerTwo.images', img);
+
+          // Append new files in a separate array
+          newFiles.forEach((file: File) => {
+            formDataObj.append('aboutBanner.bannerTwo.newImages', file);
           });
+
+          // Append existing images as a JSON string
           if (existingImages.length > 0) {
-            formDataObj.append('aboutBanner.bannerTwo.images', JSON.stringify(existingImages));
+            formDataObj.append('aboutBanner.bannerTwo.existingImages', JSON.stringify(existingImages));
           }
-        }
-        if (removedBannerTwoImages.length > 0) {
-          formDataObj.append('aboutBanner.bannerTwo.removedImages', JSON.stringify(removedBannerTwoImages));
+
+          // Append removed images as a separate array
+          if (removedBannerTwoImages.length > 0) {
+            formDataObj.append('aboutBanner.bannerTwo.removedImages', JSON.stringify(removedBannerTwoImages));
+          }
         }
         await updateBanner(formDataObj);
         toast.success('Banner Two updated successfully');
       } else if (activeTab === 3) {
+        // Filter out empty small boxes
+        let aboutSmallBoxes = Array.isArray(formData.aboutSmallBoxes)
+          ? formData.aboutSmallBoxes.filter((box: any) => {
+              if (!box) return false;
+              return box.count?.toString().trim() || box.label?.trim() || box.description?.trim();
+            })
+          : [];
+
+        // Add the basic fields
         formDataObj.append('aboutBanner.bannerThree.title', formData.aboutSubmenu3Title || '');
         formDataObj.append('aboutBanner.bannerThree.description', formData.aboutSubmenu3Description || '');
-        if (Array.isArray(formData.aboutSmallBoxes)) {
-          formDataObj.append('aboutBanner.bannerThree.smallBoxes', JSON.stringify(formData.aboutSmallBoxes));
+        
+        // Add each small box as individual fields
+        aboutSmallBoxes.forEach((box, index) => {
+          formDataObj.append(`aboutBanner.bannerThree.smallBoxes[${index}][count]`, box.count?.toString() || '');
+          formDataObj.append(`aboutBanner.bannerThree.smallBoxes[${index}][label]`, box.label || '');
+          formDataObj.append(`aboutBanner.bannerThree.smallBoxes[${index}][description]`, box.description || '');
+        });
+
+        // Log the data being sent (for debugging)
+        console.log('Sending bannerThree data:', {
+          title: formData.aboutSubmenu3Title,
+          description: formData.aboutSubmenu3Description,
+          smallBoxes: aboutSmallBoxes
+        });
+
+        // Log the FormData entries
+        for (let pair of formDataObj.entries()) {
+          console.log('FormData entry:', pair[0], pair[1]);
         }
+
         await updateBanner(formDataObj);
         toast.success('Banner Three updated successfully');
       } else if (activeTab === 4) {
-        const bannerFour = {
-          title: formData.aboutBannerFourTitle || '',
-          history: Array.isArray(formData.aboutBannerFourHistory)
-            ? formData.aboutBannerFourHistory.map((item: any) => ({
-                year: item.year || '',
-                month: item.month || '',
-                description: item.description || '',
-              }))
-            : [],
-        };
-        formDataObj.append('aboutBanner.bannerFour', JSON.stringify(bannerFour));
+        // Filter out empty history items
+        let aboutBannerFourHistory = Array.isArray(formData.aboutBannerFourHistory)
+          ? formData.aboutBannerFourHistory.filter((item: any) => {
+              if (!item) return false;
+              return item.year?.toString().trim() || item.month?.trim() || item.description?.trim();
+            })
+          : [];
+
+        // Add the title
+        formDataObj.append('aboutBanner.bannerFour.title', formData.aboutBannerFourTitle || '');
+        
+        // Add each history item as individual fields
+        aboutBannerFourHistory.forEach((item, index) => {
+          formDataObj.append(`aboutBanner.bannerFour.history[${index}][year]`, item.year?.toString() || '');
+          formDataObj.append(`aboutBanner.bannerFour.history[${index}][month]`, item.month || '');
+          formDataObj.append(`aboutBanner.bannerFour.history[${index}][description]`, item.description || '');
+        });
+
+        // Log the data being sent (for debugging)
+        console.log('Sending bannerFour data:', {
+          title: formData.aboutBannerFourTitle,
+          history: aboutBannerFourHistory
+        });
+        
+        // Log the FormData entries
+        console.log('FormData content:');
+        for (let pair of formDataObj.entries()) {
+          console.log('FormData entry:', pair[0], pair[1]);
+        }
+        
         await updateBanner(formDataObj);
         toast.success('Banner Four updated successfully');
       }

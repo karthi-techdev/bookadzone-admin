@@ -37,8 +37,9 @@ const CategoryTrashListTemplate: React.FC = () => {
   }, [error]);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected + 1);
-    (selectedItem.selected + 1, itemsPerPage);
+    const newPage = selectedItem.selected + 1;
+    setCurrentPage(newPage);
+    fetchTrashCategories(newPage, itemsPerPage);
   };
 
   // Filter search term locally (after API filter is applied)
@@ -48,7 +49,7 @@ const CategoryTrashListTemplate: React.FC = () => {
   );
 
   const columns: ColumnConfig<Category>[] = [
-    { key: 'name', label: 'Category Name', render: (value) => truncate(value, 40) },
+    { key: 'name', label: 'Name', render: (value) => truncate(value, 40) },
     { key: 'slug', label: 'Slug', render: (value) => truncate(value, 40) },
     { key: 'description', label: 'Description', render: (value) => truncate(value, 40) },
     {
@@ -105,7 +106,7 @@ const CategoryTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Category Trash"
+        managementName="Deleted Categories"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

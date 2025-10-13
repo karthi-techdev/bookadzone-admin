@@ -41,36 +41,60 @@ const NewsLetterFormTemplate: React.FC = () => {
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting }, setValue } = methods;
 
-  const handleFieldChange = (fieldName: keyof NewsLetterFormData, minLengthValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
-    let value = e.target.value;
+  const handleFieldChange = (fieldName: keyof NewsLetterFormData, minLength?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
+    let rawValue = e.target.value;
     if (fieldName === 'status' && typeof e.target.checked === 'boolean') {
-      value = e.target.checked;
+      rawValue = e.target.checked;
     }
 
+    const valueForValidation = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+    
     // Auto-generate slug when typing name (only on Add, not Edit)
-    if (fieldName === 'name') {
-      const slugValue = generateSlug(value);
+    if (fieldName === 'name' && !id) {
+      const slugValue = generateSlug(rawValue);
       setValue('slug', slugValue, { shouldValidate: true });
     }
+    
     if(fieldName === 'slug'){
-      //  return { ...fieldName, readOnly: true, disabled: true };
-      return {readOnly: true,disabled: true}
+      return {readOnly: true, disabled: true}
     }
     
-    const validations = [
-      ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1)),
-      minLengthValue && typeof value === 'string'
-        ? ValidationHelper.minLength(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), minLengthValue)
-        : null,
-    ].filter(Boolean) as any[];
+    const field = newsLetterFields.find(f => f.name === fieldName);
+    if (!field) return;
+
+    const validations = [] as any[];
+    
+    // Required should consider trimmed value to avoid showing secondary validations first
+    if (field.required) {
+      const requiredError = ValidationHelper.isRequired(valueForValidation, fieldName);
+      if (requiredError) {
+        setError(fieldName, {
+          type: 'manual',
+          message: requiredError.message,
+        });
+        setValue(fieldName, rawValue, { shouldValidate: false });
+        return;
+      }
+    }
+    
+    if (valueForValidation) {
+      if (minLength && typeof valueForValidation === 'string') {
+        validations.push(ValidationHelper.minLength(valueForValidation, fieldName, minLength));
+      }
+    }
 
     const errorsArr = ValidationHelper.validate(validations);
+    
     if (errorsArr.length > 0) {
-      setError(fieldName, { type: 'manual', message: errorsArr[0].message });
+      setError(fieldName, {
+        type: 'manual',
+        message: errorsArr[0].message,
+      });
     } else {
       clearErrors(fieldName);
     }
-    setValue(fieldName, value, { shouldValidate: true });
+    
+    setValue(fieldName, rawValue, { shouldValidate: false });
   };
 
   useEffect(() => {
@@ -96,35 +120,46 @@ const NewsLetterFormTemplate: React.FC = () => {
   const onSubmit = async (data: NewsLetterFormData) => {
     clearErrors();
 
-    const trimmedData = {
-      ...data,
-      name: data.name.trim(),
-      slug: data.slug.trim(),
-    };
-const validationErrors = ValidationHelper.validate([
-      ValidationHelper.isRequired(trimmedData.name, 'Name'),
-      ValidationHelper.minLength(trimmedData.name, 'Name', 5),
-      ValidationHelper.maxLength(trimmedData.name, 'Name', 500),
-      ValidationHelper.isRequired(trimmedData.template, 'Template'),
-      ValidationHelper.isValidEnum(
-        typeof trimmedData.status === 'boolean' ? (trimmedData.status ? 'active' : 'inactive') : trimmedData.status,
-        'Status',
-        ['active', 'inactive']
-      ),
-    ]);
-     if (validationErrors.length > 0) {
-      validationErrors.forEach((err) => {
-        const fieldName = err.field.toLowerCase() as keyof NewsLetterFormData;
+    // Normalize values (trim strings) so required takes precedence over minLength/format
+    const d = normalizeFormValues(data);
+
+    // First validate all form fields with precedence: required > other rules
+    const validations: any[] = [];
+    validations.push(ValidationHelper.isRequired(d.name, 'name'));
+    if (d.name) validations.push(ValidationHelper.minLength(d.name, 'name', 5));
+    if (d.name) validations.push(ValidationHelper.maxLength(d.name, 'name', 500));
+
+    
+    validations.push(ValidationHelper.isRequired(d.template, 'template'));
+
+    validations.push(ValidationHelper.isValidEnum(
+      typeof d.status === 'boolean' ? (d.status ? 'active' : 'inactive') : d.status,
+      'Status',
+      ['active', 'inactive']
+    ));
+
+    const validationErrors = ValidationHelper.validate(validations);
+
+    if (validationErrors.length > 0) {
+      // Only set the first error per field so required errors are not overridden
+      const seen = new Set<string>();
+      for (const err of validationErrors) {
+        const fieldName = err.field as keyof NewsLetterFormData;
+        const key = String(err.field);
+        if (seen.has(key)) continue;
+        seen.add(key);
         setError(fieldName, {
           type: 'manual',
           message: err.message,
         });
-      });
+      }
+      toast.error('Please fix all validation errors');
       return;
     }
+
     try {
       if (id) {
-        await updateNewsLetter(id, trimmedData);
+        await updateNewsLetter(id, d);
         await Swal.fire({
           title: 'Success!',
           text: 'NewsLetter updated successfully',
@@ -132,7 +167,7 @@ const validationErrors = ValidationHelper.validate([
           confirmButtonColor: 'var(--puprle-color)',
         });
       } else {
-        await addNewsLetter(trimmedData);
+        await addNewsLetter(d);
         await Swal.fire({
           title: 'Success!',
           text: 'NewsLetter added successfully',
@@ -162,6 +197,21 @@ const validationErrors = ValidationHelper.validate([
     }
   };
 
+  // Normalize values to trim strings
+  const normalizeFormValues = (values: NewsLetterFormData): NewsLetterFormData => {
+    const normalized: any = {};
+    Object.entries(values).forEach(([k, v]) => {
+      normalized[k] = typeof v === 'string' ? v.trim() : v;
+    });
+    return normalized as NewsLetterFormData;
+  };
+
+  // Ensure onSubmit-like validation runs even if RHF has existing field errors
+  const onInvalid = () => {
+    const values = methods.getValues();
+    return onSubmit(values);
+  };
+
   const hasErrors = () => {
     return newsLetterFields.some(field => {
       const error = getNestedError(errors, field.name);
@@ -184,11 +234,10 @@ const validationErrors = ValidationHelper.validate([
           isSubmitting={isSubmitting}
           isJodit={true}
           managementName="NewsLetter"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit, onInvalid)}
           data-testid="NewsLetter-form"
           onFieldChange={{
-            name: handleFieldChange('name', 3),
-            slug: handleFieldChange('slug', 3),
+            name: handleFieldChange('name', 5),
             template: handleFieldChange('template'),
           }}
         />         
