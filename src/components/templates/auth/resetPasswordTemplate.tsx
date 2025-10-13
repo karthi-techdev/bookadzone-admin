@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useSearchParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -37,8 +37,7 @@ const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
   const { resetPassword } = useAuthStore();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
   const methods = useForm<ResetPasswordFormData>({
     defaultValues: {
@@ -192,8 +191,7 @@ const ResetPassword: React.FC = () => {
           confirmPassword: handleFieldChange('confirmPassword'),
         }}
         extraProps={{
-          togglePassword: () => setShowPassword((prev) => !prev),
-          showPassword,
+
         }}
       />
       

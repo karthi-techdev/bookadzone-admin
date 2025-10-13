@@ -180,7 +180,7 @@ const NewsLetterTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="NewsLetter"
+        managementName="Deleted NewsLetter"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"
@@ -192,7 +192,6 @@ const NewsLetterTrashListTemplate: React.FC = () => {
       <ManagementTable
         data={searchedNewsLetters}
         columns={columns}
-        // For trash view: only show restore and permanent delete
         onRestore={handleRestore}
         onPermanentDelete={handlePermanentDelete}
         currentPage={currentPage}

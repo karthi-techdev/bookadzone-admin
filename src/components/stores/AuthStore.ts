@@ -20,18 +20,42 @@ interface AuthState {
   checkTokenValidity: () => boolean;
   startExpirationCheck: () => void;
   stopExpirationCheck: () => void;
+  fetchCurrentUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set) => {
   const token = localStorage.getItem('token');
   const storedExpiry = localStorage.getItem('tokenExpiry');
 
+  // Remove any existing interceptors
+  axios.interceptors.request.eject(0);
+  
+  // Add new request interceptor
   axios.interceptors.request.use(
     (config) => {
       const token = localStorage.getItem('token');
+      const csrfToken = localStorage.getItem('csrf-token');
+      
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
+        console.log('Setting Authorization header:', `Bearer ${token}`); // Debug log
       }
+      if (csrfToken) {
+        config.headers['X-CSRF-Token'] = csrfToken;
+        console.log('Setting CSRF token header:', csrfToken); // Debug log
+      } else {
+        console.log('No CSRF token found in localStorage'); // Debug log
+      }
+      
+      // Ensure headers object exists
+      config.headers = config.headers || {};
+      
+      console.log('Request config:', { 
+        url: config.url, 
+        headers: config.headers,
+        method: config.method 
+      }); // Debug log
+      
       return config;
     },
     (error) => Promise.reject(error)
@@ -62,15 +86,99 @@ export const useAuthStore = create<AuthState>((set) => {
   return {
     user: null,
     token,
+    fetchCurrentUser: async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      try {
+        // Try to get user data from local storage first
+        const userData = localStorage.getItem('userData');
+        if (userData) {
+          const parsedUserData = JSON.parse(userData);
+          set({ user: parsedUserData });
+          return;
+        }
+
+        // If no stored data, try to get from /me endpoint
+        const response = await axios.get(API.me);
+        if (!response.data || !response.data.data) {
+          throw new Error('Invalid response format');
+        }
+        
+        const { data, csrfToken } = response.data;
+        
+        // Update CSRF token if provided
+        if (csrfToken) {
+          localStorage.setItem('csrf-token', csrfToken);
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+        }
+        // Store user data in localStorage
+        localStorage.setItem('userData', JSON.stringify(data));
+        set({ user: data });
+      } catch (error: any) {
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to fetch user data';
+        console.error('Failed to fetch user data:', error);
+        
+        if (error.response?.status === 401 || error.response?.status === 403) {
+          // Token invalid or expired
+          set({ user: null, token: null });
+          localStorage.removeItem('token');
+          localStorage.removeItem('tokenExpiry');
+          localStorage.removeItem('userData');
+          delete axios.defaults.headers.common['Authorization'];
+          stopExpirationCheck();
+          throw new Error('Session expired. Please login again.');
+        } else {
+          // Other errors
+          throw new Error(errorMessage);
+        }
+      }
+    },
     login: async (payload) => {
       try {
         const res = await axios.post(`${API.login}`, payload);
-        const { token, data: user, expiresIn } = res.data as { token: string; data: User; expiresIn: string };
+        console.log('Login response:', res.data); // Debug log
+        
+        // Extract token from the correct location in response
+        const { token, data: user, expiresIn, csrfToken } = res.data;
         const expiryTime = Date.now() + parseExpiresIn(expiresIn);
+        
+        // Store auth data
         localStorage.setItem('token', token);
         localStorage.setItem('tokenExpiry', expiryTime.toString());
+        localStorage.setItem('userData', JSON.stringify(user));
+        
+        // Store CSRF token if present in login response
+        if (csrfToken) {
+          console.log('Storing CSRF token from login:', csrfToken); // Debug log
+          localStorage.setItem('csrf-token', csrfToken);
+          axios.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+        }
+        
+        // Set token in axios defaults and interceptor
+        const bearerToken = `Bearer ${token}`;
+        axios.defaults.headers.common['Authorization'] = bearerToken;
+        
+        // Set state
         set({ user, token });
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        // Fetch CSRF token after successful login with explicit headers
+        try {
+          const csrfResponse = await axios.get(API.me, {
+            headers: {
+              'Authorization': bearerToken
+            }
+          });
+          if (csrfResponse.data?.csrfToken) {
+            localStorage.setItem('csrf-token', csrfResponse.data.csrfToken);
+            axios.defaults.headers.common['X-CSRF-Token'] = csrfResponse.data.csrfToken;
+          }
+        } catch (csrfError) {
+          console.error('Failed to fetch CSRF token:', csrfError);
+        }
+        
         startExpirationCheck();
         toast.success('Logged in successfully!', {
           position: "top-right",
@@ -117,8 +225,11 @@ export const useAuthStore = create<AuthState>((set) => {
     logout: () => {
       localStorage.removeItem('token');
       localStorage.removeItem('tokenExpiry');
+      localStorage.removeItem('userData');
+      localStorage.removeItem('csrf-token');
       set({ user: null, token: null });
       delete axios.defaults.headers.common['Authorization'];
+      delete axios.defaults.headers.common['X-CSRF-Token'];
       stopExpirationCheck();
       toast.info('Logged out successfully', {
         position: "top-right",

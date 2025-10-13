@@ -40,10 +40,15 @@ interface ManagementFormProps {
   initialTab?: number;
   onFieldChange?: { [key: string]: (e: { target: { name: string; value: any } }) => void };
   toastErrorMessage?: string;
-  extraProps?: { togglePassword?: () => void; showPassword?: boolean; countryOptions?: { label: string; value: string }[]; stateOptions?: { label: string; value: string }[]; cityOptions?: { label: string; value: string }[]; };
+  extraProps?: {
+    countryOptions?: { label: string; value: string }[];
+    stateOptions?: { label: string; value: string }[];
+    cityOptions?: { label: string; value: string }[];
+  };
   onTabChange?: (tabId: number) => void;
   activeTab?: number;
   dynamicSectionLabel?: string;
+  imagePreview?: string;
 }
 
 const ManagementForm: React.FC<ManagementFormProps> = ({
@@ -250,8 +255,6 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                     }
                   })}
                   error={getNestedError(errors, field.name)}
-                  togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
-                  showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
                   isAuth={isAuth}
                   existingFiles={existingFiles[field.name]}
                 />
@@ -403,8 +406,6 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                   onClick={field.onClick}
                   readOnly={field.readOnly}
                   error={fieldError}
-                  togglePassword={field.type === 'password' ? extraProps.togglePassword : undefined}
-                  showPassword={field.type === 'password' ? extraProps.showPassword : undefined}
                   existingFiles={existingFiles[field.name]}
                 />
                 {field.type === 'file' && existingFileName && (
@@ -484,6 +485,9 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         </div>
       </motion.form>
     </div>
+
+
+    
   );
 };
 

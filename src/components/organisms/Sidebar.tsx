@@ -3,7 +3,7 @@ import BAZButton from "../atoms/BAZ-Button";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
 import { IoGrid } from "react-icons/io5";
 import { TbCategoryPlus } from "react-icons/tb";
-import { RiListIndefinite ,RiAdvertisementFill,RiShieldUserFill} from "react-icons/ri";
+import { RiListIndefinite, RiAdvertisementFill, RiShieldUserFill, RiUserSettingsLine } from "react-icons/ri";
 import { MdSettings } from "react-icons/md";
 import { TbMenu2 } from "react-icons/tb";
 import { FaTrashCan } from "react-icons/fa6";
@@ -13,6 +13,7 @@ import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from "react";
+import { TbCategoryFilled } from "react-icons/tb";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -45,6 +46,11 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "About Page", path: "/banner/about" },
       ]
     },
+    { icon: <BsUiChecks />, text: "Manage Blog", path: "#",
+      children: [
+        { icon: <TbCategoryFilled />, text: "Blog Category", path: "/blogcategory" },
+      ]
+     },
     {
       icon: <BsUiChecks />, text: "Site Setting", path: "#",
       children: [
@@ -52,6 +58,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "Config", path: "/config" },
         { icon: <RiListIndefinite />, text: "NewsLetter", path: "/newsletter" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
+      ]
+    },
+    {
+      icon: <RiUserSettingsLine />, text: "Profile", path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "Update Profile", path: "/profile/update" },
+        { icon: <RiListIndefinite />, text: "Change Password", path: "/profile/change-password" },
       ]
     },
     {
@@ -71,8 +84,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
         { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
         { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
-        { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
+        { icon: <RiListIndefinite />, text: "Category", path: "/trash/category" },
         { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
+        { icon: <RiListIndefinite />, text: "BlogCategory", path: "/trash/blogcategory" },
+
       ]
     },
     // Example: Add more special items

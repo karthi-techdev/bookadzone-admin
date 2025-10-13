@@ -158,7 +158,7 @@ const FaqTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Faq"
+        managementName="Deleted Faqs"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

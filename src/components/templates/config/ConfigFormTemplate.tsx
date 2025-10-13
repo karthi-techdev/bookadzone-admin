@@ -232,11 +232,6 @@ const ConfigFormTemplate: React.FC = () => {
           isSubmitting={isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
           data-testid="config-form"
-          onFieldChange={{
-            name: handleFieldChange('name', 3),
-            slug: handleFieldChange('slug', 3),
-            status: handleFieldChange('status'),
-          }}
           isDynamic={!!id}
           dynamicFieldName="configFields"
           dynamicFieldConfig={dynamicFieldConfig}

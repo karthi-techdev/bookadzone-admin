@@ -125,6 +125,8 @@ export interface User {
   username: string;
   email?: string;
   role?: string;
+  name?: string;
+  phone?: string;
 }
 
 export interface Faq {
@@ -152,7 +154,7 @@ export interface Category {
   name: string;
   slug: string,
   description: string;
-  photo: string | File;
+  photo?: string | File;
   isFeatured: boolean | undefined;
   status?: boolean;
   CategoryFields: { key: string; value: string }[];
@@ -242,6 +244,18 @@ export type ColumnConfig<T> = {
 export interface SelectOption {
   label: string;
   value: string | number;
+}
+
+export interface BlogCategory {
+  _id?:string
+  name:string;
+  label:string;
+  className?: string;
+  placeholder?: string;
+  required?: boolean;
+  status?:boolean;
+  slug: string;
+
 }
 export interface NewsLetter {
   _id?: string;

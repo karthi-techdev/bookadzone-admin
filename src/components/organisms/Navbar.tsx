@@ -19,6 +19,8 @@ const Navbar: React.FC = () => {
   const profileDropdown = useDropdown();
   // Use settings store hook for logo
   const settings = useSettingsStore((state: any) => state.settings);
+  // Get current user from auth store
+  const user = useAuthStore(state => state.user);
 
   return (
     <motion.nav
@@ -171,8 +173,8 @@ const Navbar: React.FC = () => {
                   <GoOrganization className="text-[1rem] text-[var(--white-color)]" />
                 </div>
                 <div className="profile-btn-content">
-                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">Focus Media</span>
-                  <span className="text-[.50rem] text-[var(--light-grey-color)] flex">Admin</span>
+                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">{user?.email?.split('@')[0] || 'Guest'}</span>
+                  <span className="text-[.50rem] text-[var(--light-grey-color)] flex">{user?.role || 'Not logged in'}</span>
                 </div>
               </Button>
               {profileDropdown.open && (

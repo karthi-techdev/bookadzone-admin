@@ -31,8 +31,8 @@ const API = {
   trashfaqlist: `${ROOTURL}faqs/trash`,
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
-  
-    // NewsLetter endpoints
+
+  // NewsLetter endpoints
   addNewsLetter: `${ROOTURL}newsletters/`,
   listNewsLetter: `${ROOTURL}newsLetters/`,
   getNewsLetter: `${ROOTURL}newsletters/getNewsLetterById/`,
@@ -43,7 +43,7 @@ const API = {
   restoreNewsLetter: `${ROOTURL}newsletters/restore/`,
   permanentDeleteNewsLetter: `${ROOTURL}newsletters/permanentDelete/`,
 
-// Footer endpoints
+  // Footer endpoints
   addfooterinfo: `${ROOTURL}footerinfo/`,
   listfooterinfo: `${ROOTURL}footerinfo/`,
   getfooterinfobyid: `${ROOTURL}footerinfo/getfooterinfoById/`,
@@ -70,14 +70,14 @@ const API = {
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
-  getcategorybyId: `${ROOTURL}category/getcategoryById/`,
+  getcategorybyId: `${ROOTURL}category/getcategoryById/`,  // Make sure this matches the backend route
   updatecategory: `${ROOTURL}category/updatecategory/`,
   deletecategory: `${ROOTURL}category/softDeletecategory/`,
-  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,
-  trashcategorylist: `${ROOTURL}category/trash`,
+  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,  // Fix casing to match backend
+  trashcategorylist: `${ROOTURL}category/trash`,  // Remove trailing slash
   restorecategory: `${ROOTURL}category/restore/`,
   permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
-  
+
   //Banner Management endpoints
   getBanner: `${ROOTURL}banners/`,
   updateBanner: `${ROOTURL}banners/`,
@@ -87,9 +87,28 @@ const API = {
   refresh: `${ROOTURL}auth/refresh`,
   forgotPassword: `${ROOTURL}auth/forgot-password`,
   resetPassword: `${ROOTURL}auth/reset-password`,
+  me: `${ROOTURL}auth/me`,
+
+  //BlogCategory endpoints
+  addBlogCategory:`${ROOTURL}blogCategory/`,
+  listBlogCategory:`${ROOTURL}blogCategory/`,
+  getBlogCategory:`${ROOTURL}blogCategory/getblogCategoryById/`,
+  updateBlogCategory:`${ROOTURL}blogCategory/updateblogCategory/`,
+  deleteBlogCategory:`${ROOTURL}blogCategory/softDeleteblogCategory/`,
+  toggleStatusBlogCategory:`${ROOTURL}blogCategory/togglestatus/`,
+  trashBlogCategoryList:`${ROOTURL}blogCategory/trash`,
+  restoreBlogCategory:`${ROOTURL}blogCategory/restore/`,
+  permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
+
+  // Profile endpoints
+  profile: {
+    me: `${ROOTURL}auth/me`,
+    update: `${ROOTURL}auth/profile`,
+    changePassword: `${ROOTURL}auth/change-password`
+  },
 
   // Template Images
-  templateImage:`${ROOTURL}editer/image`
+  templateImage: `${ROOTURL}editer/image`
 };
 
 const ImportedURL = { API, LIVEURL, FILEURL, SETTINGS_ID };

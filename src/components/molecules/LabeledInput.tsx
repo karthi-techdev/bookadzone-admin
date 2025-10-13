@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiAlertCircle } from 'react-icons/fi';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -28,8 +28,6 @@ export interface LabeledInputProps {
   multiple?: boolean;
   valueAsNumber?: boolean;
   error?: string;
-  togglePassword?: () => void;
-  showPassword?: boolean;
   isAuth?: boolean;
   existingFiles?: string | string[];
 }
@@ -53,10 +51,9 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
     valueAsNumber = false,
     isAuth = false,
     error,
-    togglePassword,
-    showPassword,
     existingFiles,
   }) => {
+    const [showPassword, setShowPassword] = useState(false);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value: any; removedFiles?: string[] } }) => {
       if (!onChange) return;
 
@@ -222,11 +219,11 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
                   className="outline-none w-full"
                   data-testid={`${name}-input`}
                 />
-                {type === 'password' && togglePassword && (
+                {type === 'password' && (
                   <button
                     type="button"
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
-                    onClick={togglePassword}
+                    onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}

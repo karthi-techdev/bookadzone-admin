@@ -1,45 +1,62 @@
 import type { ReactNode } from 'react';
 import { lazy } from 'react';
 
-// Direct imports for frequently accessed components
+// Core/Common Components
 import Dashboard from '../pages/Dashboard';
-import Properties from '../pages/Properties';
 import Login from '../templates/auth/loginTemplate';
+
+// Property Management
+import Properties from '../pages/Properties';
 import AddProperties from '../pages/Add-Properties';
+import CampaignList from '../pages/Campaign-List';
+import CampaignDetails from '../pages/Campaign-Details';
+
+// Agency Management
 import AgencyListPage from '../pages/agency/AgencyListPage';
 import AgencyFormPage from '../pages/agency/AgencyFormPage';
 import AgencyViewPage from '../pages/agency/AgencyViewPage';
+
+// Content Management
+import BannerPage from '../pages/banner/HomeBannerPage';
+import AboutBannerPage from '../pages/banner/AboutBannerPage';
 import FaqListPage from '../pages/faq/FaqListPage';
 import FaqFormPage from '../pages/faq/FaqFormPage';
 import NewsLetterListPage from '../pages/newsLetter/NewsLetterListPage';
 import NewsLetterFormPage from '../pages/newsLetter/NewsLetterFormPage';
-import CategoryListPage from '../pages/category/CategoryListPage';
-import CategoryFormPage from '../pages/category/CategoryFormPage';
-import BannerPage from '../pages/banner/HomeBannerPage';
-import AboutBannerPage from '../pages/banner/AboutBannerPage';
 import FooterInfoListPage from '../pages/footerinfo/FooterInfoListPage';
 import FooterInfoFormPage from '../pages/footerinfo/FooterInfoFormPage';
 import ConfigListPage from '../pages/config/ConfigListPage';
 import ConfigFormPage from '../pages/config/ConfigFormPage';
-import CampaignList from '../pages/Campaign-List';
-import CampaignDetails from '../pages/Campaign-Details';
 
-// Lazy load infrequently accessed components
+// Authentication Pages (Lazy Loaded)
 const ForgotPassword = lazy(() => import('../templates/auth/forgotPasswordTemplate'));
 const ResetPassword = lazy(() => import('../templates/auth/resetPasswordTemplate'));
+
+// Content Management (Lazy Loaded)
+const BlogCategoryListPage = lazy(() => import('../pages/blogCategory/BlogCaategoryListPage'));
+const BlogCategoryFormPage = lazy(() => import('../pages/blogCategory/BlogCategoryFormPage'));
+const CategoryListPage = lazy(() => import('../pages/category/CategoryListPage'));
+const CategoryFormPage = lazy(() => import('../pages/category/CategoryFormPage'));
+
+// Trash Pages (Lazy Loaded)
 const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
 const FaqTrashListPage = lazy(() => import('../pages/trash/faq/FaqTrashListPage'));
+const BlogCategoryTrashListPage = lazy(() => import('../pages/trash/blogCategory/BlogTrashListPage'));
 const CategoryTrashListPage = lazy(() => import('../pages/trash/category/CategoryTrashListPage'));
 const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
 const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
 
-// Lazy load settings pages as they're accessed less frequently
+// Settings Pages (Lazy Loaded)
 const GeneralSettingsPage = lazy(() => import('../pages/settings/GeneralSettingsPage'));
 const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
 const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
 const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
+
+// Profile Pages (Lazy Loaded)
+const ProfileUpdatePage = lazy(() => import('../pages/profile/ProfileUpdatePage'));
+const ChangePasswordPage = lazy(() => import('../pages/profile/ChangePasswordPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -47,23 +64,32 @@ export interface RouteData {
 }
 
 export const routesData = (): RouteData[] => {
-
   const Routes: RouteData[] = [
-    {
-      path: '/banner/homepage',
-      pageTitle: 'Banners',
-    component: <BannerPage />, 
-    },
-    {
-      path: '/banner/about',
-      pageTitle: 'About Banner',
-      component: <AboutBannerPage />,
-    },
+    // Core Routes
     {
       path: '/',
       pageTitle: 'Dashboard',
       component: <Dashboard />,
     },
+
+    // Authentication Routes
+    {
+      path: '/login',
+      pageTitle: 'Login',
+      component: <Login />,
+    },
+    {
+      path: '/forgot-password',
+      pageTitle: 'Forgot Password',
+      component: <ForgotPassword />,
+    },
+    {
+      path: '/reset-password',
+      pageTitle: 'Reset Password',
+      component: <ResetPassword />,
+    },
+
+    // Property Management Routes
     {
       path: '/listings/properties',
       pageTitle: 'Properties',
@@ -71,7 +97,7 @@ export const routesData = (): RouteData[] => {
     },
     {
       path: '/listings/properties/add-property',
-      pageTitle: 'Add-Property',
+      pageTitle: 'Add Property',
       component: <AddProperties />,
     },
     {
@@ -84,13 +110,8 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Campaign Details',
       component: <CampaignDetails />,
     },
-    // FAQ routes
-    {
-      path: '/faq',
-      pageTitle: 'FAQ List',
-      component: <FaqListPage />,
-    },
-    // Agency routes
+
+    // Agency Management Routes
     {
       path: '/agency',
       pageTitle: 'Agency List',
@@ -116,6 +137,25 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Agency Trash',
       component: <AgencyTrashListPage />,
     },
+
+    // Banner Management Routes
+    {
+      path: '/banner/homepage',
+      pageTitle: 'Home Banners',
+      component: <BannerPage />,
+    },
+    {
+      path: '/banner/about',
+      pageTitle: 'About Banner',
+      component: <AboutBannerPage />,
+    },
+
+    // Content Management Routes
+    {
+      path: '/faq',
+      pageTitle: 'FAQ List',
+      component: <FaqListPage />,
+    },
     {
       path: '/faq/add',
       pageTitle: 'Add FAQ',
@@ -126,22 +166,35 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Edit FAQ',
       component: <FaqFormPage />,
     },
-     // NewsLetter routes
+    {
+      path: '/trash/faq',
+      pageTitle: 'FAQ Trash',
+      component: <FaqTrashListPage />,
+    },
+
+    // Newsletter Management Routes
     {
       path: '/newsletter',
-      pageTitle: 'NewsLetter List',
+      pageTitle: 'Newsletter List',
       component: <NewsLetterListPage />,
     },
     {
       path: '/newsletter/add',
-      pageTitle: 'Add NewsLetter',
+      pageTitle: 'Add Newsletter',
       component: <NewsLetterFormPage />,
     },
     {
       path: '/newsletter/edit/:id',
-      pageTitle: 'Edit NewsLetter',
+      pageTitle: 'Edit Newsletter',
       component: <NewsLetterFormPage />,
     },
+    {
+      path: '/trash/newsletter',
+      pageTitle: 'Newsletter Trash',
+      component: <NewsLetterTrashListPage />,
+    },
+
+    // Footer Management Routes
     {
       path: '/footerinfo',
       pageTitle: 'Footer List',
@@ -158,7 +211,14 @@ export const routesData = (): RouteData[] => {
       component: <FooterInfoFormPage />,
     },
     {
-     path: '/config',
+      path: '/trash/footerinfo',
+      pageTitle: 'Footer Trash',
+      component: <FooterInfoTrashListPage />,
+    },
+
+    // Configuration Routes
+    {
+      path: '/config',
       pageTitle: 'Config List',
       component: <ConfigListPage />,
     },
@@ -174,63 +234,55 @@ export const routesData = (): RouteData[] => {
     },
     {
       path: '/trash/config',
-      pageTitle: 'Trash Config',
+      pageTitle: 'Config Trash',
       component: <ConfigTrashListPage />,
     },
+
+    // Blog Category Routes
     {
-      path: '/login',
-      pageTitle: 'Login',
-      component: <Login />,
+      path: '/blogcategory',
+      pageTitle: 'Blog Category List',
+      component: <BlogCategoryListPage />,
     },
     {
-      path: '/forgot-password',
-      pageTitle: 'Forgot Password',
-      component: <ForgotPassword />,
+      path: '/blogcategory/add',
+      pageTitle: 'Add Blog Category',
+      component: <BlogCategoryFormPage />,
     },
     {
-      path: '/reset-password',
-      pageTitle: 'Reset Password',
-      component: <ResetPassword />,
+      path: '/blogcategory/edit/:id',
+      pageTitle: 'Edit Blog Category',
+      component: <BlogCategoryFormPage />,
     },
     {
-      path: '/trash/faq',
-      pageTitle: 'Trash FooterInfo',
-      component: <FaqTrashListPage />,
+      path: '/trash/blogcategory',
+      pageTitle: 'Blog Category Trash',
+      component: <BlogCategoryTrashListPage />,
     },
 
-    // Category routes
+    // Category Routes
     {
       path: '/category',
       pageTitle: 'Category List',
       component: <CategoryListPage />,
     },
-     {
+    {
       path: '/category/add',
-      pageTitle: ' Add Category ',
+      pageTitle: 'Add Category',
       component: <CategoryFormPage />,
     },
     {
-      path: '/categorys/edit/:id',
+      path: '/category/edit/:id',
       pageTitle: 'Edit Category',
       component: <CategoryFormPage />,
     },
-     {
-      path: '/trash/categorys',
-      pageTitle: 'Trash Category',
+    {
+      path: '/trash/category',
+      pageTitle: 'Category Trash',
       component: <CategoryTrashListPage />,
     },
 
-    {
-      path: '/trash/newsletter',
-      pageTitle: 'Trash NewsLetterInfo',
-      component: <NewsLetterTrashListPage />,
-    },
-     {
-      path: '/trash/footerinfo',
-      pageTitle: 'Trash FooterInfo',
-      component: <FooterInfoTrashListPage />,
-     },
-    // Settings routes
+    // Settings Routes
     {
       path: '/settings/general',
       pageTitle: 'General Settings',
@@ -255,6 +307,18 @@ export const routesData = (): RouteData[] => {
       path: '/settings/og',
       pageTitle: 'OG Configuration',
       component: <OgConfigPage />,
+    },
+
+    // Profile Routes
+    {
+      path: '/profile/update',
+      pageTitle: 'Update Profile',
+      component: <ProfileUpdatePage />,
+    },
+    {
+      path: '/profile/change-password',
+      pageTitle: 'Change Password',
+      component: <ChangePasswordPage />,
     },
   ];
   return Routes;

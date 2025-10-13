@@ -7,6 +7,8 @@ import Layout from "./components/shared/Layout";
 import Loader from "./components/molecules/Loader";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
 import { SettingsProvider } from "./components/providers/SettingsProvider";
+import { AuthProvider } from "./components/providers/AuthProvider";
+
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -52,7 +54,7 @@ function App() {
                   path={path}
                   element={<ProtectedRoute>{route.component}</ProtectedRoute>}
                 />
-              );
+              ); 
             })}
           </Routes>
         </Suspense>
@@ -63,18 +65,20 @@ function App() {
   return (
     <ErrorBoundary>
       <SettingsProvider>
-        {isAuthRoute ? content : <Layout>{content}</Layout>}
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
+        <AuthProvider>
+          {isAuthRoute ? content : <Layout>{content}</Layout>}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+        </AuthProvider>
       </SettingsProvider>
     </ErrorBoundary>
   );

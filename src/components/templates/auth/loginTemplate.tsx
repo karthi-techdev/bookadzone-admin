@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -20,7 +20,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, user, token } = useAuthStore();
-  const [showPassword, setShowPassword] = useState(false);
+
 
   const methods = useForm<LoginFormData>({
     defaultValues: {
@@ -180,10 +180,7 @@ const Login: React.FC = () => {
           username: handleFieldChange('username'),
           password: handleFieldChange('password', 4),
         }}
-        extraProps={{ 
-          togglePassword: () => setShowPassword((prev) => !prev), 
-          showPassword 
-        }}
+        extraProps={{}}
       />
       <div className="mt-2 forgot-link w-full flex justify-end mb-4">
         <Link to="/forgot-password" className="text-xs text-[var(--light-grey-color)] hover:text-[var(--white-color)] underline transition-all duration-300 ease-in-out">

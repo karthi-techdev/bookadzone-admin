@@ -221,7 +221,7 @@ const FooterInfoTrashListTemplate: React.FC = () => {
     <div className="p-6">
       <ToastContainer position="top-right" autoClose={3000} />
       <TableHeader
-        managementName="Footer Info"
+        managementName="Deleted Footer Info"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

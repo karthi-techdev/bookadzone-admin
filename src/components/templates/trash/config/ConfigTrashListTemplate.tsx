@@ -161,7 +161,7 @@ const ConfigTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Config"
+        managementName="Deleted Configs"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

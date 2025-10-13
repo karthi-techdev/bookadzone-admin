@@ -129,7 +129,7 @@ const AgencyTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Agency Trash"
+        managementName="Deleted Agencies"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

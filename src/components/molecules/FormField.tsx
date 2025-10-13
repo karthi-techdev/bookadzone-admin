@@ -11,8 +11,7 @@ interface FormFieldProps<T = FieldValue> {
   onClick?: () => void;
   readOnly?: boolean;
   error?: string;
-  togglePassword?: () => void;
-  showPassword?: boolean;
+
   isAuth?: boolean;
   existingFiles?: string | string[];
 }
@@ -24,8 +23,7 @@ const FormField = memo(<T extends FieldValue = FieldValue>({
   onClick,
   readOnly = false,
   error, 
-  togglePassword, 
-  showPassword, 
+
   isAuth,
   existingFiles
 }: FormFieldProps<T>) => {
@@ -63,8 +61,7 @@ const FormField = memo(<T extends FieldValue = FieldValue>({
         valueAsNumber={field.valueAsNumber}
         error={error}
         required={field.required}
-        togglePassword={togglePassword}
-        showPassword={showPassword}
+
         isAuth={isAuth}
         existingFiles={existingFiles} 
       />

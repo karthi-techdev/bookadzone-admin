@@ -38,7 +38,7 @@ const AgencyFormTemplate: React.FC = () => {
   const navigate = useNavigate();
   const { fetchAgencyById, addAgency, updateAgency } = useAgencyStore();
   const [isInitialized, setIsInitialized] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+
   const [existingAgencyData, setExistingAgencyData] = useState<any>(null);
   const [isCheckingEmails, setIsCheckingEmails] = useState(false);
   const countryOptions = useMemo(() => getAllCountries(), []);
@@ -476,7 +476,7 @@ const AgencyFormTemplate: React.FC = () => {
     return onSubmit(values);
   };
   
-  const togglePassword = () => setShowPassword(!showPassword);
+
 
   const filteredFields = (id
     ? agencyFields.filter(field => field.name !== 'password')
@@ -507,8 +507,7 @@ const AgencyFormTemplate: React.FC = () => {
           onSubmit={handleSubmit(onSubmit, onInvalid)}
           data-testid="agency-form"
           extraProps={{
-            togglePassword,
-            showPassword,
+
             countryOptions,
             stateOptions,
             cityOptions,
