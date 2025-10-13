@@ -6,9 +6,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   error?: string;
   isAuth?: boolean;
+  autoCompleted?: boolean;
 }
 
-const BAZInput: React.FC<InputProps> = memo(({ className = '', error, isAuth = false, ...props }) => {
+const BAZInput: React.FC<InputProps> = memo(({ className = '', error, isAuth = false, autoCompleted = false, ...props }) => {
   // Define different border radius styles based on isAuth
   const borderRadiusClass = isAuth 
     ? 'rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px]' 
@@ -23,7 +24,8 @@ const BAZInput: React.FC<InputProps> = memo(({ className = '', error, isAuth = f
     >
       <input
         {...props}
-        className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
+        data-testid={props.id ? `${props.id}-input` : undefined}
+        className={`w-full px-3 py-2 ${autoCompleted ? 'bg-purple-100' : 'bg-[var(--dark-color)]'} border ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
         } ${borderRadiusClass} text-[.75rem] text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
       />

@@ -156,7 +156,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                 </li>
               );
             }
-
             return (
               <li key={idx} className="flex flex-col justify-center items-center">
                 {collapsed ? (

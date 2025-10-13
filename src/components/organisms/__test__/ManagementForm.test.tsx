@@ -1,5 +1,3 @@
-
-
 import '@testing-library/jest-dom'; // For extended jest matchers
 import React from 'react';
 import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
@@ -12,9 +10,17 @@ jest.mock('react-toastify', () => ({ toast: { error: jest.fn() } }));
 import type { FieldConfig } from '../../types/common';
 
 // React Hook Form provider wrapper for tests
-const Wrapper = ({ children }: { children: React.ReactNode }) => {
+const Wrapper = ({ children, defaultValues = {} }: { children: React.ReactNode; defaultValues?: any }) => {
   const methods = useForm({
-    defaultValues: { name: '', email: '', document: '', dynamic1: '', gender: '' },
+    defaultValues: { 
+      name: '', 
+      email: '', 
+      document: '', 
+      dynamic1: '', 
+      gender: '',
+      dynamicFields: [],
+      ...defaultValues 
+    },
   });
   return <FormProvider {...methods}>{children}</FormProvider>;
 };
@@ -48,6 +54,10 @@ describe('ManagementForm Component', () => {
       ],
     },
   ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('renders all fields and submit button', () => {
     render(
@@ -121,14 +131,20 @@ describe('ManagementForm Component', () => {
       </Wrapper>
     );
 
-    // Simulate clicking the "Add Field" button to add a dynamic field
+    // Wait for the initial dynamic field to render
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+    });
+
+    // Click the "Add Field" button to add another dynamic field
     const addButton = screen.getByRole('button', { name: /add field/i });
     await act(async () => {
-      addButton && fireEvent.click(addButton);
+      fireEvent.click(addButton);
     });
 
     await waitFor(() => {
-      expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+      const dynamicFieldInputs = screen.getAllByLabelText(/Dynamic 1/i);
+      expect(dynamicFieldInputs.length).toBe(2);
     });
   });
 
@@ -167,6 +183,7 @@ describe('ManagementForm Component', () => {
     const dynamicFields: FieldConfig[] = [
       { name: 'dynamic1', type: 'text', label: 'Dynamic 1', required: false },
     ];
+    
     render(
       <Wrapper>
         <ManagementForm
@@ -178,38 +195,95 @@ describe('ManagementForm Component', () => {
         />
       </Wrapper>
     );
+
+    // Wait for initial dynamic field to render
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+    });
+
     const addButton = screen.getByRole('button', { name: /add field/i });
-    await act(async () => { fireEvent.click(addButton); });
-    await waitFor(() => expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument());
-    const removeButton = screen.getByRole('button', { name: '' });
-    fireEvent.click(removeButton);
-    // Should still be present (disabled if only one field)
-    expect(screen.getByLabelText(/Dynamic 1/i)).toBeInTheDocument();
+    await act(async () => { 
+      fireEvent.click(addButton); 
+    });
+
+    await waitFor(() => {
+      const dynamicFieldInputs = screen.getAllByLabelText(/Dynamic 1/i);
+      expect(dynamicFieldInputs.length).toBe(2);
+    });
+
+    // Find remove buttons (trash icons)
+    const removeButtons = screen.getAllByRole('button');
+    const trashButtons = removeButtons.filter(button => 
+      button.querySelector('svg') && !button.textContent?.includes('Add')
+    );
+    
+    expect(trashButtons.length).toBeGreaterThan(0);
+    
+    // Click the first remove button
+    fireEvent.click(trashButtons[0]);
+    
+    // Should have one field remaining
+    await waitFor(() => {
+      const remainingFields = screen.getAllByLabelText(/Dynamic 1/i);
+      expect(remainingFields.length).toBe(1);
+    });
   });
 
-  it('shows toast error if last dynamic field incomplete', async () => {
-    const { toast } = require('react-toastify');
-    toast.error.mockClear();
+  it('disables add button when last dynamic field incomplete', async () => {
     const dynamicFields: FieldConfig[] = [
-      { name: 'key', type: 'text', label: 'Key', required: false },
+      { name: 'key', type: 'text', label: 'Key', required: true },
       { name: 'value', type: 'text', label: 'Value', required: false },
     ];
-    render(
-      <Wrapper>
-        <ManagementForm
-          label="Submit"
-          fields={[]}
-          isDynamic={true}
-          dynamicFieldConfig={dynamicFields}
-          dynamicFieldName="dynamicFields"
-        />
-      </Wrapper>
-    );
+    
+    const TestWrapper = () => {
+      const methods = useForm({
+        defaultValues: { dynamicFields: [{ key: '', value: '' }] }
+      });
+      return (
+        <FormProvider {...methods}>
+          <ManagementForm
+            label="Submit"
+            fields={[]}
+            isDynamic={true}
+            dynamicFieldConfig={dynamicFields}
+            dynamicFieldName="dynamicFields"
+          />
+        </FormProvider>
+      );
+    };
+    
+    render(<TestWrapper />);
+
+    // Wait for the dynamic fields to render
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Key/i)).toBeInTheDocument();
+    });
+
     const addButton = screen.getByRole('button', { name: /add field/i });
-    await act(async () => { fireEvent.click(addButton); });
-    // Try to add again without filling last field
-    await act(async () => { fireEvent.click(addButton); });
-  expect(toast.error).toHaveBeenCalled();
+    
+    // Button should be disabled when required field is empty
+    expect(addButton).toBeDisabled();
+    
+    // Fill the required field
+    const keyInput = screen.getByLabelText(/Key/i);
+    await act(async () => {
+      fireEvent.change(keyInput, { target: { value: 'test-key' } });
+    });
+
+    // Button should now be enabled
+    await waitFor(() => {
+      expect(addButton).not.toBeDisabled();
+    });
+
+    // Add a new field
+    await act(async () => { 
+      fireEvent.click(addButton); 
+    });
+
+    // Button should be disabled again because new field is empty
+    await waitFor(() => {
+      expect(addButton).toBeDisabled();
+    });
   });
 
   it('renders file field with existingFiles', () => {

@@ -3,7 +3,9 @@
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "lib": ["es2017", "dom", "dom.iterable"],
-    "types": ["jest", "@testing-library/jest-dom", "node"]
+    "types": ["jest", "@testing-library/jest-dom", "node"],
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
   },
   "files": [
     "./src/images.d.ts",
@@ -13,4 +15,6 @@
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
   ]
+
+  
 }

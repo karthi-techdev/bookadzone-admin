@@ -7,9 +7,10 @@ interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
   error?: string;
   label?: string;
   isAuth?: boolean;
+  autoCompleted?: boolean;
 }
 
-const BAZTextArea: React.FC<TextAreaProps> = ({ className = '', error, label, id, isAuth = false, ...rest }) => {
+const BAZTextArea: React.FC<TextAreaProps> = ({ className = '', error, label, id, isAuth = false, autoCompleted = false, ...rest }) => {
   const generatedId = useId();
   const textareaId = id || generatedId;
   
@@ -33,9 +34,10 @@ const BAZTextArea: React.FC<TextAreaProps> = ({ className = '', error, label, id
       <textarea
         id={textareaId}
         {...rest}
-        className={`w-full px-3 py-2 bg-[var(--dark-color)] border ${
+        data-testid={id ? `${id}-input` : undefined}
+        className={`w-full px-3 py-2 ${autoCompleted ? 'bg-purple-100' : 'bg-[var(--dark-color)]'} border ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
-        } ${borderRadiusClass} text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] ${className}`}
+        } ${borderRadiusClass} text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] resize-none ${className}`}
       />
       {error && (
         <p className="text-xs text-red-400 flex items-center mt-1">

@@ -46,6 +46,9 @@ describe('SeoConfigTemplate', () => {
   it('submits form and shows success toast', async () => {
   render(<MemoryRouter><SeoConfigTemplate /></MemoryRouter>);
   await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+  fireEvent.change(screen.getByLabelText(/Meta Title/i), { target: { value: 'Test Title' } });
+  fireEvent.change(screen.getByLabelText(/Meta Description/i), { target: { value: 'Test Description' } });
+  fireEvent.change(screen.getByLabelText(/Meta Keyword/i), { target: { value: 'Test Keyword' } });
   fireEvent.submit(screen.getByTestId('seo-config-form'));
   await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().updateSettings).toHaveBeenCalled());
     expect(require('react-toastify').toast.success).toHaveBeenCalledWith('SEO configuration updated successfully');
@@ -55,6 +58,9 @@ describe('SeoConfigTemplate', () => {
   (require('../../../stores/settingsStore').useSettingsStore().updateSettings as jest.Mock).mockRejectedValue(new Error('Update failed'));
   render(<MemoryRouter><SeoConfigTemplate /></MemoryRouter>);
   await waitFor(() => expect(require('../../../stores/settingsStore').useSettingsStore().fetchSettings).toHaveBeenCalled());
+  fireEvent.change(screen.getByLabelText(/Meta Title/i), { target: { value: 'Test Title' } });
+  fireEvent.change(screen.getByLabelText(/Meta Description/i), { target: { value: 'Test Description' } });
+  fireEvent.change(screen.getByLabelText(/Meta Keyword/i), { target: { value: 'Test Keyword' } });
   fireEvent.submit(screen.getByTestId('seo-config-form'));
   await waitFor(() => expect(require('react-toastify').toast.error).toHaveBeenCalledWith('Update failed'));
   });

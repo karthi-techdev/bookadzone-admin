@@ -1,3 +1,79 @@
+export interface Agency {
+  _id?: string;
+  userId?: string;
+  agencyName: string;
+  agencyLogo: string | File;
+  name: string;
+  photo: string | File;
+  position: string;
+  yourEmail: string;
+  yourPhone: string;
+  companyEmail: string;
+  companyPhone: string;
+  companyRegistrationNumberGST: string;
+  website: string;
+  uploadIdProof: string | File;
+  uploadBusinessProof: string | File;
+  agencyAddress: string;
+  agencyLocation: string;
+  country: string;
+  state: string;
+  city: string;
+  pincode: string;
+  password?: string;
+  status?: boolean;
+  priority?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AgencyInput extends Omit<Agency, '_id' | 'userId' | 'status' | 'priority' | 'createdAt' | 'updatedAt'> {
+  password: string; // Make password required for new agencies
+}
+export interface BannerOne {
+  title: string;
+  highlightedText: string;
+  image1: string;
+  subHead1: string;
+  subDescription1: string;
+  image2: string;
+  subHead2: string;
+  subDescription2: string;
+  image3: string;
+  subHead3: string;
+  subDescription3: string;
+}
+
+export interface BannerTwo {
+  backgroundImage: string;
+  title: string;
+  description: string;
+  features?: Array<{ icon?: string; title?: string }>;
+  buttonName: string;
+  buttonUrl: string;
+}
+
+export interface Banner {
+  homepage: {
+    bannerOne: BannerOne;
+    bannerTwo: BannerTwo;
+  };
+  aboutBanner: {
+    submenu1: {
+      backgroundImage: string;
+      title: string;
+      description: string;
+      images: string[];
+    };
+    submenu2: {
+      backgroundImage: string;
+      title: string;
+      description: string;
+      images: string[];
+    };
+  };
+}
+
 export interface Settings {
   general: {
     siteName: string;
@@ -49,6 +125,8 @@ export interface User {
   username: string;
   email?: string;
   role?: string;
+  name?: string;
+  phone?: string;
 }
 
 export interface Faq {
@@ -69,6 +147,18 @@ export interface FooterInfo {
   status?: boolean;
   priority: number;
 };
+
+export interface Category {
+  length: number;
+  _id?: string;
+  name: string;
+  slug: string,
+  description: string;
+  photo?: string | File;
+  isFeatured: boolean | undefined;
+  status?: boolean;
+  CategoryFields: { key: string; value: string }[];
+}
 
 export interface Config {
   _id?: string;
@@ -93,8 +183,20 @@ export type InputType =
   | 'state-select'
   | 'city-select'
   | 'composite'
-  | 'password'
-  | 'array';
+  | 'array'
+  | 'dynamic'
+  | 'tel'
+  | 'url';
+
+export type FieldValue = string | number | boolean | File | File[] | null | undefined;
+
+export interface FormFieldChangeEvent<T = FieldValue> {
+  target: {
+    name: string;
+    value: T;
+    removedFiles?: string[];
+  };
+}
 
 export interface FieldConfig {
   name: string;
@@ -115,13 +217,17 @@ export interface FieldConfig {
   readonly?: boolean;
   showIf?: () => boolean;
   readOnly?: boolean;
-  defaultValue?: any;
+  defaultValue?: FieldValue;
   valueAsNumber?: boolean;
-  onChange?: (e: React.ChangeEvent<any> | { target: { name: string; value: any } }) => void;
+  onChange?: (e: FormFieldChangeEvent) => void;
   dataTestId?: string;
   value?:any;
   tableConfig?: TableConfig;
-  
+ 
+  minLength?: number;
+  maxLength?: number;
+  pattern?: RegExp;
+  onClick?: () => void;
 }
 
 export interface TableConfig {
@@ -197,4 +303,36 @@ export interface IUserRole {
   isDeleted: boolean;
   createdAt?: string;
   updatedAt?: string;
+}
+export interface BlogCategory {
+  _id?:string
+  name:string;
+  label:string;
+  className?: string;
+  placeholder?: string;
+  required?: boolean;
+  status?:boolean;
+  slug: string;
+
+}
+export interface NewsLetter {
+  _id?: string;
+  name: string;
+  slug: string ;
+  template:string;
+  status?: boolean;
+}
+export interface Country {
+  name: string;
+  iso2: string;
+}
+export interface State {
+  name: string;
+  country_code: string;
+  iso2: string;
+}
+ export interface City {
+  name: string;
+  country_code: string;
+  state_code: string;
 }
