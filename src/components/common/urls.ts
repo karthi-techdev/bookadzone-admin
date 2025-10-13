@@ -44,6 +44,19 @@ const API = {
   restoreconfig: `${ROOTURL}configs/restore/`,
   permanentDeleteconfig: `${ROOTURL}configs/permanentDelete/`,
 
+  // User endpoints
+  adduserrole: `${ROOTURL}userrole/`,
+  createprivilegetable: `${ROOTURL}userrole/createprivilegetable`,
+  listuserrole: `${ROOTURL}userrole/listuserrole`,
+  fetchMenus: `${ROOTURL}userrole/fetchmenus`,
+  getuserrole: `${ROOTURL}userrole/getuserroleById/`,
+  updateuserrole: `${ROOTURL}userrole/updateuserrole/`,
+  deleteuserrole: `${ROOTURL}userrole/softDeleteuserrole/`,
+  toggleStatususerrole: `${ROOTURL}userrole/togglestatus/`,
+  trashuserrolelist: `${ROOTURL}userrole/trash`,
+  restoreuserrole: `${ROOTURL}userrole/restore/`,
+  permanentDeleteuserrole: `${ROOTURL}userrole/permanentDelete/`,
+
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,

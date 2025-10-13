@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1758551623957" clover="3.2.0">
-  <project timestamp="1758551623957" name="All files">
-    <metrics statements="1470" coveredstatements="1305" conditionals="1600" coveredconditionals="1055" methods="374" coveredmethods="320" elements="3444" coveredelements="2680" complexity="0" loc="1470" ncloc="1470" packages="14" files="53" classes="53"/>
+<coverage generated="1758701834752" clover="3.2.0">
+  <project timestamp="1758701834752" name="All files">
+    <metrics statements="1786" coveredstatements="1541" conditionals="2090" coveredconditionals="1299" methods="449" coveredmethods="380" elements="4325" coveredelements="3220" complexity="0" loc="1786" ncloc="1786" packages="15" files="57" classes="57"/>
     <package name="atoms">
-      <metrics statements="138" coveredstatements="134" conditionals="117" coveredconditionals="101" methods="32" coveredmethods="31"/>
-      <file name="BAZ-Button.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Button.tsx">
+      <metrics statements="147" coveredstatements="128" conditionals="121" coveredconditionals="101" methods="37" coveredmethods="30"/>
+      <file name="BAZ-Button.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Button.tsx">
         <metrics statements="2" coveredstatements="2" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="12" count="112" type="cond" truecount="2" falsecount="0"/>
         <line num="22" count="11" type="stmt"/>
       </file>
-      <file name="BAZ-Checkbox.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Checkbox.tsx">
+      <file name="BAZ-Checkbox.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Checkbox.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="1" coveredmethods="1"/>
         <line num="2" count="8" type="stmt"/>
         <line num="3" count="8" type="stmt"/>
@@ -17,102 +17,111 @@
         <line num="17" count="13" type="stmt"/>
         <line num="47" count="8" type="stmt"/>
       </file>
-      <file name="BAZ-DefaultAvatar.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-DefaultAvatar.tsx">
+      <file name="BAZ-DefaultAvatar.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-DefaultAvatar.tsx">
         <metrics statements="3" coveredstatements="3" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="8" count="3" type="cond" truecount="1" falsecount="0"/>
         <line num="9" count="6" type="stmt"/>
         <line num="16" count="3" type="stmt"/>
       </file>
-      <file name="BAZ-FileInput.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-FileInput.tsx">
-        <metrics statements="69" coveredstatements="65" conditionals="48" coveredconditionals="38" methods="11" coveredmethods="10"/>
+      <file name="BAZ-FileInput.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-FileInput.tsx">
+        <metrics statements="78" coveredstatements="59" conditionals="52" coveredconditionals="38" methods="16" coveredmethods="9"/>
         <line num="1" count="8" type="stmt"/>
         <line num="2" count="8" type="stmt"/>
         <line num="3" count="8" type="stmt"/>
         <line num="4" count="8" type="stmt"/>
         <line num="18" count="8" type="stmt"/>
-        <line num="29" count="59" type="stmt"/>
-        <line num="30" count="59" type="stmt"/>
-        <line num="32" count="59" type="cond" truecount="1" falsecount="1"/>
-        <line num="33" count="0" type="stmt"/>
-        <line num="35" count="59" type="stmt"/>
-        <line num="37" count="59" type="stmt"/>
-        <line num="38" count="24" type="cond" truecount="1" falsecount="1"/>
-        <line num="39" count="0" type="stmt"/>
+        <line num="29" count="58" type="stmt"/>
+        <line num="30" count="58" type="stmt"/>
+        <line num="31" count="58" type="stmt"/>
+        <line num="33" count="58" type="cond" truecount="1" falsecount="1"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="36" count="58" type="stmt"/>
+        <line num="38" count="58" type="stmt"/>
+        <line num="39" count="24" type="cond" truecount="1" falsecount="1"/>
         <line num="40" count="0" type="stmt"/>
-        <line num="43" count="24" type="cond" truecount="1" falsecount="1"/>
-        <line num="44" count="24" type="stmt"/>
-        <line num="46" count="24" type="stmt"/>
-        <line num="49" count="24" type="stmt"/>
-        <line num="50" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="51" count="7" type="cond" truecount="2" falsecount="0"/>
-        <line num="52" count="1" type="stmt"/>
-        <line num="54" count="6" type="stmt"/>
-        <line num="57" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="58" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="59" count="1" type="stmt"/>
-        <line num="61" count="1" type="stmt"/>
-        <line num="64" count="24" type="cond" truecount="2" falsecount="0"/>
-        <line num="65" count="15" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="44" count="24" type="cond" truecount="1" falsecount="1"/>
+        <line num="45" count="24" type="stmt"/>
+        <line num="47" count="24" type="stmt"/>
+        <line num="50" count="24" type="stmt"/>
+        <line num="51" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="52" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="55" count="6" type="stmt"/>
+        <line num="58" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="65" count="24" type="cond" truecount="2" falsecount="0"/>
         <line num="66" count="15" type="stmt"/>
-        <line num="68" count="9" type="stmt"/>
-        <line num="70" count="11" type="cond" truecount="3" falsecount="1"/>
-        <line num="71" count="11" type="cond" truecount="1" falsecount="1"/>
-        <line num="72" count="11" type="stmt"/>
-        <line num="73" count="11" type="cond" truecount="1" falsecount="1"/>
-        <line num="74" count="11" type="stmt"/>
-        <line num="76" count="0" type="stmt"/>
-        <line num="78" count="11" type="stmt"/>
-        <line num="79" count="9" type="stmt"/>
-        <line num="82" count="59" type="stmt"/>
-        <line num="83" count="24" type="stmt"/>
-        <line num="84" count="24" type="cond" truecount="1" falsecount="1"/>
-        <line num="85" count="24" type="stmt"/>
-        <line num="90" count="59" type="stmt"/>
-        <line num="91" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="93" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="94" count="2" type="stmt"/>
-        <line num="96" count="2" type="stmt"/>
-        <line num="98" count="2" type="stmt"/>
-        <line num="99" count="2" type="cond" truecount="4" falsecount="0"/>
-        <line num="100" count="1" type="stmt"/>
+        <line num="67" count="15" type="stmt"/>
+        <line num="69" count="9" type="stmt"/>
+        <line num="71" count="11" type="cond" truecount="3" falsecount="1"/>
+        <line num="72" count="11" type="cond" truecount="1" falsecount="1"/>
+        <line num="73" count="11" type="stmt"/>
+        <line num="74" count="11" type="cond" truecount="1" falsecount="1"/>
+        <line num="75" count="11" type="stmt"/>
+        <line num="77" count="0" type="stmt"/>
+        <line num="79" count="11" type="stmt"/>
+        <line num="80" count="9" type="stmt"/>
+        <line num="83" count="58" type="stmt"/>
+        <line num="84" count="24" type="stmt"/>
+        <line num="85" count="24" type="cond" truecount="1" falsecount="1"/>
+        <line num="86" count="24" type="stmt"/>
+        <line num="91" count="58" type="stmt"/>
+        <line num="92" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="94" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="95" count="2" type="stmt"/>
+        <line num="97" count="2" type="stmt"/>
+        <line num="99" count="2" type="stmt"/>
+        <line num="100" count="2" type="cond" truecount="4" falsecount="0"/>
         <line num="101" count="1" type="stmt"/>
         <line num="102" count="1" type="stmt"/>
         <line num="103" count="1" type="stmt"/>
         <line num="104" count="1" type="stmt"/>
-        <line num="110" count="1" type="stmt"/>
+        <line num="105" count="1" type="stmt"/>
         <line num="111" count="1" type="stmt"/>
-        <line num="113" count="1" type="stmt"/>
-        <line num="115" count="2" type="stmt"/>
-        <line num="118" count="59" type="stmt"/>
-        <line num="149" count="12" type="stmt"/>
-        <line num="171" count="1" type="stmt"/>
-        <line num="172" count="1" type="stmt"/>
-        <line num="173" count="1" type="stmt"/>
-        <line num="174" count="1" type="stmt"/>
-        <line num="175" count="1" type="stmt"/>
-        <line num="176" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="178" count="1" type="stmt"/>
-        <line num="185" count="1" type="stmt"/>
-        <line num="207" count="8" type="stmt"/>
+        <line num="112" count="1" type="stmt"/>
+        <line num="114" count="1" type="stmt"/>
+        <line num="116" count="2" type="stmt"/>
+        <line num="119" count="58" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="121" count="0" type="stmt"/>
+        <line num="122" count="0" type="stmt"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="126" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="127" count="0" type="stmt"/>
+        <line num="128" count="0" type="stmt"/>
+        <line num="131" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="144" count="58" type="stmt"/>
+        <line num="178" count="12" type="stmt"/>
+        <line num="210" count="0" type="stmt"/>
+        <line num="219" count="0" type="stmt"/>
+        <line num="235" count="0" type="stmt"/>
+        <line num="236" count="0" type="stmt"/>
+        <line num="240" count="0" type="stmt"/>
+        <line num="275" count="8" type="stmt"/>
       </file>
-      <file name="BAZ-Input.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Input.tsx">
+      <file name="BAZ-Input.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Input.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="8" coveredconditionals="8" methods="1" coveredmethods="1"/>
         <line num="1" count="8" type="stmt"/>
         <line num="2" count="8" type="stmt"/>
         <line num="3" count="8" type="stmt"/>
-        <line num="11" count="365" type="cond" truecount="2" falsecount="0"/>
-        <line num="13" count="365" type="cond" truecount="2" falsecount="0"/>
-        <line num="17" count="365" type="stmt"/>
+        <line num="11" count="377" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="377" type="cond" truecount="2" falsecount="0"/>
+        <line num="17" count="377" type="stmt"/>
         <line num="39" count="8" type="stmt"/>
       </file>
-      <file name="BAZ-Logo.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Logo.tsx">
+      <file name="BAZ-Logo.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Logo.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="1" coveredconditionals="1" methods="1" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="9" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="10" count="1" type="stmt"/>
         <line num="17" count="1" type="stmt"/>
       </file>
-      <file name="BAZ-NotificationItem.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-NotificationItem.tsx">
+      <file name="BAZ-NotificationItem.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-NotificationItem.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
         <line num="2" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -120,7 +129,7 @@
         <line num="17" count="5" type="stmt"/>
         <line num="35" count="2" type="stmt"/>
       </file>
-      <file name="BAZ-Pagination.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Pagination.tsx">
+      <file name="BAZ-Pagination.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Pagination.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="8" coveredconditionals="6" methods="1" coveredmethods="1"/>
         <line num="4" count="1" type="stmt"/>
         <line num="5" count="1" type="cond" truecount="6" falsecount="2"/>
@@ -128,7 +137,7 @@
         <line num="23" count="1" type="stmt"/>
         <line num="43" count="1" type="stmt"/>
       </file>
-      <file name="BAZ-Radio.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Radio.tsx">
+      <file name="BAZ-Radio.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Radio.tsx">
         <metrics statements="6" coveredstatements="6" conditionals="6" coveredconditionals="5" methods="2" coveredmethods="2"/>
         <line num="2" count="8" type="stmt"/>
         <line num="3" count="8" type="stmt"/>
@@ -137,7 +146,7 @@
         <line num="40" count="26" type="stmt"/>
         <line num="65" count="8" type="stmt"/>
       </file>
-      <file name="BAZ-SearchBox.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-SearchBox.tsx">
+      <file name="BAZ-SearchBox.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-SearchBox.tsx">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -145,7 +154,7 @@
         <line num="6" count="1" type="stmt"/>
         <line num="19" count="1" type="stmt"/>
       </file>
-      <file name="BAZ-Select.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-Select.tsx">
+      <file name="BAZ-Select.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-Select.tsx">
         <metrics statements="18" coveredstatements="18" conditionals="25" coveredconditionals="23" methods="10" coveredmethods="10"/>
         <line num="2" count="8" type="stmt"/>
         <line num="3" count="8" type="stmt"/>
@@ -166,7 +175,7 @@
         <line num="92" count="1" type="stmt"/>
         <line num="111" count="8" type="stmt"/>
       </file>
-      <file name="BAZ-TextArea.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\atoms\BAZ-TextArea.tsx">
+      <file name="BAZ-TextArea.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\atoms\BAZ-TextArea.tsx">
         <metrics statements="9" coveredstatements="9" conditionals="12" coveredconditionals="11" methods="1" coveredmethods="1"/>
         <line num="1" count="8" type="stmt"/>
         <line num="2" count="8" type="stmt"/>
@@ -181,37 +190,37 @@
     </package>
     <package name="common">
       <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="1" methods="0" coveredmethods="0"/>
-      <file name="urls.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\common\urls.ts">
+      <file name="urls.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\common\urls.ts">
         <metrics statements="9" coveredstatements="9" conditionals="2" coveredconditionals="1" methods="0" coveredmethods="0"/>
-        <line num="1" count="18" type="stmt"/>
-        <line num="3" count="18" type="stmt"/>
-        <line num="4" count="18" type="cond" truecount="1" falsecount="1"/>
-        <line num="5" count="18" type="stmt"/>
-        <line num="6" count="18" type="stmt"/>
-        <line num="7" count="18" type="stmt"/>
-        <line num="12" count="18" type="stmt"/>
-        <line num="53" count="18" type="stmt"/>
-        <line num="54" count="18" type="stmt"/>
+        <line num="1" count="21" type="stmt"/>
+        <line num="3" count="21" type="stmt"/>
+        <line num="4" count="21" type="cond" truecount="1" falsecount="1"/>
+        <line num="5" count="21" type="stmt"/>
+        <line num="6" count="21" type="stmt"/>
+        <line num="7" count="21" type="stmt"/>
+        <line num="12" count="21" type="stmt"/>
+        <line num="53" count="21" type="stmt"/>
+        <line num="54" count="21" type="stmt"/>
       </file>
     </package>
     <package name="molecules">
-      <metrics statements="151" coveredstatements="138" conditionals="192" coveredconditionals="126" methods="44" coveredmethods="36"/>
-      <file name="FormField.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\FormField.tsx">
+      <metrics statements="141" coveredstatements="131" conditionals="170" coveredconditionals="119" methods="44" coveredmethods="36"/>
+      <file name="FormField.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\FormField.tsx">
         <metrics statements="12" coveredstatements="12" conditionals="8" coveredconditionals="7" methods="3" coveredmethods="3"/>
         <line num="2" count="7" type="stmt"/>
-        <line num="4" count="7" type="stmt"/>
-        <line num="18" count="7" type="stmt"/>
-        <line num="28" count="423" type="stmt"/>
-        <line num="30" count="423" type="cond" truecount="2" falsecount="0"/>
-        <line num="32" count="40" type="cond" truecount="1" falsecount="1"/>
-        <line num="36" count="423" type="stmt"/>
+        <line num="3" count="7" type="stmt"/>
+        <line num="17" count="7" type="stmt"/>
+        <line num="27" count="435" type="stmt"/>
+        <line num="29" count="435" type="cond" truecount="2" falsecount="0"/>
+        <line num="31" count="40" type="cond" truecount="1" falsecount="1"/>
+        <line num="35" count="435" type="stmt"/>
         <line num="37" count="2" type="stmt"/>
         <line num="38" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="39" count="1" type="stmt"/>
-        <line num="43" count="423" type="stmt"/>
+        <line num="43" count="435" type="stmt"/>
         <line num="68" count="7" type="stmt"/>
       </file>
-      <file name="FormHeader.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\FormHeader.tsx">
+      <file name="FormHeader.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\FormHeader.tsx">
         <metrics statements="7" coveredstatements="7" conditionals="7" coveredconditionals="7" methods="1" coveredmethods="1"/>
         <line num="2" count="6" type="stmt"/>
         <line num="3" count="6" type="stmt"/>
@@ -221,8 +230,8 @@
         <line num="23" count="52" type="stmt"/>
         <line num="66" count="6" type="stmt"/>
       </file>
-      <file name="LabeledInput.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\LabeledInput.tsx">
-        <metrics statements="40" coveredstatements="37" conditionals="85" coveredconditionals="58" methods="6" coveredmethods="6"/>
+      <file name="LabeledInput.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\LabeledInput.tsx">
+        <metrics statements="30" coveredstatements="30" conditionals="63" coveredconditionals="51" methods="6" coveredmethods="6"/>
         <line num="1" count="7" type="stmt"/>
         <line num="2" count="7" type="stmt"/>
         <line num="3" count="7" type="stmt"/>
@@ -234,37 +243,27 @@
         <line num="9" count="7" type="stmt"/>
         <line num="10" count="7" type="stmt"/>
         <line num="34" count="7" type="stmt"/>
-        <line num="55" count="438" type="stmt"/>
+        <line num="55" count="450" type="stmt"/>
         <line num="56" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="59" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="60" count="0" type="stmt"/>
-        <line num="61" count="0" type="cond" truecount="0" falsecount="10"/>
-        <line num="62" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="63" count="1" type="stmt"/>
-        <line num="64" count="2" type="cond" truecount="2" falsecount="2"/>
-        <line num="65" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="66" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="67" count="1" type="stmt"/>
-        <line num="69" count="1" type="stmt"/>
-        <line num="71" count="3" type="stmt"/>
-        <line num="74" count="438" type="stmt"/>
-        <line num="75" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="76" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="77" count="2" type="cond" truecount="4" falsecount="2"/>
-        <line num="79" count="2" type="stmt"/>
-        <line num="82" count="438" type="stmt"/>
-        <line num="83" count="438" type="cond" truecount="9" falsecount="0"/>
-        <line num="85" count="12" type="stmt"/>
-        <line num="105" count="11" type="stmt"/>
-        <line num="116" count="11" type="stmt"/>
-        <line num="130" count="14" type="stmt"/>
-        <line num="134" count="24" type="cond" truecount="4" falsecount="0"/>
-        <line num="143" count="27" type="stmt"/>
-        <line num="156" count="363" type="stmt"/>
-        <line num="185" count="438" type="stmt"/>
-        <line num="204" count="7" type="stmt"/>
+        <line num="57" count="3" type="stmt"/>
+        <line num="60" count="450" type="stmt"/>
+        <line num="61" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="62" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="63" count="2" type="cond" truecount="4" falsecount="2"/>
+        <line num="65" count="2" type="stmt"/>
+        <line num="70" count="450" type="stmt"/>
+        <line num="71" count="450" type="cond" truecount="9" falsecount="0"/>
+        <line num="73" count="12" type="stmt"/>
+        <line num="93" count="11" type="stmt"/>
+        <line num="104" count="11" type="stmt"/>
+        <line num="118" count="14" type="stmt"/>
+        <line num="122" count="24" type="cond" truecount="4" falsecount="0"/>
+        <line num="131" count="27" type="stmt"/>
+        <line num="144" count="375" type="stmt"/>
+        <line num="173" count="450" type="stmt"/>
+        <line num="192" count="7" type="stmt"/>
       </file>
-      <file name="Loader.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\Loader.tsx">
+      <file name="Loader.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\Loader.tsx">
         <metrics statements="22" coveredstatements="19" conditionals="16" coveredconditionals="9" methods="9" coveredmethods="7"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -289,7 +288,7 @@
         <line num="76" count="6" type="stmt"/>
         <line num="93" count="1" type="stmt"/>
       </file>
-      <file name="NotificationDropdown.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\NotificationDropdown.tsx">
+      <file name="NotificationDropdown.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\NotificationDropdown.tsx">
         <metrics statements="22" coveredstatements="20" conditionals="6" coveredconditionals="2" methods="8" coveredmethods="7"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -314,14 +313,14 @@
         <line num="96" count="4" type="stmt"/>
         <line num="110" count="1" type="stmt"/>
       </file>
-      <file name="PageHeader.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\PageHeader.tsx">
+      <file name="PageHeader.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\PageHeader.tsx">
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="2" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
         <line num="10" count="1" type="stmt"/>
         <line num="35" count="1" type="stmt"/>
       </file>
-      <file name="ProfileDropdown.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\ProfileDropdown.tsx">
+      <file name="ProfileDropdown.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\ProfileDropdown.tsx">
         <metrics statements="17" coveredstatements="15" conditionals="6" coveredconditionals="2" methods="7" coveredmethods="5"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -341,7 +340,7 @@
         <line num="23" count="1" type="stmt"/>
         <line num="54" count="1" type="stmt"/>
       </file>
-      <file name="SidebarNavItem.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\SidebarNavItem.tsx">
+      <file name="SidebarNavItem.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\SidebarNavItem.tsx">
         <metrics statements="16" coveredstatements="15" conditionals="48" coveredconditionals="36" methods="5" coveredmethods="4"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -360,7 +359,7 @@
         <line num="138" count="2" type="stmt"/>
         <line num="157" count="1" type="stmt"/>
       </file>
-      <file name="TableHeader.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\molecules\TableHeader.tsx">
+      <file name="TableHeader.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\molecules\TableHeader.tsx">
         <metrics statements="11" coveredstatements="9" conditionals="16" coveredconditionals="5" methods="4" coveredmethods="2"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -376,9 +375,9 @@
       </file>
     </package>
     <package name="organisms">
-      <metrics statements="70" coveredstatements="66" conditionals="107" coveredconditionals="97" methods="25" coveredmethods="21"/>
-      <file name="ManagementForm.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\organisms\ManagementForm.tsx">
-        <metrics statements="45" coveredstatements="41" conditionals="54" coveredconditionals="47" methods="13" coveredmethods="9"/>
+      <metrics statements="82" coveredstatements="67" conditionals="130" coveredconditionals="97" methods="27" coveredmethods="22"/>
+      <file name="ManagementForm.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\organisms\ManagementForm.tsx">
+        <metrics statements="57" coveredstatements="42" conditionals="77" coveredconditionals="47" methods="15" coveredmethods="10"/>
         <line num="1" count="6" type="stmt"/>
         <line num="2" count="6" type="stmt"/>
         <line num="3" count="6" type="stmt"/>
@@ -390,11 +389,11 @@
         <line num="45" count="75" type="stmt"/>
         <line num="46" count="75" type="stmt"/>
         <line num="51" count="75" type="stmt"/>
-        <line num="52" count="420" type="stmt"/>
-        <line num="53" count="420" type="stmt"/>
-        <line num="54" count="420" type="stmt"/>
-        <line num="55" count="424" type="cond" truecount="2" falsecount="0"/>
-        <line num="56" count="420" type="stmt"/>
+        <line num="52" count="432" type="stmt"/>
+        <line num="53" count="432" type="stmt"/>
+        <line num="54" count="432" type="stmt"/>
+        <line num="55" count="448" type="cond" truecount="2" falsecount="0"/>
+        <line num="56" count="432" type="stmt"/>
         <line num="58" count="416" type="cond" truecount="3" falsecount="1"/>
         <line num="61" count="75" type="stmt"/>
         <line num="62" count="12" type="cond" truecount="2" falsecount="0"/>
@@ -415,48 +414,60 @@
         <line num="88" count="75" type="cond" truecount="2" falsecount="0"/>
         <line num="89" count="2" type="stmt"/>
         <line num="100" count="16" type="stmt"/>
-        <line num="105" count="0" type="stmt"/>
-        <line num="129" count="73" type="stmt"/>
-        <line num="140" count="400" type="cond" truecount="2" falsecount="0"/>
-        <line num="145" count="0" type="stmt"/>
-        <line num="166" count="3" type="stmt"/>
-        <line num="172" count="4" type="stmt"/>
-        <line num="177" count="0" type="stmt"/>
-        <line num="185" count="0" type="stmt"/>
-        <line num="219" count="6" type="stmt"/>
+        <line num="105" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="106" count="0" type="stmt"/>
+        <line num="107" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="108" count="0" type="stmt"/>
+        <line num="110" count="0" type="stmt"/>
+        <line num="135" count="73" type="stmt"/>
+        <line num="146" count="400" type="cond" truecount="2" falsecount="0"/>
+        <line num="151" count="0" type="cond" truecount="0" falsecount="5"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="153" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="177" count="12" type="stmt"/>
+        <line num="182" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="183" count="0" type="stmt"/>
+        <line num="191" count="0" type="stmt"/>
+        <line num="198" count="3" type="stmt"/>
+        <line num="204" count="4" type="stmt"/>
+        <line num="209" count="0" type="stmt"/>
+        <line num="217" count="0" type="stmt"/>
+        <line num="251" count="6" type="stmt"/>
       </file>
-      <file name="ManagementTable.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\organisms\ManagementTable.tsx">
+      <file name="ManagementTable.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\organisms\ManagementTable.tsx">
         <metrics statements="25" coveredstatements="25" conditionals="53" coveredconditionals="50" methods="12" coveredmethods="12"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="5" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="25" count="1" type="stmt"/>
-        <line num="30" count="1" type="stmt"/>
-        <line num="35" count="1" type="stmt"/>
-        <line num="50" count="8" type="stmt"/>
-        <line num="52" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="53" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="54" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="55" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="56" count="3" type="stmt"/>
-        <line num="63" count="8" type="stmt"/>
-        <line num="76" count="16" type="stmt"/>
-        <line num="100" count="11" type="stmt"/>
-        <line num="109" count="22" type="stmt"/>
-        <line num="117" count="1" type="stmt"/>
-        <line num="131" count="1" type="stmt"/>
-        <line num="141" count="1" type="stmt"/>
-        <line num="152" count="1" type="stmt"/>
-        <line num="163" count="1" type="stmt"/>
-        <line num="173" count="1" type="stmt"/>
-        <line num="183" count="1" type="stmt"/>
-        <line num="202" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
+        <line num="47" count="8" type="stmt"/>
+        <line num="48" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="49" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="50" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="51" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="52" count="3" type="stmt"/>
+        <line num="59" count="8" type="stmt"/>
+        <line num="72" count="16" type="stmt"/>
+        <line num="96" count="11" type="stmt"/>
+        <line num="105" count="22" type="stmt"/>
+        <line num="113" count="1" type="stmt"/>
+        <line num="127" count="1" type="stmt"/>
+        <line num="137" count="1" type="stmt"/>
+        <line num="148" count="1" type="stmt"/>
+        <line num="159" count="1" type="stmt"/>
+        <line num="169" count="1" type="stmt"/>
+        <line num="179" count="1" type="stmt"/>
+        <line num="198" count="1" type="stmt"/>
       </file>
     </package>
     <package name="stores">
-      <metrics statements="268" coveredstatements="236" conditionals="602" coveredconditionals="344" methods="73" coveredmethods="69"/>
-      <file name="AuthStore.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\stores\AuthStore.ts">
+      <metrics statements="355" coveredstatements="303" conditionals="861" coveredconditionals="435" methods="105" coveredmethods="99"/>
+      <file name="AuthStore.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\stores\AuthStore.ts">
         <metrics statements="45" coveredstatements="32" conditionals="12" coveredconditionals="5" methods="8" coveredmethods="4"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -504,23 +515,23 @@
         <line num="79" count="1" type="stmt"/>
         <line num="80" count="1" type="stmt"/>
       </file>
-      <file name="FaqStore.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\stores\FaqStore.ts">
+      <file name="FaqStore.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\stores\FaqStore.ts">
         <metrics statements="98" coveredstatements="87" conditionals="271" coveredconditionals="146" methods="30" coveredmethods="30"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="2" count="1" type="stmt"/>
-        <line num="4" count="1" type="stmt"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="9" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="10" count="0" type="stmt"/>
-        <line num="42" count="1" type="stmt"/>
-        <line num="50" count="2" type="cond" truecount="0" falsecount="3"/>
-        <line num="51" count="2" type="stmt"/>
-        <line num="52" count="2" type="stmt"/>
-        <line num="54" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="56" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="57" count="1" type="stmt"/>
-        <line num="61" count="1" type="stmt"/>
+        <line num="42" count="2" type="stmt"/>
+        <line num="50" count="3" type="cond" truecount="0" falsecount="3"/>
+        <line num="51" count="3" type="stmt"/>
+        <line num="52" count="3" type="stmt"/>
+        <line num="54" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="56" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="57" count="2" type="stmt"/>
+        <line num="61" count="2" type="stmt"/>
         <line num="74" count="1" type="cond" truecount="14" falsecount="5"/>
         <line num="75" count="1" type="stmt"/>
         <line num="76" count="1" type="stmt"/>
@@ -562,33 +573,33 @@
         <line num="155" count="1" type="cond" truecount="14" falsecount="5"/>
         <line num="156" count="1" type="stmt"/>
         <line num="157" count="1" type="stmt"/>
-        <line num="161" count="1" type="stmt"/>
-        <line num="162" count="1" type="stmt"/>
-        <line num="163" count="1" type="stmt"/>
-        <line num="165" count="1" type="stmt"/>
-        <line num="169" count="1" type="stmt"/>
-        <line num="170" count="1" type="stmt"/>
-        <line num="171" count="1" type="stmt"/>
+        <line num="161" count="2" type="stmt"/>
+        <line num="162" count="2" type="stmt"/>
+        <line num="163" count="2" type="stmt"/>
+        <line num="165" count="2" type="stmt"/>
+        <line num="169" count="2" type="stmt"/>
+        <line num="170" count="2" type="stmt"/>
+        <line num="171" count="2" type="stmt"/>
         <line num="177" count="0" type="cond" truecount="0" falsecount="19"/>
         <line num="178" count="0" type="stmt"/>
         <line num="179" count="0" type="stmt"/>
-        <line num="183" count="1" type="stmt"/>
-        <line num="184" count="1" type="stmt"/>
-        <line num="185" count="1" type="stmt"/>
-        <line num="187" count="1" type="stmt"/>
-        <line num="191" count="1" type="stmt"/>
-        <line num="192" count="1" type="stmt"/>
-        <line num="193" count="1" type="stmt"/>
-        <line num="194" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="183" count="2" type="stmt"/>
+        <line num="184" count="2" type="stmt"/>
+        <line num="185" count="2" type="stmt"/>
+        <line num="187" count="2" type="stmt"/>
+        <line num="191" count="2" type="stmt"/>
+        <line num="192" count="2" type="stmt"/>
+        <line num="193" count="2" type="stmt"/>
+        <line num="194" count="2" type="cond" truecount="1" falsecount="1"/>
         <line num="199" count="0" type="cond" truecount="0" falsecount="19"/>
         <line num="200" count="0" type="stmt"/>
         <line num="201" count="0" type="stmt"/>
-        <line num="205" count="1" type="stmt"/>
-        <line num="206" count="1" type="stmt"/>
-        <line num="207" count="1" type="stmt"/>
-        <line num="208" count="1" type="stmt"/>
-        <line num="209" count="1" type="stmt"/>
-        <line num="210" count="1" type="stmt"/>
+        <line num="205" count="2" type="stmt"/>
+        <line num="206" count="2" type="stmt"/>
+        <line num="207" count="2" type="stmt"/>
+        <line num="208" count="2" type="stmt"/>
+        <line num="209" count="2" type="stmt"/>
+        <line num="210" count="2" type="stmt"/>
         <line num="215" count="0" type="cond" truecount="0" falsecount="19"/>
         <line num="216" count="0" type="stmt"/>
         <line num="217" count="0" type="stmt"/>
@@ -605,7 +616,97 @@
         <line num="241" count="1" type="stmt"/>
         <line num="242" count="1" type="stmt"/>
       </file>
-      <file name="configStore.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\stores\configStore.ts">
+      <file name="FooterInfoStore.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\stores\FooterInfoStore.ts">
+        <metrics statements="87" coveredstatements="67" conditionals="259" coveredconditionals="91" methods="32" coveredmethods="30"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="32" count="2" type="stmt"/>
+        <line num="33" count="2" type="stmt"/>
+        <line num="34" count="2" type="stmt"/>
+        <line num="35" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="37" count="1" type="cond" truecount="7" falsecount="3"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="45" count="1" type="cond" truecount="14" falsecount="5"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="59" count="1" type="cond" truecount="14" falsecount="5"/>
+        <line num="60" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+        <line num="67" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="72" count="1" type="stmt"/>
+        <line num="84" count="0" type="cond" truecount="0" falsecount="19"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="90" count="1" type="stmt"/>
+        <line num="91" count="1" type="stmt"/>
+        <line num="92" count="1" type="stmt"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="96" count="1" type="stmt"/>
+        <line num="97" count="1" type="stmt"/>
+        <line num="98" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="102" count="0" type="cond" truecount="0" falsecount="6"/>
+        <line num="103" count="1" type="cond" truecount="4" falsecount="2"/>
+        <line num="105" count="1" type="cond" truecount="4" falsecount="2"/>
+        <line num="106" count="0" type="cond" truecount="0" falsecount="6"/>
+        <line num="112" count="0" type="cond" truecount="0" falsecount="19"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="118" count="1" type="stmt"/>
+        <line num="119" count="1" type="stmt"/>
+        <line num="120" count="1" type="stmt"/>
+        <line num="121" count="1" type="stmt"/>
+        <line num="122" count="1" type="stmt"/>
+        <line num="123" count="1" type="stmt"/>
+        <line num="127" count="1" type="cond" truecount="4" falsecount="2"/>
+        <line num="130" count="1" type="cond" truecount="4" falsecount="2"/>
+        <line num="138" count="0" type="cond" truecount="0" falsecount="19"/>
+        <line num="139" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="144" count="1" type="stmt"/>
+        <line num="145" count="1" type="stmt"/>
+        <line num="146" count="1" type="stmt"/>
+        <line num="147" count="1" type="stmt"/>
+        <line num="148" count="1" type="stmt"/>
+        <line num="149" count="1" type="stmt"/>
+        <line num="154" count="0" type="cond" truecount="0" falsecount="19"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="160" count="1" type="stmt"/>
+        <line num="161" count="1" type="stmt"/>
+        <line num="162" count="1" type="stmt"/>
+        <line num="163" count="1" type="stmt"/>
+        <line num="164" count="1" type="stmt"/>
+        <line num="165" count="1" type="stmt"/>
+        <line num="170" count="0" type="cond" truecount="0" falsecount="19"/>
+        <line num="171" count="0" type="stmt"/>
+        <line num="172" count="0" type="stmt"/>
+        <line num="176" count="1" type="cond" truecount="0" falsecount="3"/>
+        <line num="177" count="1" type="stmt"/>
+        <line num="178" count="1" type="stmt"/>
+        <line num="179" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="180" count="1" type="stmt"/>
+        <line num="181" count="1" type="stmt"/>
+        <line num="185" count="1" type="stmt"/>
+        <line num="198" count="0" type="cond" truecount="0" falsecount="19"/>
+        <line num="199" count="0" type="stmt"/>
+        <line num="200" count="0" type="stmt"/>
+      </file>
+      <file name="configStore.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\stores\configStore.ts">
         <metrics statements="98" coveredstatements="90" conditionals="279" coveredconditionals="171" methods="30" coveredmethods="30"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="4" type="cond" truecount="1" falsecount="1"/>
@@ -706,7 +807,7 @@
         <line num="240" count="1" type="stmt"/>
         <line num="241" count="1" type="stmt"/>
       </file>
-      <file name="settingsStore.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\stores\settingsStore.ts">
+      <file name="settingsStore.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\stores\settingsStore.ts">
         <metrics statements="27" coveredstatements="27" conditionals="40" coveredconditionals="22" methods="5" coveredmethods="5"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -739,7 +840,7 @@
     </package>
     <package name="templates.auth">
       <metrics statements="80" coveredstatements="44" conditionals="45" coveredconditionals="21" methods="20" coveredmethods="9"/>
-      <file name="loginTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\auth\loginTemplate.tsx">
+      <file name="loginTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\auth\loginTemplate.tsx">
         <metrics statements="80" coveredstatements="44" conditionals="45" coveredconditionals="21" methods="20" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -825,7 +926,7 @@
     </package>
     <package name="templates.config">
       <metrics statements="142" coveredstatements="118" conditionals="117" coveredconditionals="54" methods="32" coveredmethods="26"/>
-      <file name="ConfigFormTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\config\ConfigFormTemplate.tsx">
+      <file name="ConfigFormTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\config\ConfigFormTemplate.tsx">
         <metrics statements="88" coveredstatements="71" conditionals="95" coveredconditionals="44" methods="16" coveredmethods="15"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -916,7 +1017,7 @@
         <line num="184" count="11" type="stmt"/>
         <line num="218" count="1" type="stmt"/>
       </file>
-      <file name="ConfigListTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\config\ConfigListTemplate.tsx">
+      <file name="ConfigListTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\config\ConfigListTemplate.tsx">
         <metrics statements="54" coveredstatements="47" conditionals="22" coveredconditionals="10" methods="16" coveredmethods="11"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -976,7 +1077,7 @@
     </package>
     <package name="templates.faq">
       <metrics statements="133" coveredstatements="120" conditionals="112" coveredconditionals="86" methods="28" coveredmethods="23"/>
-      <file name="FaqFormTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\faq\FaqFormTemplate.tsx">
+      <file name="FaqFormTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\faq\FaqFormTemplate.tsx">
         <metrics statements="80" coveredstatements="73" conditionals="92" coveredconditionals="76" methods="14" coveredmethods="13"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -1059,7 +1160,7 @@
         <line num="184" count="49" type="stmt"/>
         <line num="215" count="1" type="stmt"/>
       </file>
-      <file name="FaqListTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\faq\FaqListTemplate.tsx">
+      <file name="FaqListTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\faq\FaqListTemplate.tsx">
         <metrics statements="53" coveredstatements="47" conditionals="20" coveredconditionals="10" methods="14" coveredmethods="10"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1116,9 +1217,235 @@
         <line num="186" count="1" type="stmt"/>
       </file>
     </package>
+    <package name="templates.footerinfo">
+      <metrics statements="217" coveredstatements="179" conditionals="226" coveredconditionals="159" methods="36" coveredmethods="30"/>
+      <file name="FooterInfoFormTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\footerinfo\FooterInfoFormTemplate.tsx">
+        <metrics statements="134" coveredstatements="118" conditionals="170" coveredconditionals="128" methods="15" coveredmethods="15"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="24" count="290" type="stmt"/>
+        <line num="25" count="290" type="cond" truecount="4" falsecount="0"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="30" count="49" type="stmt"/>
+        <line num="31" count="49" type="stmt"/>
+        <line num="32" count="49" type="stmt"/>
+        <line num="33" count="8" type="stmt"/>
+        <line num="41" count="49" type="stmt"/>
+        <line num="42" count="49" type="stmt"/>
+        <line num="44" count="49" type="stmt"/>
+        <line num="58" count="49" type="stmt"/>
+        <line num="60" count="49" type="stmt"/>
+        <line num="64" count="392" type="stmt"/>
+        <line num="68" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="69" count="7" type="cond" truecount="3" falsecount="1"/>
+        <line num="70" count="7" type="stmt"/>
+        <line num="74" count="12" type="cond" truecount="2" falsecount="2"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="76" count="0" type="stmt"/>
+        <line num="77" count="12" type="cond" truecount="2" falsecount="0"/>
+        <line num="78" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="79" count="6" type="stmt"/>
+        <line num="81" count="6" type="stmt"/>
+        <line num="84" count="19" type="stmt"/>
+        <line num="87" count="19" type="cond" truecount="2" falsecount="0"/>
+        <line num="88" count="7" type="cond" truecount="3" falsecount="1"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="91" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="92" count="7" type="stmt"/>
+        <line num="97" count="7" type="stmt"/>
+        <line num="104" count="12" type="stmt"/>
+        <line num="109" count="19" type="cond" truecount="4" falsecount="0"/>
+        <line num="110" count="6" type="stmt"/>
+        <line num="118" count="19" type="cond" truecount="4" falsecount="0"/>
+        <line num="119" count="6" type="stmt"/>
+        <line num="128" count="19" type="stmt"/>
+        <line num="129" count="19" type="cond" truecount="1" falsecount="1"/>
+        <line num="130" count="0" type="stmt"/>
+        <line num="131" count="0" type="stmt"/>
+        <line num="136" count="19" type="stmt"/>
+        <line num="139" count="19" type="stmt"/>
+        <line num="143" count="49" type="stmt"/>
+        <line num="144" count="9" type="cond" truecount="4" falsecount="0"/>
+        <line num="145" count="2" type="stmt"/>
+        <line num="146" count="2" type="stmt"/>
+        <line num="147" count="2" type="stmt"/>
+        <line num="148" count="2" type="stmt"/>
+        <line num="149" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="150" count="1" type="stmt"/>
+        <line num="152" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="153" count="1" type="stmt"/>
+        <line num="163" count="1" type="stmt"/>
+        <line num="165" count="1" type="stmt"/>
+        <line num="166" count="1" type="stmt"/>
+        <line num="169" count="0" type="stmt"/>
+        <line num="170" count="0" type="stmt"/>
+        <line num="173" count="2" type="stmt"/>
+        <line num="177" count="49" type="stmt"/>
+        <line num="178" count="7" type="stmt"/>
+        <line num="179" count="7" type="stmt"/>
+        <line num="182" count="7" type="cond" truecount="3" falsecount="1"/>
+        <line num="183" count="0" type="stmt"/>
+        <line num="184" count="0" type="stmt"/>
+        <line num="185" count="0" type="stmt"/>
+        <line num="186" count="0" type="stmt"/>
+        <line num="189" count="7" type="stmt"/>
+        <line num="192" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="193" count="7" type="stmt"/>
+        <line num="198" count="7" type="stmt"/>
+        <line num="199" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="200" count="0" type="stmt"/>
+        <line num="205" count="7" type="stmt"/>
+        <line num="206" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="207" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="208" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="209" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="210" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="211" count="7" type="stmt"/>
+        <line num="216" count="7" type="stmt"/>
+        <line num="239" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="240" count="1" type="stmt"/>
+        <line num="241" count="1" type="stmt"/>
+        <line num="242" count="1" type="stmt"/>
+        <line num="243" count="1" type="stmt"/>
+        <line num="248" count="1" type="stmt"/>
+        <line num="249" count="1" type="stmt"/>
+        <line num="252" count="6" type="stmt"/>
+        <line num="253" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="254" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="255" count="1" type="stmt"/>
+        <line num="256" count="1" type="stmt"/>
+        <line num="263" count="5" type="stmt"/>
+        <line num="264" count="1" type="stmt"/>
+        <line num="271" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="272" count="2" type="stmt"/>
+        <line num="274" count="4" type="stmt"/>
+        <line num="275" count="4" type="cond" truecount="9" falsecount="1"/>
+        <line num="276" count="4" type="cond" truecount="14" falsecount="2"/>
+        <line num="277" count="1" type="stmt"/>
+        <line num="278" count="1" type="stmt"/>
+        <line num="279" count="1" type="stmt"/>
+        <line num="281" count="3" type="cond" truecount="4" falsecount="0"/>
+        <line num="282" count="1" type="stmt"/>
+        <line num="283" count="1" type="stmt"/>
+        <line num="284" count="1" type="stmt"/>
+        <line num="286" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="287" count="1" type="stmt"/>
+        <line num="288" count="1" type="stmt"/>
+        <line num="289" count="1" type="cond" truecount="4" falsecount="2"/>
+        <line num="290" count="1" type="stmt"/>
+        <line num="291" count="1" type="stmt"/>
+        <line num="293" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="294" count="0" type="stmt"/>
+        <line num="295" count="0" type="stmt"/>
+        <line num="300" count="49" type="stmt"/>
+        <line num="301" count="49" type="stmt"/>
+        <line num="302" count="290" type="stmt"/>
+        <line num="303" count="290" type="cond" truecount="4" falsecount="0"/>
+        <line num="305" count="49" type="cond" truecount="2" falsecount="0"/>
+        <line num="306" count="1" type="stmt"/>
+        <line num="308" count="49" type="stmt"/>
+        <line num="311" count="49" type="stmt"/>
+        <line num="349" count="1" type="stmt"/>
+      </file>
+      <file name="FooterInfoListTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\footerinfo\FooterInfoListTemplate.tsx">
+        <metrics statements="83" coveredstatements="61" conditionals="56" coveredconditionals="31" methods="21" coveredmethods="15"/>
+        <line num="1" count="1" type="stmt"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="4" count="1" type="stmt"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="24" count="6" type="stmt"/>
+        <line num="25" count="6" type="stmt"/>
+        <line num="27" count="6" type="stmt"/>
+        <line num="28" count="6" type="stmt"/>
+        <line num="29" count="6" type="stmt"/>
+        <line num="30" count="6" type="stmt"/>
+        <line num="33" count="6" type="stmt"/>
+        <line num="34" count="6" type="stmt"/>
+        <line num="38" count="6" type="stmt"/>
+        <line num="39" count="6" type="stmt"/>
+        <line num="40" count="6" type="stmt"/>
+        <line num="44" count="6" type="stmt"/>
+        <line num="45" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="52" count="6" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="57" count="6" type="stmt"/>
+        <line num="58" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="62" count="6" type="stmt"/>
+        <line num="63" count="6" type="stmt"/>
+        <line num="67" count="6" type="cond" truecount="3" falsecount="1"/>
+        <line num="69" count="6" type="stmt"/>
+        <line num="70" count="6" type="stmt"/>
+        <line num="74" count="6" type="stmt"/>
+        <line num="75" count="7" type="cond" truecount="1" falsecount="3"/>
+        <line num="76" count="7" type="cond" truecount="1" falsecount="3"/>
+        <line num="77" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="79" count="6" type="stmt"/>
+        <line num="82" count="6" type="stmt"/>
+        <line num="83" count="6" type="stmt"/>
+        <line num="92" count="6" type="stmt"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="101" count="1" type="stmt"/>
+        <line num="102" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="103" count="1" type="stmt"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="105" count="1" type="stmt"/>
+        <line num="106" count="1" type="stmt"/>
+        <line num="107" count="1" type="stmt"/>
+        <line num="108" count="1" type="stmt"/>
+        <line num="110" count="1" type="cond" truecount="2" falsecount="2"/>
+        <line num="111" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="113" count="1" type="stmt"/>
+        <line num="116" count="1" type="stmt"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="124" count="0" type="stmt"/>
+        <line num="131" count="6" type="stmt"/>
+        <line num="132" count="6" type="stmt"/>
+        <line num="133" count="0" type="stmt"/>
+        <line num="138" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="139" count="0" type="stmt"/>
+        <line num="141" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="142" count="0" type="stmt"/>
+        <line num="144" count="0" type="stmt"/>
+        <line num="146" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="147" count="0" type="stmt"/>
+        <line num="153" count="0" type="stmt"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="161" count="0" type="stmt"/>
+        <line num="168" count="6" type="stmt"/>
+        <line num="180" count="0" type="stmt"/>
+        <line num="181" count="0" type="stmt"/>
+        <line num="182" count="0" type="stmt"/>
+        <line num="197" count="1" type="stmt"/>
+        <line num="198" count="1" type="stmt"/>
+        <line num="220" count="1" type="stmt"/>
+      </file>
+    </package>
     <package name="templates.settings">
       <metrics statements="147" coveredstatements="145" conditionals="80" coveredconditionals="58" methods="49" coveredmethods="47"/>
-      <file name="ContactInfoTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\settings\ContactInfoTemplate.tsx">
+      <file name="ContactInfoTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\settings\ContactInfoTemplate.tsx">
         <metrics statements="27" coveredstatements="27" conditionals="14" coveredconditionals="10" methods="9" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1148,7 +1475,7 @@
         <line num="38" count="10" type="stmt"/>
         <line num="57" count="1" type="stmt"/>
       </file>
-      <file name="EmailConfigTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\settings\EmailConfigTemplate.tsx">
+      <file name="EmailConfigTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\settings\EmailConfigTemplate.tsx">
         <metrics statements="29" coveredstatements="29" conditionals="14" coveredconditionals="10" methods="11" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1180,7 +1507,7 @@
         <line num="42" count="10" type="stmt"/>
         <line num="65" count="1" type="stmt"/>
       </file>
-      <file name="GeneralSettingsTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\settings\GeneralSettingsTemplate.tsx">
+      <file name="GeneralSettingsTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\settings\GeneralSettingsTemplate.tsx">
         <metrics statements="36" coveredstatements="34" conditionals="24" coveredconditionals="18" methods="10" coveredmethods="10"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1219,7 +1546,7 @@
         <line num="51" count="10" type="stmt"/>
         <line num="70" count="1" type="stmt"/>
       </file>
-      <file name="OgConfigTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\settings\OgConfigTemplate.tsx">
+      <file name="OgConfigTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\settings\OgConfigTemplate.tsx">
         <metrics statements="27" coveredstatements="27" conditionals="14" coveredconditionals="10" methods="9" coveredmethods="9"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1249,7 +1576,7 @@
         <line num="38" count="10" type="stmt"/>
         <line num="57" count="1" type="stmt"/>
       </file>
-      <file name="SeoConfigTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\settings\SeoConfigTemplate.tsx">
+      <file name="SeoConfigTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\settings\SeoConfigTemplate.tsx">
         <metrics statements="28" coveredstatements="28" conditionals="14" coveredconditionals="10" methods="10" coveredmethods="10"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1283,7 +1610,7 @@
     </package>
     <package name="templates.trash.config">
       <metrics statements="61" coveredstatements="52" conditionals="24" coveredconditionals="11" methods="18" coveredmethods="13"/>
-      <file name="ConfigTrashListTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\trash\config\ConfigTrashListTemplate.tsx">
+      <file name="ConfigTrashListTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\trash\config\ConfigTrashListTemplate.tsx">
         <metrics statements="61" coveredstatements="52" conditionals="24" coveredconditionals="11" methods="18" coveredmethods="13"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
@@ -1350,7 +1677,7 @@
     </package>
     <package name="templates.trash.faq">
       <metrics statements="66" coveredstatements="56" conditionals="28" coveredconditionals="13" methods="16" coveredmethods="11"/>
-      <file name="FaqTrashListTemplate.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\templates\trash\faq\FaqTrashListTemplate.tsx">
+      <file name="FaqTrashListTemplate.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\templates\trash\faq\FaqTrashListTemplate.tsx">
         <metrics statements="66" coveredstatements="56" conditionals="28" coveredconditionals="13" methods="16" coveredmethods="11"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
@@ -1421,27 +1748,27 @@
       </file>
     </package>
     <package name="utils">
-      <metrics statements="134" coveredstatements="123" conditionals="154" coveredconditionals="126" methods="29" coveredmethods="28"/>
-      <file name="helper.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\helper.tsx">
+      <metrics statements="134" coveredstatements="124" conditionals="154" coveredconditionals="127" methods="29" coveredmethods="28"/>
+      <file name="helper.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\helper.tsx">
         <metrics statements="108" coveredstatements="106" conditionals="123" coveredconditionals="104" methods="20" coveredmethods="20"/>
-        <line num="4" count="6" type="stmt"/>
+        <line num="4" count="7" type="stmt"/>
         <line num="5" count="5" type="cond" truecount="2" falsecount="0"/>
         <line num="6" count="4" type="stmt"/>
-        <line num="14" count="6" type="stmt"/>
-        <line num="17" count="6" type="stmt"/>
-        <line num="72" count="6" type="cond" truecount="0" falsecount="1"/>
-        <line num="73" count="3" type="cond" truecount="4" falsecount="0"/>
-        <line num="75" count="6" type="stmt"/>
+        <line num="14" count="7" type="stmt"/>
+        <line num="17" count="7" type="stmt"/>
+        <line num="72" count="7" type="cond" truecount="0" falsecount="1"/>
+        <line num="73" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="75" count="7" type="stmt"/>
         <line num="76" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="77" count="2" type="stmt"/>
         <line num="78" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="79" count="1" type="stmt"/>
-        <line num="84" count="6" type="stmt"/>
+        <line num="84" count="7" type="stmt"/>
         <line num="85" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="86" count="2" type="stmt"/>
         <line num="87" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="88" count="1" type="stmt"/>
-        <line num="95" count="6" type="stmt"/>
+        <line num="95" count="7" type="stmt"/>
         <line num="96" count="4" type="cond" truecount="2" falsecount="0"/>
         <line num="97" count="3" type="stmt"/>
         <line num="98" count="3" type="cond" truecount="2" falsecount="0"/>
@@ -1453,7 +1780,7 @@
         <line num="105" count="1" type="cond" truecount="3" falsecount="1"/>
         <line num="106" count="1" type="cond" truecount="2" falsecount="2"/>
         <line num="108" count="2" type="stmt"/>
-        <line num="114" count="6" type="stmt"/>
+        <line num="114" count="7" type="stmt"/>
         <line num="115" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="116" count="2" type="stmt"/>
         <line num="117" count="2" type="cond" truecount="2" falsecount="0"/>
@@ -1461,20 +1788,20 @@
         <line num="120" count="1" type="stmt"/>
         <line num="121" count="1" type="stmt"/>
         <line num="122" count="1" type="stmt"/>
-        <line num="129" count="6" type="stmt"/>
+        <line num="129" count="7" type="stmt"/>
         <line num="130" count="1" type="stmt"/>
-        <line num="139" count="6" type="stmt"/>
+        <line num="139" count="7" type="stmt"/>
         <line num="140" count="1" type="stmt"/>
-        <line num="145" count="6" type="stmt"/>
+        <line num="145" count="7" type="stmt"/>
         <line num="146" count="1" type="stmt"/>
-        <line num="151" count="6" type="stmt"/>
+        <line num="151" count="7" type="stmt"/>
         <line num="152" count="4" type="cond" truecount="4" falsecount="0"/>
         <line num="153" count="3" type="cond" truecount="3" falsecount="1"/>
         <line num="154" count="3" type="cond" truecount="1" falsecount="1"/>
         <line num="155" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="156" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="157" count="1" type="stmt"/>
-        <line num="163" count="6" type="stmt"/>
+        <line num="163" count="7" type="stmt"/>
         <line num="164" count="1" type="stmt"/>
         <line num="165" count="1" type="cond" truecount="1" falsecount="0"/>
         <line num="166" count="2" type="stmt"/>
@@ -1487,7 +1814,7 @@
         <line num="178" count="1" type="cond" truecount="3" falsecount="1"/>
         <line num="179" count="1" type="stmt"/>
         <line num="181" count="1" type="stmt"/>
-        <line num="187" count="6" type="stmt"/>
+        <line num="187" count="7" type="stmt"/>
         <line num="188" count="4" type="cond" truecount="13" falsecount="1"/>
         <line num="189" count="1" type="stmt"/>
         <line num="191" count="3" type="cond" truecount="5" falsecount="1"/>
@@ -1495,10 +1822,10 @@
         <line num="194" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="195" count="1" type="stmt"/>
         <line num="197" count="1" type="stmt"/>
-        <line num="203" count="6" type="stmt"/>
-        <line num="208" count="6" type="stmt"/>
-        <line num="209" count="6" type="stmt"/>
-        <line num="211" count="6" type="stmt"/>
+        <line num="203" count="7" type="stmt"/>
+        <line num="208" count="7" type="stmt"/>
+        <line num="209" count="7" type="stmt"/>
+        <line num="211" count="7" type="stmt"/>
         <line num="212" count="5" type="cond" truecount="5" falsecount="0"/>
         <line num="213" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="215" count="2" type="stmt"/>
@@ -1523,7 +1850,7 @@
         <line num="240" count="2" type="stmt"/>
         <line num="241" count="2" type="stmt"/>
         <line num="243" count="2" type="stmt"/>
-        <line num="249" count="6" type="stmt"/>
+        <line num="249" count="7" type="stmt"/>
         <line num="250" count="3" type="cond" truecount="4" falsecount="0"/>
         <line num="252" count="2" type="stmt"/>
         <line num="253" count="2" type="stmt"/>
@@ -1533,18 +1860,18 @@
         <line num="257" count="1" type="stmt"/>
         <line num="258" count="1" type="stmt"/>
       </file>
-      <file name="validationHelper.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\validationHelper.ts">
-        <metrics statements="26" coveredstatements="17" conditionals="31" coveredconditionals="22" methods="9" coveredmethods="8"/>
-        <line num="6" count="3" type="stmt"/>
-        <line num="8" count="43" type="cond" truecount="5" falsecount="1"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="11" count="43" type="stmt"/>
-        <line num="15" count="32" type="cond" truecount="4" falsecount="0"/>
+      <file name="validationHelper.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\validationHelper.ts">
+        <metrics statements="26" coveredstatements="18" conditionals="31" coveredconditionals="23" methods="9" coveredmethods="8"/>
+        <line num="6" count="4" type="stmt"/>
+        <line num="8" count="69" type="cond" truecount="6" falsecount="0"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="11" count="68" type="stmt"/>
+        <line num="15" count="44" type="cond" truecount="4" falsecount="0"/>
         <line num="16" count="1" type="stmt"/>
-        <line num="18" count="31" type="stmt"/>
-        <line num="22" count="12" type="cond" truecount="3" falsecount="1"/>
+        <line num="18" count="43" type="stmt"/>
+        <line num="22" count="18" type="cond" truecount="3" falsecount="1"/>
         <line num="23" count="0" type="stmt"/>
-        <line num="25" count="12" type="stmt"/>
+        <line num="25" count="18" type="stmt"/>
         <line num="29" count="2" type="stmt"/>
         <line num="30" count="2" type="cond" truecount="3" falsecount="1"/>
         <line num="31" count="0" type="stmt"/>
@@ -1553,19 +1880,19 @@
         <line num="38" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="39" count="0" type="stmt"/>
         <line num="44" count="0" type="stmt"/>
-        <line num="48" count="6" type="cond" truecount="3" falsecount="1"/>
+        <line num="48" count="13" type="cond" truecount="3" falsecount="1"/>
         <line num="49" count="0" type="stmt"/>
-        <line num="51" count="6" type="stmt"/>
-        <line num="55" count="9" type="cond" truecount="4" falsecount="1"/>
+        <line num="51" count="13" type="stmt"/>
+        <line num="55" count="22" type="cond" truecount="4" falsecount="1"/>
         <line num="56" count="0" type="stmt"/>
-        <line num="58" count="9" type="stmt"/>
-        <line num="62" count="96" type="stmt"/>
-        <line num="66" count="3" type="stmt"/>
+        <line num="58" count="22" type="stmt"/>
+        <line num="62" count="97" type="stmt"/>
+        <line num="66" count="4" type="stmt"/>
       </file>
     </package>
     <package name="utils.auth">
       <metrics statements="63" coveredstatements="56" conditionals="20" coveredconditionals="17" methods="8" coveredmethods="6"/>
-      <file name="expirationCheck.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\auth\expirationCheck.ts">
+      <file name="expirationCheck.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\auth\expirationCheck.ts">
         <metrics statements="11" coveredstatements="10" conditionals="6" coveredconditionals="4" methods="3" coveredmethods="2"/>
         <line num="1" count="2" type="stmt"/>
         <line num="3" count="2" type="stmt"/>
@@ -1579,7 +1906,7 @@
         <line num="17" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="18" count="1" type="stmt"/>
       </file>
-      <file name="tokenValidation.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\auth\tokenValidation.ts">
+      <file name="tokenValidation.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\auth\tokenValidation.ts">
         <metrics statements="44" coveredstatements="39" conditionals="10" coveredconditionals="10" methods="4" coveredmethods="3"/>
         <line num="1" count="3" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -1626,7 +1953,7 @@
         <line num="94" count="1" type="stmt"/>
         <line num="95" count="1" type="stmt"/>
       </file>
-      <file name="utils.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\auth\utils.ts">
+      <file name="utils.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\auth\utils.ts">
         <metrics statements="8" coveredstatements="7" conditionals="4" coveredconditionals="3" methods="1" coveredmethods="1"/>
         <line num="1" count="4" type="stmt"/>
         <line num="2" count="3" type="stmt"/>
@@ -1639,36 +1966,40 @@
       </file>
     </package>
     <package name="utils.fields">
-      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-      <file name="configFields.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\configFields.ts">
+      <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="FooterinfoFields.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\FooterinfoFields.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
-      <file name="contactInfoFields.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\contactInfoFields.ts">
+      <file name="configFields.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\configFields.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
-      <file name="emailConfigFields.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\emailConfigFields.ts">
+      <file name="contactInfoFields.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\contactInfoFields.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
-      <file name="faqFields.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\faqFields.tsx">
+      <file name="emailConfigFields.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\emailConfigFields.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="3" count="1" type="stmt"/>
+      </file>
+      <file name="faqFields.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\faqFields.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="4" count="1" type="stmt"/>
       </file>
-      <file name="generalSettingsFields.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\generalSettingsFields.ts">
+      <file name="generalSettingsFields.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\generalSettingsFields.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
-      <file name="loginFields.tsx" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\loginFields.tsx">
+      <file name="loginFields.tsx" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\loginFields.tsx">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
-      <file name="ogConfigFields.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\ogConfigFields.ts">
+      <file name="ogConfigFields.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\ogConfigFields.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>
-      <file name="seoConfigFields.ts" path="D:\new-bookadzone\bookadzone-admin\src\components\utils\fields\seoConfigFields.ts">
+      <file name="seoConfigFields.ts" path="D:\Book-Ad-Zone\bookadzone-admin\src\components\utils\fields\seoConfigFields.ts">
         <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="3" count="1" type="stmt"/>
       </file>

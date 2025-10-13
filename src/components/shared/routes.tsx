@@ -22,6 +22,8 @@ const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
 const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
 const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
+const UserRoleListPage = lazy(() => import('../pages/userrole/UserRoleListPage'));
+const UserRoleFormPage = lazy(() => import('../pages/userrole/UserRoleFormPage'));
 export interface RouteData {
   path: string;
   pageTitle: string;
@@ -71,19 +73,36 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Edit FAQ',
       component: <FaqFormPage />,
     },
+
+
+    {
+      path: '/userrole',
+      pageTitle: 'UserRole List',
+      component: <UserRoleListPage />,
+    },
+    {
+      path: '/userrole/add',
+      pageTitle: 'Add UserRole',
+      component: <UserRoleFormPage />,
+    },
+    {
+      path: '/userrole/edit/:id',
+      pageTitle: 'Edit UserRole',
+      component: <UserRoleFormPage />,
+    },
     {
       path: '/footerinfo',
-      pageTitle: 'FAQ List',
+      pageTitle: 'Footer List',
       component: <FooterInfoListPage />,
     },
     {
       path: '/footerinfo/add',
-      pageTitle: 'Add FAQ',
+      pageTitle: 'Add Footer',
       component: <FooterInfoFormPage />,
     },
     {
       path: '/footerinfo/edit/:id',
-      pageTitle: 'Edit FAQ',
+      pageTitle: 'Edit Footer',
       component: <FooterInfoFormPage />,
     },
     {

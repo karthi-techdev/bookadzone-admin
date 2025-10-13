@@ -57,33 +57,37 @@ const FooterFormTemplate: React.FC = () => {
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
 
-  const handleFieldChange = (fieldName: keyof FooterFormData, minLengthValue?: number, maxValue?: number) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    let value: any = fieldName === 'logo' && 'files' in e.target && e.target.files ? e.target.files[0] : e.target.value;
+  const handleFieldChange = (
+    fieldName: keyof FooterFormData,
+    minLengthValue?: number,
+    maxValue?: number
+  ) => (e: { target: { name: string; value: any; files?: FileList; checked?: boolean } }) => {
+    let value: any;
+
+    // Safe handling for file input
     if (fieldName === 'logo') {
+      value = e.target.files && e.target.files.length > 0 ? e.target.files[0] : null;
       console.log(`Logo field changed:`, {
         value: value instanceof File ? { name: value.name, size: value.size, type: value.type } : value,
         isFile: value instanceof File,
       });
-    }
-    if (fieldName === 'status' && 'checked' in e.target) {
+    } else if (fieldName === 'status' && typeof e.target.checked !== 'undefined') {
       value = e.target.checked;
       console.log(`Status field changed:`, { value });
     } else if (fieldName === 'priority') {
       value = parseInt(e.target.value, 10) || 1;
       console.log(`Priority field changed:`, { value });
+    } else {
+      value = e.target.value;
     }
 
     const validations = [];
-    
-    // Logo validation - only required for new entries (not updates)
+
+    // Logo validation - only required for new entries
     if (fieldName === 'logo') {
-      // For new entries, logo file is required
       if (!id && !value) {
         validations.push(ValidationHelper.isRequired(value, 'Logo'));
       }
-      // For file uploads, validate file properties
       if (value instanceof File) {
         validations.push(
           value.size <= 1 * 1024 * 1024
@@ -97,15 +101,28 @@ const FooterFormTemplate: React.FC = () => {
         );
       }
     } else {
-      // Other field validations
-      validations.push(ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1)));
+      validations.push(
+        ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1))
+      );
     }
-    
+
     if (minLengthValue && typeof value === 'string') {
-      validations.push(ValidationHelper.minLength(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), minLengthValue));
+      validations.push(
+        ValidationHelper.minLength(
+          value,
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
+          minLengthValue
+        )
+      );
     }
     if (maxValue && typeof value === 'number') {
-      validations.push(ValidationHelper.maxValue(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), maxValue));
+      validations.push(
+        ValidationHelper.maxValue(
+          value,
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1),
+          maxValue
+        )
+      );
     }
 
     const errorsArr = ValidationHelper.validate(validations.filter(Boolean));
@@ -118,8 +135,10 @@ const FooterFormTemplate: React.FC = () => {
     } else {
       clearErrors(fieldName);
     }
+
     methods.setValue(fieldName, value, { shouldValidate: false });
   };
+
 
   useEffect(() => {
     if (id && !isInitialized) {
@@ -168,7 +187,7 @@ const FooterFormTemplate: React.FC = () => {
     }
 
     const formData = new FormData();
-    
+
     // Handle logo field
     if (data.logo instanceof File) {
       console.log(`Appending logo file to FormData:`, {
@@ -179,10 +198,10 @@ const FooterFormTemplate: React.FC = () => {
       formData.append('logo', data.logo);
     } else if (id && existingLogoPath) {
       console.log(`No new logo file provided for update, keeping existing logo: ${existingLogoPath}`);
-    
+
     }
 
-  
+
     formData.append('description', data.description.trim());
     if (data.socialmedia) formData.append('socialmedia', data.socialmedia.trim());
     if (data.socialmedialinks) formData.append('socialmedialinks', data.socialmedialinks.trim());
@@ -191,11 +210,11 @@ const FooterFormTemplate: React.FC = () => {
     formData.append('status', data.status ? 'active' : 'inactive');
     formData.append('priority', data.priority.toString());
 
-    
+
 
 
     const validationErrors = ValidationHelper.validate([
-   
+
       !id && !(data.logo instanceof File) ? ValidationHelper.isRequired(data.logo, 'Logo') : null,
       ValidationHelper.isRequired(data.description, 'Description'),
       data.description ? ValidationHelper.minLength(data.description, 'Description', 5) : null,
@@ -297,8 +316,8 @@ const FooterFormTemplate: React.FC = () => {
         type={id ? 'Edit' : 'Add'}
       />
       <ToastContainer position="top-right" autoClose={3000} />
-     
-      
+
+
       <FormProvider {...methods}>
         <ManagementForm
           label={id ? 'Update' : 'Save'}

@@ -12,7 +12,11 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: jest.fn(),
 }));
-jest.mock('react-toastify', () => ({ toast: { error: jest.fn() } }));
+jest.mock('react-toastify', () => ({
+  toast: { error: jest.fn() },
+  ToastContainer: () => <div>ToastContainer</div>,
+}));
+
 jest.mock('sweetalert2', () => ({ fire: jest.fn().mockResolvedValue({ isConfirmed: true }) }));
 
 jest.mock('../../../organisms/ManagementTable', () => (props: any) => (
