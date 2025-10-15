@@ -24,7 +24,7 @@ const Login: React.FC = () => {
 
   const methods = useForm<LoginFormData>({
     defaultValues: {
-      username: 'bookadzone@yopmail.com',
+      username: 'admin@gmail.com',
       password: 'admin@123',
     },
     mode: 'onChange',
