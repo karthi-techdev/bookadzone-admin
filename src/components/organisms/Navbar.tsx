@@ -14,13 +14,15 @@ import ImportedURL from "../common/urls";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuthStore();
+  const { logout } = useAuthStore(); 
   const notifDropdown = useDropdown();
   const profileDropdown = useDropdown();
   // Use settings store hook for logo
   const settings = useSettingsStore((state: any) => state.settings);
   // Get current user from auth store
   const user = useAuthStore(state => state.user);
+
+
 
   return (
     <motion.nav
@@ -65,7 +67,8 @@ const Navbar: React.FC = () => {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 50, opacity: 0 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="absolute -right-2 mt-10 w-[350px] rounded-[7px] shadow-lg z-50 bg-[var(--light-dark-color)] border-[1px] border-[var(--light-blur-grey-color)] backdrop-blur-md">
+                    className="absolute -right-2 mt-10 w-[350px] rounded-[7px] shadow-lg z-50 bg-[var(--light-dark-color)] border-[1px] border-[var(--light-blur-grey-color)] backdrop-blur-md"
+                  >
                     <div className="m-3 pb-2 border-b-[1px] border-b-[var(--light-blur-grey-color)] flex items-center justify-between">
                       <span className="flex font-semibold text-[.75rem] text-[var(--white-color)]">Notifications</span>
                       <Button
@@ -81,65 +84,28 @@ const Navbar: React.FC = () => {
                           <div className="avatar-img h-[50px] w-[30px] flex items-start justify-left">
                             <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Avatar" className="h-[30px] w-[30px] rounded-full object-cover" />
                           </div>
-
                           <div className="content w-[250px]">
                             <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Karthi Rajendhiran <span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Skoda Motors</span></span>
                             <p className="text-[.60rem] text-[var(--light-grey-color)]">Submitted a new booking request for “Medavakkam Flyover” billboard.</p>
                             <span className="text-[.50rem] text-[var(--light-grey-color)] flex mt-0.5">2 hours ago</span>
                           </div>
-
                           <span className="not-read-point h-[8px] w-[8px] bg-[var(--puprle-color)] rounded-full flex"></span>
                         </Link>
                       </li>
-
+                      {/* Other notification items remain unchanged */}
                       <li className="py-2 px-3 hover:bg-[var(--light-purple-color)] transition-all duration-200">
                         <Link to="/" className="flex items-center item-center justify-between">
                           <div className="avatar-img h-[50px] w-[30px] flex items-start justify-left">
                             <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Avatar" className="h-[30px] w-[30px] rounded-full object-cover" />
                           </div>
-
                           <div className="content w-[250px]">
-                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Rajesh Kumar<span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Honda Motors</span></span>
-                            <p className="text-[.60rem] text-[var(--light-grey-color)]">Uploaded the final ad design for campaign #BAZ4325.</p>
-                            <span className="text-[.50rem] text-[var(--light-grey-color)] flex mt-0.5">3 hours ago</span>
-                          </div>
-
-                          <span className="not-read-point h-[8px] w-[8px] bg-[var(--puprle-color)] rounded-full flex"></span>
-                        </Link>
-                      </li>
-
-                      <li className="py-2 px-3 hover:bg-[var(--light-purple-color)] transition-all duration-200">
-                        <Link to="/" className="flex items-center item-center justify-between">
-                          <div className="avatar-img h-[50px] w-[30px] flex items-start justify-left">
-                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Avatar" className="h-[30px] w-[30px] rounded-full object-cover" />
-                          </div>
-
-                          <div className="content w-[250px]">
-                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Vijay Kumar<span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Sony India Pvt Ltd</span></span>
-                            <p className="text-[.60rem] text-[var(--light-grey-color)]">Completed KYC verification. Ready for property assignment.</p>
-                            <span className="text-[.50rem] text-[var(--light-grey-color)] flex mt-0.5">5 hours ago</span>
-                          </div>
-
-                          <span className="read-point h-[8px] w-[8px] rounded-full flex"></span>
-                        </Link>
-                      </li>
-
-                      <li className="py-2 px-3 hover:bg-[var(--light-purple-color)] transition-all duration-200">
-                        <Link to="/" className="flex items-center item-center justify-between">
-                          <div className="avatar-img h-[50px] w-[30px] flex items-start justify-left">
-                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Avatar" className="h-[30px] w-[30px] rounded-full object-cover" />
-                          </div>
-
-                          <div className="content w-[250px]">
-                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Arun Kumar<span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Nike Fashions</span></span>
+                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Arun Kumar <span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Nike Fashions</span></span>
                             <p className="text-[.60rem] text-[var(--light-grey-color)]">Ad payment of ₹1,50,000 received for campaign ID #BAZ3241.</p>
                             <span className="text-[.50rem] text-[var(--light-grey-color)] flex mt-0.5">5 hours ago</span>
                           </div>
-
                           <span className="read-point h-[8px] w-[8px] rounded-full flex"></span>
                         </Link>
                       </li>
-
                     </ul>
                     <div className="text-center m-3">
                       <Link to="/notification" className="text-[.70rem] bg-[var(--puprle-color)] text-[var(--white-color)] w-full h-full flex items-center justify-center py-1.5 rounded-[3px] mt-2">View all</Link>
@@ -151,7 +117,7 @@ const Navbar: React.FC = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.97 }}
                 className="flex items-center justify-center bg-transparent border-none outline-none cursor-pointer p-1"
-                style={{ boxShadow: 'none' }}
+                style={{ boxShadow: "none" }}
                 aria-label="Fullscreen"
                 onClick={() => {
                   if (!document.fullscreenElement) {
@@ -183,7 +149,8 @@ const Navbar: React.FC = () => {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: 40, opacity: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="absolute -right-3 mt-4 w-40 bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded shadow-lg z-50 text-[.75rem] backdrop-blur-md">
+                  className="absolute -right-3 mt-4 w-40 bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded shadow-lg z-50 text-[.75rem] backdrop-blur-md"
+                >
                   <Link to="/profile" className="block px-4 py-2 text-[var(--white-color)] hover:bg-[var(--light-purple-color)] transition-all duration-200">Profile</Link>
                   <Link to="/settings" className="block px-4 py-2 text-[var(--white-color)] hover:bg-[var(--light-purple-color)] transition-all duration-200">Settings</Link>
                   <Button

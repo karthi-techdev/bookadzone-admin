@@ -53,6 +53,8 @@ const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
 const EmailConfigPage = lazy(() => import('../pages/settings/EmailConfigPage'));
 const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
+const UserRoleListPage = lazy(() => import('../pages/userrole/UserRoleListPage'));
+const UserRoleFormPage = lazy(() => import('../pages/userrole/UserRoleFormPage'));
 
 // Profile Pages (Lazy Loaded)
 const ProfileUpdatePage = lazy(() => import('../pages/profile/ProfileUpdatePage'));
@@ -165,6 +167,23 @@ export const routesData = (): RouteData[] => {
       path: '/faq/edit/:id',
       pageTitle: 'Edit FAQ',
       component: <FaqFormPage />,
+    },
+
+
+    {
+      path: '/userrole',
+      pageTitle: 'UserRole List',
+      component: <UserRoleListPage />,
+    },
+    {
+      path: '/userrole/add',
+      pageTitle: 'Add UserRole',
+      component: <UserRoleFormPage />,
+    },
+    {
+      path: '/userrole/edit/:id',
+      pageTitle: 'Edit UserRole',
+      component: <UserRoleFormPage />,
     },
     {
       path: '/trash/faq',
