@@ -188,23 +188,29 @@ const ConfigFormTemplate: React.FC = () => {
       reset();
       navigate('/config');
     } catch (error: any) {
-      const errorData = error?.response?.data || {};
-      if (error?.response?.status === 409 && errorData.message?.includes('already exists')) {
-        toast.error(errorData.message);
-        return;
-      }
-      if (errorData.errors && Array.isArray(errorData.errors)) {
-        errorData.errors.forEach((err: { path: string; message: string }) => {
-          toast.error(`${err.path}: ${err.message}`);
-        });
-      } else if (typeof error === 'string') {
-        toast.error(error);
+      let errorMessage = 'Something went wrong';
+
+      // Handle different error types
+      if (typeof error === 'string') {
+        // Error thrown as string from store
+        errorMessage = error;
+      } else if (error?.response?.data?.message) {
+        // Axios error with backend message
+        errorMessage = error.response.data.message;
+      } else if (error?.response?.status === 409 && error?.response?.data?.message?.includes('already exists')) {
+        errorMessage = error.response.data.message;
+      } else if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        errorMessage = error.response.data.errors.map((err: { path: string; message: string }) => `${err.path}: ${err.message}`).join('\n');
       } else if (error?.message) {
-        toast.error(error.message);
-      } else {
-        const message = errorData.message || 'Something went wrong';
-        toast.error(message);
+        errorMessage = error.message;
       }
+
+      await Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonColor: 'var(--puprle-color)',
+      });
     }
   };
 
@@ -235,6 +241,10 @@ const ConfigFormTemplate: React.FC = () => {
           isDynamic={!!id}
           dynamicFieldName="configFields"
           dynamicFieldConfig={dynamicFieldConfig}
+          onFieldChange={{
+            name: handleFieldChange('name'),
+            status: handleFieldChange('status'),
+          }}
         />
         {hasErrors() && (
           <div className="text-red-500 text-sm mt-2">

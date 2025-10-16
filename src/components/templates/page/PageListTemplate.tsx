@@ -8,10 +8,9 @@ import ManagementTable from '../../organisms/ManagementTable';
 import BAZLoader from '../../atoms/BAZ-Loader';
 import Pagination from '../../atoms/BAZ-Pagination';
 
-import { useConfigStore } from '../../stores/configStore';
-import type { ColumnConfig, Config } from '../../types/common';
-import { truncate } from '../../utils/helper';
-import { DEFAULT_ITEMS_PER_PAGE } from '../../../constants/pagination';
+import { usePageStore } from '../../stores/PageStore';
+import type { ColumnConfig, Page } from '../../types/common';
+import { truncate } from '../../utils/helper'
 
 interface StatFilter {
   id: string;
@@ -22,26 +21,25 @@ interface StatFilter {
   icon: React.ReactNode;
 }
 
-const ConfigListTemplate: React.FC = () => {
+const PageListTemplate: React.FC = () => {
   const navigate = useNavigate();
   const {
-    configs,
-    fetchConfigs,
-    deleteConfig,
-    toggleStatusConfig,
+    pages,
+    fetchPages,
+    deletePage,
+    toggleStatusPage,
     totalPages,
     loading,
     error,
     stats,
-  } = useConfigStore();
+  } = usePageStore();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<'total' | 'active' | 'inactive'>('total');
+  const itemsPerPage = 3;
 
-  // Use default items per page from constants
-  const itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
-
+  // Calculate total items for pagination based on selected filter
   const getTotalItems = () => {
     if (selectedFilter === 'active') return stats.active;
     if (selectedFilter === 'inactive') return stats.inactive;
@@ -49,27 +47,32 @@ const ConfigListTemplate: React.FC = () => {
   };
   const filteredTotalPages = Math.max(1, Math.ceil(getTotalItems() / itemsPerPage));
 
+  // Fetch data on page or filter change or location change
   useEffect(() => {
-    fetchConfigs(currentPage, itemsPerPage, selectedFilter);
-  }, [currentPage, selectedFilter, fetchConfigs]);
+    fetchPages(currentPage, itemsPerPage, selectedFilter);
+  }, [currentPage, selectedFilter]);
 
+  // Show error toast
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
+  // Handle pagination
   const handlePageChange = (selectedItem: { selected: number }) => {
     setCurrentPage(selectedItem.selected + 1);
   };
 
-  const searchedConfigs = configs.filter((config) =>
-    config.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    config.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  // Filter search term locally (after API filter is applied)
+  const searchedPages = pages.filter((page) =>
+    page.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    page.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Stats for filter buttons
   const statFilters: StatFilter[] = [
     {
       id: 'total',
-      title: 'All Configs',
+      title: 'All Pages',
       value: stats.total,
       trend: 'up',
       change: '2%',
@@ -77,26 +80,27 @@ const ConfigListTemplate: React.FC = () => {
     },
     {
       id: 'active',
-      title: 'Active',
+      title: 'Active Pages',
       value: stats.active,
       trend: 'up',
-      change: '+12%',
+      change: '1%',
       icon: null,
     },
     {
       id: 'inactive',
-      title: 'Inactive',
+      title: 'Inactive Pages',
       value: stats.inactive,
       trend: 'down',
-      change: '-2%',
+      change: '1%',
       icon: null,
     },
   ];
 
-  const handleDelete = async (config: Config) => {
+  // Delete handler
+  const handleDelete = (page: Page) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `You are about to delete "${config.name}"`,
+      text: `You are about to delete "${page.name}"`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: 'var(--puprle-color)',
@@ -104,62 +108,44 @@ const ConfigListTemplate: React.FC = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        try {
-          await deleteConfig(config._id!);
+        await deletePage(page._id!);
 
-          const updatedLength = searchedConfigs.length - 1;
-          const newTotalItems = configs.length - 1;
-          const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
+        const updatedLength = searchedPages.length - 1;
+        const newTotalItems = pages.length - 1;
+        const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
 
-          if (updatedLength === 0 && currentPage > newTotalPages) {
-            setCurrentPage(newTotalPages || 1);
-          } else {
-            await fetchConfigs(currentPage, itemsPerPage, selectedFilter);
-          }
-
-          Swal.fire('Deleted!', 'The config has been removed.', 'success');
-        } catch (error: any) {
-          const errorData = error?.response?.data || {};
-          const errorMessage = typeof error === 'string' ? error : (errorData.message || error.message || 'Failed to delete config');
-          Swal.fire({
-            title: 'Error',
-            text: errorMessage,
-            icon: 'error',
-            confirmButtonColor: 'var(--puprle-color)',
-          });
+        // Adjust current page if necessary
+        if (updatedLength === 0 && currentPage > newTotalPages) {
+          setCurrentPage(newTotalPages || 1); // Go to the last page or page 1 if no pages remain
+        } else {
+          await fetchPages(currentPage, itemsPerPage, selectedFilter);
         }
+
+        Swal.fire('Deleted!', 'The Page has been removed.', 'success');
       }
     });
   };
 
-  const handleToggleStatus = async (config: Config) => {
-    try {
-      await toggleStatusConfig(config._id!);
-    } catch (error: any) {
-      Swal.fire({
-        title: 'Error',
-        text: error || 'Failed to change status',
-        icon: 'error',
-        confirmButtonColor: 'var(--puprle-color)',
-      });
-    }
-  };
-
-  const columns: ColumnConfig<Config>[] = [
+  const columns: ColumnConfig<Page>[] = [
+    {
+      key: 'title',
+      label: 'Title',
+      render: (value) => truncate(value, 40),
+    },
     {
       key: 'name',
       label: 'Name',
       render: (value) => truncate(value, 40),
     },
+    // {
+    //   key: 'slug',
+    //   label: 'Slug',
+    //   render: (value) => truncate(value, 40),
+    // },
     {
-      key: 'slug',
-      label: 'Slug',
-      render: (value) => truncate(value, 40),
-    },
-    {
-      key: 'configFields',
-      label: 'Fields Count',
-      render: (value) => (value ? value.length : 0),
+      key: 'type',
+      label: 'Type',
+      render: (value) => value.charAt(0).toUpperCase() + value.slice(1),
     },
   ];
 
@@ -168,29 +154,29 @@ const ConfigListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Config"
+        managementName="Pages"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Add"
-        addButtonLink="/config/add"
+        addButtonLink="/page/add"
         statFilters={statFilters}
         selectedFilterId={selectedFilter}
         onSelectFilter={(id) => {
           setSelectedFilter(id as 'total' | 'active' | 'inactive');
           setCurrentPage(1);
         }}
-        module="config"
+        module="page"
       />
 
       <ManagementTable
-        data={searchedConfigs}
+        data={searchedPages}
         columns={columns}
-        onEdit={(row) => navigate(`/config/edit/${row._id}`)}
-        onToggleStatus={handleToggleStatus}
+        onEdit={(row) => navigate(`/page/edit/${row._id}`)}
+        onToggleStatus={(row) => toggleStatusPage(row._id!)}
         onDelete={handleDelete}
         currentPage={currentPage}
         limit={itemsPerPage}
-        module="config"
+        module="page"
       />
 
       {filteredTotalPages > 1 && (
@@ -206,4 +192,4 @@ const ConfigListTemplate: React.FC = () => {
   );
 };
 
-export default ConfigListTemplate;
+export default PageListTemplate;
