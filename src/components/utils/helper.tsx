@@ -1,6 +1,7 @@
 /**
  * Generates a slug from a string (e.g., 'My Name' -> 'my-name').
  */
+
 export const generateSlug = (str: string): string => {
   if (!str) return '';
   return str
@@ -11,7 +12,12 @@ export const generateSlug = (str: string): string => {
     .replace(/-+/g, '-');
 };
 // helper.tsx
-import { Country, State, City } from 'country-state-city';
+import countries from '../../data/countries-states-cities-database/json/countries.json';
+import states from '../../data/countries-states-cities-database/json/states.json';
+import cities from '../../data/countries-states-cities-database/json/cities.json';
+
+import type { Country, City } from '../types/common';
+import type { State } from '../types/common';
 
 // Complete country phone codes (partial list, extend as needed)
 export const countryPhoneCodes: Record<string, string> = {
@@ -126,25 +132,24 @@ export const formatDateNumeric = (dateString?: string) => {
  * Retrieves all countries with their names, ISO codes, and phone codes.
 
  */
-export const getAllCountries = () =>
-  Country.getAllCountries().map((c) => ({
-    label: c.name,
-    value: c.isoCode,
-    phoneCode: countryPhoneCodes[c.isoCode] || '+0', // Default to '+0' if not found
-  }));
+// Use your interfaces for strict typing
 
-/**
- * Retrieves states for a given country code.
- */
-export const getStatesOfCountry = (countryCode: string) =>
-  State.getStatesOfCountry(countryCode).map((s) => ({ label: s.name, value: s.isoCode }));
+// Helper functions
+export function getAllCountries(): { label: string; value: string }[] {
+  return (countries as Country[]).map(c => ({ label: c.name, value: c.iso2 }));
+}
 
-/**
- * Retrieves cities for a given country and state code.
- */
-export const getCitiesOfState = (countryCode: string, stateCode: string) =>
-  City.getCitiesOfState(countryCode, stateCode).map((c) => ({ label: c.name, value: c.name }));
+export function getStatesOfCountry(countryIso: string): { label: string; value: string }[] {
+  return (states as State[])
+    .filter(s => s.country_code === countryIso)
+    .map(s => ({ label: s.name, value: s.iso2 }));
+}
 
+export function getCitiesOfState(countryIso: string, stateIso: string): { label: string; value: string }[] {
+  return (cities as City[])
+    .filter(c => c.country_code === countryIso && c.state_code === stateIso)
+    .map(c => ({ label: c.name, value: c.name }));
+}
 /**
  * Determines the file type based on its extension.
  */

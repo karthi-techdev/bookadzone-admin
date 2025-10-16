@@ -178,20 +178,15 @@ const BlogCategoryTrashListTemplate: React.FC = () => {
 
   return (
     <div className="p-6">
+      
       <TableHeader
-        managementName="BlogCategory"
+        managementName="Deleted Blog Categories"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
-        statFilters={statFilters}
-        selectedFilterId={selectedFilter}
-        onSelectFilter={(id) => {
-          setSelectedFilter(id as 'total' | 'active' | 'inactive');
-          setCurrentPage(1);
-        }}
+        addButtonLabel="Back to List"
+        addButtonLink="/blogCategory"
         module="blogCategory"
-        isTrashView={true}
       />
-
       <ManagementTable
         data={searchedBlogCategory}
         columns={columns}

@@ -15,11 +15,12 @@ const API = {
   listAgency: `${ROOTURL}agencies/`,
   getAgency: `${ROOTURL}agencies/`, 
   updateAgency: `${ROOTURL}agencies/`, 
-  deleteAgency: `${ROOTURL}agencies/softDelete/`,
-  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`,
+  deleteAgency: `${ROOTURL}agencies/softDelete/`, 
+  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`, 
   trashAgencyList: `${ROOTURL}agencies/trash`,
-  restoreAgency: `${ROOTURL}agencies/restore/`,
+  restoreAgency: `${ROOTURL}agencies/restore/`, 
   permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, 
+
   // FAQ endpoints
   addfaq: `${ROOTURL}faqs/`,
   listfaq: `${ROOTURL}faqs/`,
@@ -30,8 +31,8 @@ const API = {
   trashfaqlist: `${ROOTURL}faqs/trash`,
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
-  
-    // NewsLetter endpoints
+
+  // NewsLetter endpoints
   addNewsLetter: `${ROOTURL}newsletters/`,
   listNewsLetter: `${ROOTURL}newsLetters/`,
   getNewsLetter: `${ROOTURL}newsletters/getNewsLetterById/`,
@@ -42,7 +43,7 @@ const API = {
   restoreNewsLetter: `${ROOTURL}newsletters/restore/`,
   permanentDeleteNewsLetter: `${ROOTURL}newsletters/permanentDelete/`,
 
-// Footer endpoints
+  // Footer endpoints
   addfooterinfo: `${ROOTURL}footerinfo/`,
   listfooterinfo: `${ROOTURL}footerinfo/`,
   getfooterinfobyid: `${ROOTURL}footerinfo/getfooterinfoById/`,
@@ -64,19 +65,31 @@ const API = {
   restoreconfig: `${ROOTURL}configs/restore/`,
   permanentDeleteconfig: `${ROOTURL}configs/permanentDelete/`,
 
+  // User endpoints
+  adduserrole: `${ROOTURL}userrole/`,
+  createprivilegetable: `${ROOTURL}userrole/createprivilegetable`,
+  listuserrole: `${ROOTURL}userrole/listuserrole`,
+  fetchMenus: `${ROOTURL}userrole/fetchmenus`,
+  getuserrole: `${ROOTURL}userrole/getuserroleById/`,
+  updateuserrole: `${ROOTURL}userrole/updateuserrole/`,
+  deleteuserrole: `${ROOTURL}userrole/softDeleteuserrole/`,
+  toggleStatususerrole: `${ROOTURL}userrole/togglestatus/`,
+  trashuserrolelist: `${ROOTURL}userrole/trash`,
+  restoreuserrole: `${ROOTURL}userrole/restore/`,
+  permanentDeleteuserrole: `${ROOTURL}userrole/permanentDelete/`,
 
 
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
-  getcategorybyId: `${ROOTURL}category/getcategoryById/`,
+  getcategorybyId: `${ROOTURL}category/getcategoryById/`,  // Make sure this matches the backend route
   updatecategory: `${ROOTURL}category/updatecategory/`,
   deletecategory: `${ROOTURL}category/softDeletecategory/`,
-  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,
-  trashcategorylist: `${ROOTURL}category/trash`,
+  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,  // Fix casing to match backend
+  trashcategorylist: `${ROOTURL}category/trash`,  // Remove trailing slash
   restorecategory: `${ROOTURL}category/restore/`,
   permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
-  
+
   //Banner Management endpoints
   getBanner: `${ROOTURL}banners/`,
   updateBanner: `${ROOTURL}banners/`,
@@ -84,6 +97,9 @@ const API = {
   // Auth endpoints
   login: `${ROOTURL}auth/login`,
   refresh: `${ROOTURL}auth/refresh`,
+  forgotPassword: `${ROOTURL}auth/forgot-password`,
+  resetPassword: `${ROOTURL}auth/reset-password`,
+  me: `${ROOTURL}auth/me`,
 
   //BlogCategory endpoints
   addBlogCategory:`${ROOTURL}blogCategory/`,
@@ -96,8 +112,15 @@ const API = {
   restoreBlogCategory:`${ROOTURL}blogCategory/restore/`,
   permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
 
+  // Profile endpoints
+  profile: {
+    me: `${ROOTURL}auth/me`,
+    update: `${ROOTURL}auth/profile`,
+    changePassword: `${ROOTURL}auth/change-password`
+  },
+
   // Template Images
-  templateImage:`${ROOTURL}editer/image`
+  templateImage: `${ROOTURL}editer/image`
 };
 
 const ImportedURL = { API, LIVEURL, FILEURL, SETTINGS_ID };

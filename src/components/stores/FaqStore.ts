@@ -54,22 +54,23 @@ export const useFaqStore = create<FaqState>((set) => ({
         filter === 'active' ? 'active' :
         filter === 'inactive' ? 'inactive' : '';
       const res = await axios.get(`${API.listfaq}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
-      const data = res.data as {
-        data: Faq[];
-        meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };
-      };
-      set({
-        faqs: Array.isArray(data.data) ? data.data : [],
-        stats: {
-          total: data.meta?.total ?? 0,
-          active: data.meta?.active ?? 0,
-          inactive: data.meta?.inactive ?? 0,
-        },
-        page,
-        totalPages: data.meta?.totalPages ?? 1,
-        loading: false,
-        error: null
-      });
+      if (res.data.status === true && res.data.data) {
+        const { data: faqs, meta } = res.data.data;
+        set({
+          faqs: Array.isArray(faqs) ? faqs : [],
+          stats: {
+            total: meta.total ?? 0,
+            active: meta.active ?? 0,
+            inactive: meta.inactive ?? 0,
+          },
+          page: meta.page,
+          totalPages: meta.totalPages,
+          loading: false,
+          error: null
+        });
+      } else {
+        throw new Error('Invalid response format from server');
+      }
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch FAQs';
       set({ error: errorMessage, loading: false });
@@ -86,23 +87,25 @@ fetchTrashFaqs: async (page = 1, limit = 20, filter = 'total') => {
     const statusParam =
       filter === 'active' ? 'active' :
       filter === 'inactive' ? 'inactive' : '';
-    const res = await axios.patch(`${API.trashfaqlist}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
-    const data = res.data as {
-      data: Faq[];
-      meta?: { total?: number; active?: number; inactive?: number; totalPages?: number };
-    };
-    set({
-      faqs: Array.isArray(data.data) ? data.data : [],
-      stats: {
-        total: data.meta?.total ?? 0,
-        active: data.meta?.active ?? 0,
-        inactive: data.meta?.inactive ?? 0,
-      },
-      page,
-      totalPages: data.meta?.totalPages ?? 1,
-      loading: false,
-      error: null
-    });
+    const res = await axios.get(`${API.trashfaqlist}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`);
+    
+    if (res.data.status === true && res.data.data) {
+      const { data: faqs, meta } = res.data.data;
+      set({
+        faqs: Array.isArray(faqs) ? faqs : [],
+        stats: {
+          total: meta.total ?? 0,
+          active: meta.active ?? 0,
+          inactive: meta.inactive ?? 0,
+        },
+        page: meta.page,
+        totalPages: meta.totalPages,
+        loading: false,
+        error: null
+      });
+    } else {
+      throw new Error('Invalid response format from server');
+    }
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch trash FAQs';
     set({ error: errorMessage, loading: false });
@@ -205,12 +208,22 @@ deleteFaqPermanently: async (id: string) => {
   deleteFaq: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.delete(`${API.deletefaq}${id}`);
-      set((state) => ({
-        faqs: state.faqs.filter(f => f._id !== id),
-        error: null,
-        loading: false
-      }));
+      const res = await axios.delete(`${API.deletefaq}${id}`);
+      if (res.data.status === true) {
+        set((state) => ({
+          faqs: state.faqs.filter(f => f._id !== id),
+          stats: {
+            ...state.stats,
+            total: Math.max(0, state.stats.total - 1),
+            active: res.data.data?.status === 'active' ? Math.max(0, state.stats.active - 1) : state.stats.active,
+            inactive: res.data.data?.status === 'inactive' ? Math.max(0, state.stats.inactive - 1) : state.stats.inactive
+          },
+          error: null,
+          loading: false
+        }));
+      } else {
+        throw new Error('Failed to delete FAQ');
+      }
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete FAQ';
       set({ error: errorMessage, loading: false });
@@ -222,20 +235,16 @@ deleteFaqPermanently: async (id: string) => {
     try {
       set({ loading: true, error: null });
       const res = await axios.patch(`${API.toggleStatusfaq}${id}`);
-      const responseData = res.data as { data: { status: string } };
-      set((state) => ({
-        faqs: state.faqs.map(f => {
-          if (f._id === id) {
-            return {
-              ...f,
-              status: responseData.data.status === 'active'
-            };
-          }
-          return f;
-        }),
-        error: null,
-        loading: false
-      }));
+      if (res.data.status === true && res.data.data) {
+        const updatedFaq = res.data.data;
+        set((state) => ({
+          faqs: state.faqs.map(f => f._id === id ? updatedFaq : f),
+          error: null,
+          loading: false
+        }));
+      } else {
+        throw new Error('Invalid response format from server');
+      }
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to toggle status';
       set({ error: errorMessage, loading: false });

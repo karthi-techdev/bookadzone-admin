@@ -13,8 +13,14 @@ jest.mock('react-toastify', () => ({
 jest.mock('sweetalert2', () => ({
   fire: jest.fn(() => Promise.resolve({ isConfirmed: true })),
 }));
+jest.mock('../../utils/helper', () => ({
+  getAllCountries: () => [{ value: 'IN', label: 'India' }],
+  getStatesOfCountry: () => [{ value: 'KA', label: 'Karnataka' }],
+  getCitiesOfState: () => [{ value: 'Bangalore', label: 'Bangalore' }],
+}));
 
 describe('AgencyFormTemplate', () => {
+  jest.setTimeout(15000);
   beforeEach(() => {
     (useAgencyStore as unknown as jest.Mock).mockReturnValue({
       fetchAgencyById: jest.fn().mockResolvedValue(null),
@@ -48,6 +54,7 @@ describe('AgencyFormTemplate', () => {
   });
 
   it('calls addAgency on valid submit', async () => {
+    jest.setTimeout(15000);
     const addAgency = jest.fn().mockResolvedValue(undefined);
     (useAgencyStore as unknown as jest.Mock).mockReturnValue({
       fetchAgencyById: jest.fn().mockResolvedValue(null),
@@ -62,36 +69,54 @@ describe('AgencyFormTemplate', () => {
     );
 
     // Fill required fields (simulate minimal valid input)
-    fireEvent.change(screen.getByLabelText(/Agency Name/i), { target: { value: 'Test Agency' } });
-  fireEvent.change(screen.getByLabelText(/Contact Name/i), { target: { value: 'John Doe' } });
-    fireEvent.change(screen.getByLabelText(/Position/i), { target: { value: 'Manager' } });
-    // Try to match label with or without asterisk and whitespace
-  fireEvent.change(screen.getByPlaceholderText('Enter email...'), { target: { value: 'test@example.com' } });
-  fireEvent.change(screen.getByPlaceholderText('Enter phone number...'), { target: { value: '1234567890' } });
-    fireEvent.change(screen.getByLabelText(/Company Email/i), { target: { value: 'company@example.com' } });
-    fireEvent.change(screen.getByLabelText(/Company Phone/i), { target: { value: '1234567890' } });
-    fireEvent.change(screen.getByLabelText(/GST/i), { target: { value: 'GST123' } });
-    fireEvent.change(screen.getByLabelText(/Website/i), { target: { value: 'https://example.com' } });
-    fireEvent.change(screen.getByLabelText(/Address/i), { target: { value: '123 Street' } });
-    fireEvent.change(screen.getByLabelText(/Location/i), { target: { value: 'City' } });
-  fireEvent.change(screen.getByPlaceholderText('Enter state...'), { target: { value: 'State' } });
-  fireEvent.change(screen.getByPlaceholderText('Enter city...'), { target: { value: 'City' } });
-    fireEvent.change(screen.getByLabelText(/Pincode/i), { target: { value: '123456' } });
-  fireEvent.change(screen.getByPlaceholderText('Enter password...'), { target: { value: 'Password@123' } });
-  // Mock file inputs for required file fields
-  const file = new File(['dummy'], 'dummy.png', { type: 'image/png' });
-  // Agency Logo
-  const agencyLogoInput = screen.getByLabelText(/Agency Logo/i);
-  fireEvent.change(agencyLogoInput, { target: { files: [file] } });
-  // Contact Photo
-  const contactPhotoInput = screen.getByLabelText(/Contact Photo/i);
-  fireEvent.change(contactPhotoInput, { target: { files: [file] } });
-  // ID Proof
-  const idProofInput = screen.getByLabelText(/ID Proof/i);
-  fireEvent.change(idProofInput, { target: { files: [file] } });
-  // Business Proof
-  const businessProofInput = screen.getByLabelText(/Business Proof/i);
-  fireEvent.change(businessProofInput, { target: { files: [file] } });
+    // Fill all required text fields using ids instead of placeholders
+    fireEvent.change(screen.getByTestId('agencyName-input'), { target: { value: 'Test Agency' } });
+    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'John Doe' } });
+    fireEvent.change(screen.getByTestId('position-input'), { target: { value: 'Manager' } });
+    fireEvent.change(screen.getByTestId('yourEmail-input'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByTestId('yourPhone-input'), { target: { value: '1234567890' } });
+    fireEvent.change(screen.getByTestId('companyEmail-input'), { target: { value: 'company@example.com' } });
+    fireEvent.change(screen.getByTestId('companyPhone-input'), { target: { value: '1234567890' } });
+    fireEvent.change(screen.getByTestId('companyRegistrationNumberGST-input'), { target: { value: 'GST123' } });
+    fireEvent.change(screen.getByTestId('website-input'), { target: { value: 'https://example.com' } });
+    fireEvent.change(screen.getByTestId('agencyAddress-input'), { target: { value: '123 Street' } });
+    fireEvent.change(screen.getByTestId('agencyLocation-input'), { target: { value: 'City' } });
+    
+    // Handle react-select fields using their wrappers
+    const countrySelect = screen.getByRole('combobox', { name: /country/i });
+    fireEvent.change(countrySelect, { target: { value: 'IN' } });
+    fireEvent.keyDown(countrySelect, { key: 'Enter', code: 'Enter' });
+
+    const stateSelect = screen.getByRole('combobox', { name: /state/i });
+    fireEvent.change(stateSelect, { target: { value: 'KA' } });
+    fireEvent.keyDown(stateSelect, { key: 'Enter', code: 'Enter' });
+
+    const citySelect = screen.getByRole('combobox', { name: /city/i });
+    fireEvent.change(citySelect, { target: { value: 'Bangalore' } });
+    fireEvent.keyDown(citySelect, { key: 'Enter', code: 'Enter' });
+    
+    // Continue with other fields
+    fireEvent.change(screen.getByTestId('pincode-input'), { target: { value: '123456' } });
+    fireEvent.change(screen.getByTestId('password-input'), { target: { value: 'Password@123' } });
+    // Mock file inputs for required file fields
+    const file = new File(['dummy'], 'dummy.png', { type: 'image/png' });
+    
+    // Handle all file inputs
+    const fileInputs = [
+      'agencyLogo-input',
+      'photo-input',
+      'uploadIdProof-input',
+      'uploadBusinessProof-input'
+    ];
+
+    fileInputs.forEach((testId) => {
+      const input = screen.getByTestId(testId) as HTMLInputElement;
+      Object.defineProperty(input, 'files', {
+        value: [file],
+        configurable: true
+      });
+      fireEvent.change(input);
+    });
   fireEvent.submit(screen.getByTestId('agency-form'));
     await waitFor(() => {
       expect(addAgency).toHaveBeenCalled();

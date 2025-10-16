@@ -28,17 +28,23 @@ const AgencyTrashListTemplate: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Fetch data when page changes or after operations
   useEffect(() => {
-    fetchTrashAgencies(currentPage, itemsPerPage);
-  }, [currentPage]);
+    const fetchData = async () => {
+      await fetchTrashAgencies(currentPage, itemsPerPage);
+    };
+    fetchData();
+  }, [currentPage, fetchTrashAgencies]);
 
   useEffect(() => {
     if (error) toast.error(error);
   }, [error]);
 
-  const handlePageChange = (selectedItem: { selected: number }) => {
-    setCurrentPage(selectedItem.selected + 1);
-    fetchTrashAgencies(selectedItem.selected + 1, itemsPerPage);
+  const handlePageChange = async (selectedItem: { selected: number }) => {
+    const newPage = selectedItem.selected + 1;
+    setCurrentPage(newPage);
+    // Ensure fresh data on page change
+    await fetchTrashAgencies(newPage, itemsPerPage);
   };
 
   // Filter search term locally (after API filter is applied)
@@ -58,7 +64,7 @@ const AgencyTrashListTemplate: React.FC = () => {
     },
   ];
 
-  // Restore handler
+  // Restore handler with immediate refresh
   const handleRestore = (agency: Agency) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -70,14 +76,23 @@ const AgencyTrashListTemplate: React.FC = () => {
       confirmButtonText: 'Yes, restore it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await restoreAgency(agency._id!);
-        await fetchTrashAgencies(currentPage, itemsPerPage);
-        Swal.fire('Restored!', 'The agency has been restored.', 'success');
+        try {
+          await restoreAgency(agency._id!);
+          // Recalculate current page based on remaining items
+          const remainingItems = searchedAgencies.length - 1;
+          const newPage = Math.max(1, remainingItems === 0 ? currentPage - 1 : currentPage);
+          setCurrentPage(newPage);
+          // Force an immediate refresh of the data with the new page
+          await fetchTrashAgencies(newPage, itemsPerPage);
+          Swal.fire('Restored!', 'The agency has been restored.', 'success');
+        } catch (error) {
+          toast.error('Failed to restore agency');
+        }
       }
     });
   };
 
-  // Permanent delete handler
+  // Permanent delete handler with immediate refresh
   const handlePermanentDelete = (agency: Agency) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -89,9 +104,18 @@ const AgencyTrashListTemplate: React.FC = () => {
       confirmButtonText: 'Yes, delete it permanently!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteAgencyPermanently(agency._id!);
-        await fetchTrashAgencies(currentPage, itemsPerPage);
-        Swal.fire('Deleted!', 'The agency has been permanently deleted.', 'success');
+        try {
+          await deleteAgencyPermanently(agency._id!);
+          // Recalculate current page based on remaining items
+          const remainingItems = searchedAgencies.length - 1;
+          const newPage = Math.max(1, remainingItems === 0 ? currentPage - 1 : currentPage);
+          setCurrentPage(newPage);
+          // Force an immediate refresh of the data with the new page
+          await fetchTrashAgencies(newPage, itemsPerPage);
+          Swal.fire('Deleted!', 'The agency has been permanently deleted.', 'success');
+        } catch (error) {
+          toast.error('Failed to permanently delete agency');
+        }
       }
     });
   };
@@ -105,7 +129,7 @@ const AgencyTrashListTemplate: React.FC = () => {
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Agency Trash"
+        managementName="Deleted Agencies"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

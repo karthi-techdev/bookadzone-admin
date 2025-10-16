@@ -15,7 +15,7 @@ type ConfigFormData = {
   name: string;
   slug: string;
   status?: boolean;
-  configFields: { key: string; value: string }[];
+  configFields: Array<{ key: string; value: string }>;
 };
 
 const getNestedError = (errors: any, path: string): any => {
@@ -66,28 +66,58 @@ const ConfigFormTemplate: React.FC = () => {
     const initializeForm = async () => {
       if (id) {
         try {
-          const config = await fetchConfigById(id);
+          // Force refetch by adding timestamp to avoid cache
+          const config = await fetchConfigById(id + '?_=' + new Date().getTime());
           if (config) {
+            // Clear form first
             reset({
-              name: config.name,
-              slug: config.slug,
-              status: config.status !== undefined ? config.status : true,
-              configFields: config.configFields && config.configFields.length > 0 
-                ? config.configFields 
-                : [{ key: '', value: '' }],
+              name: '',
+              slug: '',
+              status: true,
+              configFields: [{ key: '', value: '' }]
             });
+
+            // Ensure configFields is properly formatted
+            const formattedConfigFields = Array.isArray(config.configFields) 
+              ? config.configFields.map(field => ({
+                  key: field.key || '',
+                  value: field.value || ''
+                }))
+              : [{ key: '', value: '' }];
+
+            // Set new values with a slight delay to ensure clean state
+            setTimeout(() => {
+              reset({
+                name: config.name || '',
+                slug: config.slug || '',
+                status: !!config.status,
+                configFields: formattedConfigFields.length > 0 
+                  ? formattedConfigFields 
+                  : [{ key: '', value: '' }]
+              }, { keepDirty: false, keepValues: false });
+
+              // Log the form data for debugging
+              console.log('Form Data:', {
+                name: config.name,
+                slug: config.slug,
+                status: !!config.status,
+                configFields: formattedConfigFields
+              });
+            }, 0);
           }
           setIsInitialized(true);
-        } catch (error) {
-          toast.error('Failed to load config');
+        } catch (error: any) {
+          console.error('Error loading config:', error);
+          toast.error(error?.response?.data?.message || error?.message || 'Failed to load config');
           setIsInitialized(true);
+          navigate('/config');
         }
       } else {
         setIsInitialized(true);
       }
     };
     initializeForm();
-  }, [id, reset, fetchConfigById]);
+  }, [id, reset, fetchConfigById, navigate]);
 
   const handleFieldChange = (fieldName: keyof ConfigFormData, minLengthValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
     let value = e.target.value;
@@ -119,11 +149,15 @@ const ConfigFormTemplate: React.FC = () => {
       ...data,
       name: data.name.trim(),
       slug: data.slug.trim(),
+      status: !!data.status,
       configFields: data.configFields.map(cf => ({
         key: cf.key.trim(),
         value: cf.value.trim()
       })).filter(cf => cf.key && cf.value),
     };
+
+    // Log the submission data for debugging
+    console.log('Submitting data:', trimmedData);
 
     if (id && trimmedData.configFields.length === 0) {
       toast.error('At least one config field is required');
@@ -133,6 +167,8 @@ const ConfigFormTemplate: React.FC = () => {
     try {
       if (id) {
         await updateConfig(id, trimmedData);
+        // Force a reset of the form state
+        reset();
         await Swal.fire({
           title: 'Success!',
           text: 'Config updated successfully',
@@ -148,6 +184,8 @@ const ConfigFormTemplate: React.FC = () => {
           confirmButtonColor: 'var(--puprle-color)',
         });
       }
+      // Clear any cached values before navigating
+      reset();
       navigate('/config');
     } catch (error: any) {
       const errorData = error?.response?.data || {};
@@ -194,11 +232,6 @@ const ConfigFormTemplate: React.FC = () => {
           isSubmitting={isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
           data-testid="config-form"
-          onNameClick={{
-            name: handleFieldChange('name', 3),
-            slug: handleFieldChange('slug', 3),
-            status: handleFieldChange('status'),
-          }}
           isDynamic={!!id}
           dynamicFieldName="configFields"
           dynamicFieldConfig={dynamicFieldConfig}

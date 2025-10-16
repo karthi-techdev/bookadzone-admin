@@ -34,6 +34,7 @@ const BAZTextArea: React.FC<TextAreaProps> = ({ className = '', error, label, id
       <textarea
         id={textareaId}
         {...rest}
+        data-testid={id ? `${id}-input` : undefined}
         className={`w-full px-3 py-2 ${autoCompleted ? 'bg-purple-100' : 'bg-[var(--dark-color)]'} border ${
           error ? 'border-red-400' : 'border-[var(--light-blur-grey-color)]'
         } ${borderRadiusClass} text-xs text-white focus:outline-none focus:ring-1 focus:ring-[var(--puprle-color)] resize-none ${className}`}

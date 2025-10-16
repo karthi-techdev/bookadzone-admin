@@ -10,7 +10,8 @@ import Pagination from '../../atoms/BAZ-Pagination';
 
 import { useNewsLetterStore } from '../../stores/NewsLetterStore';
 import type { ColumnConfig, NewsLetter } from '../../types/common';
-import { truncate } from '../../utils/helper'
+import { truncate } from '../../utils/helper';
+import { DEFAULT_ITEMS_PER_PAGE } from '../../../constants/pagination';
 
 interface StatFilter {
   id: string;
@@ -37,7 +38,9 @@ const NewsLetterListTemplate: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<'total' | 'active' | 'inactive'>('total');
-  const itemsPerPage = 3;
+
+  // Use default items per page from constants
+  const itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
   // Calculate total items for pagination based on selected filter
   const getTotalItems = () => {
