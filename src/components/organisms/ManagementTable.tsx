@@ -71,7 +71,7 @@ const ManagementTable = <T extends Record<string, any>>({
       confirmButtonText: 'Yes, change it!'
     });
     if (result.isConfirmed && onToggleStatus) {
-      onToggleStatus(row);
+        await onToggleStatus(row);
     }
   };
 

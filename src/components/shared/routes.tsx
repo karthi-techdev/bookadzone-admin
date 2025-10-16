@@ -47,6 +47,11 @@ const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/Foo
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
 const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
 
+//pages management (Lazy Loaded)
+const PageListPage = lazy(() => import('../pages/page/PageListPage'));
+const PageFormPage = lazy(() => import('../pages/page/PageFormPage'));
+const PageTrashListPage = lazy(() => import('../pages/trash/page/PageTrashListPage'));
+
 // Settings Pages (Lazy Loaded)
 const GeneralSettingsPage = lazy(() => import('../pages/settings/GeneralSettingsPage'));
 const ContactInfoPage = lazy(() => import('../pages/settings/ContactInfoPage'));
@@ -211,6 +216,28 @@ export const routesData = (): RouteData[] => {
       path: '/trash/newsletter',
       pageTitle: 'Newsletter Trash',
       component: <NewsLetterTrashListPage />,
+    },
+    
+    // Page routes
+    {
+      path: '/page',
+      pageTitle: 'Page List',
+      component: <PageListPage />,
+    },
+    {
+      path: '/page/add',
+      pageTitle: 'Add Page',
+      component: <PageFormPage />,
+    },
+    {
+      path: '/page/edit/:id',
+      pageTitle: 'Edit Page',
+      component: <PageFormPage />,
+    },
+    {
+      path: '/trash/page',
+      pageTitle: 'Trash Page',
+      component: <PageTrashListPage />,
     },
 
     // Footer Management Routes

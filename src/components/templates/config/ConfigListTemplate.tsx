@@ -104,21 +104,45 @@ const ConfigListTemplate: React.FC = () => {
       confirmButtonText: 'Yes, delete it!',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        await deleteConfig(config._id!);
+        try {
+          await deleteConfig(config._id!);
 
-        const updatedLength = searchedConfigs.length - 1;
-        const newTotalItems = configs.length - 1;
-        const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
+          const updatedLength = searchedConfigs.length - 1;
+          const newTotalItems = configs.length - 1;
+          const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
 
-        if (updatedLength === 0 && currentPage > newTotalPages) {
-          setCurrentPage(newTotalPages || 1);
-        } else {
-          await fetchConfigs(currentPage, itemsPerPage, selectedFilter);
+          if (updatedLength === 0 && currentPage > newTotalPages) {
+            setCurrentPage(newTotalPages || 1);
+          } else {
+            await fetchConfigs(currentPage, itemsPerPage, selectedFilter);
+          }
+
+          Swal.fire('Deleted!', 'The config has been removed.', 'success');
+        } catch (error: any) {
+          const errorData = error?.response?.data || {};
+          const errorMessage = typeof error === 'string' ? error : (errorData.message || error.message || 'Failed to delete config');
+          Swal.fire({
+            title: 'Error',
+            text: errorMessage,
+            icon: 'error',
+            confirmButtonColor: 'var(--puprle-color)',
+          });
         }
-
-        Swal.fire('Deleted!', 'The config has been removed.', 'success');
       }
     });
+  };
+
+  const handleToggleStatus = async (config: Config) => {
+    try {
+      await toggleStatusConfig(config._id!);
+    } catch (error: any) {
+      Swal.fire({
+        title: 'Error',
+        text: error || 'Failed to change status',
+        icon: 'error',
+        confirmButtonColor: 'var(--puprle-color)',
+      });
+    }
   };
 
   const columns: ColumnConfig<Config>[] = [
@@ -162,7 +186,7 @@ const ConfigListTemplate: React.FC = () => {
         data={searchedConfigs}
         columns={columns}
         onEdit={(row) => navigate(`/config/edit/${row._id}`)}
-        onToggleStatus={(row) => toggleStatusConfig(row._id!)}
+        onToggleStatus={handleToggleStatus}
         onDelete={handleDelete}
         currentPage={currentPage}
         limit={itemsPerPage}

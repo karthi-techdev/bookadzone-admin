@@ -10,6 +10,11 @@ import ImportedURL from '../common/urls';
 
 const { API } = ImportedURL;
 
+interface ConfigField {
+  key: string;
+  value: string;
+}
+
 interface ConfigStats {
   total: number;
   active: number;
@@ -23,6 +28,7 @@ interface ConfigState {
   error: string | null;
   page: number;
   totalPages: number;
+  pageConfigFields: ConfigField[];
   fetchConfigs: (
     page?: number,
     limit?: number,
@@ -36,6 +42,7 @@ interface ConfigState {
   restoreConfig: (id: string) => Promise<void>;
   deleteConfigPermanently: (id: string) => Promise<void>;
   fetchTrashConfigs: (page?: number, limit?: number, filter?: 'total' | 'active' | 'inactive') => Promise<void>;
+  fetchPageConfigFields: () => Promise<void>;
 }
 
 export const useConfigStore = create<ConfigState>((set) => ({
@@ -45,6 +52,7 @@ export const useConfigStore = create<ConfigState>((set) => ({
   error: null,
   page: 1,
   totalPages: 1,
+  pageConfigFields: [],
 
   fetchConfigs: async (page = 1, limit = 20, filter = 'total') => {
     try {
@@ -262,6 +270,24 @@ export const useConfigStore = create<ConfigState>((set) => ({
       });
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch trash configs';
+      set({ error: errorMessage, loading: false });
+      throw errorMessage;
+    }
+  },
+  
+  fetchPageConfigFields: async () => {
+    try {
+      set({ loading: true, error: null });
+      const res = await axios.get(API.pagesConfig);
+      const data = res.data.data;
+      const fields = Array.isArray(data) ? data : Object.entries(data).map(([key, value]) => ({ key, value }));
+      set({
+        pageConfigFields: fields,
+        loading: false,
+        error: null
+      });
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch page config fields';
       set({ error: errorMessage, loading: false });
       throw errorMessage;
     }
