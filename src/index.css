@@ -107,3 +107,113 @@ body {
   scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
   scrollbar-width: none;
 }
+#username,#password{
+  height: 45px;
+  margin-top: 20px;
+  border: 1px solid #ffffff26;
+}
+.login-form-inp-sec .button {
+  margin-top: 40px;
+}
+.card-image{
+  margin-bottom: 40px;
+}
+
+
+#newPassword,#confirmPassword{
+  border: 1px solid #ffffff1c;
+}
+#newPassword{
+  margin-bottom: 10px;
+}
+
+
+
+@media screen and (min-width: 200px) and (max-width: 769px)  {
+  .absolute,.carousel,.lg-logo,.profile-btn-content{
+    display: none;
+  }
+.breadcrumb{
+  display: none;
+}
+.table-list{
+  width: fit-content;
+}
+.search-icon{
+  margin-top: 10px;
+}
+.mobile-table{
+  display: block;
+}
+  .carousel-part {
+    display: none;
+  }
+  .absolute {
+    display: block;
+  }
+  .table-head{
+    display: block;
+  }
+  .list-table{
+    width: 100%;
+  }
+  .left-side{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .mobile-Head{
+    width: 50%;
+  }
+  .header-search-box{
+    display: none;
+  }
+  .mobile-header{
+    font-size: 20px;
+  }
+  .add-btn{
+    margin-top: 10px;
+    width: 30%;
+  }
+  .drop-down{
+    position: absolute;
+    margin-right: 20px;
+    margin-top: 7px;
+  }
+  .mobile-add,.mobile-appearance,.mobile-home-link,.mob-head{
+    font-size: 10px;
+  }
+  .rightside-head{
+    width: 100%;
+    justify-content: space-between;
+    display: flex;
+  }
+  .mobile-logo{
+    display: block;
+  }
+  
+ .mobile-table
+  .forgot-password{
+    justify-content: center;
+  }
+  
+  .quick-btns{
+    display: none;
+  }
+  .nav-content{
+    justify-content: end;
+  }
+}
+
+
+
+@media screen and (min-width: 769px) and (max-width: 1400px)  {
+  .nav-content{
+    justify-content: space-between;
+  }
+  .mobile-logo{
+    display: none;
+  }
+ 
+}

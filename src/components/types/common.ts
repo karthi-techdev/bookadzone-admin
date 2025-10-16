@@ -230,7 +230,13 @@ export interface FieldConfig {
   onClick?: () => void;
 }
 
-
+export interface LloginFieldconfig{
+  name:string;
+  type:InputType;
+  required?:boolean;
+  placeholder:string;
+  className:string
+}
 export interface FieldGroup {
   label: string;
   fields: FieldConfig[];

@@ -35,7 +35,7 @@ const ProfileDropdown: React.FC = () => {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 40, opacity: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="absolute -right-3 mt-4 w-40 bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded shadow-lg z-50 text-[.75rem] backdrop-blur-md"
+          className="absolute -right-3 mt-4 w-40 rounded-[0px_15px_0px_15px] bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded shadow-lg z-50 text-[.75rem] backdrop-blur-md"
         >
           <Link to="/profile" className="block px-4 py-2 text-[var(--white-color)] hover:bg-[var(--light-purple-color)] transition-all duration-200">Profile</Link>
           <Link to="/settings" className="block px-4 py-2 text-[var(--white-color)] hover:bg-[var(--light-purple-color)] transition-all duration-200">Settings</Link>

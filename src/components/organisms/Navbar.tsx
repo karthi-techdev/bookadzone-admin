@@ -1,5 +1,6 @@
 import React from "react";
 import Logo from "../atoms/BAZ-Logo";
+import Mobilelogo from "../atoms/BAZ-Mobilelogo"
 import Button from "../atoms/BAZ-Button";
 import { FiSearch, FiMaximize } from "react-icons/fi";
 import { RiCustomerServiceFill, RiNotification2Fill } from "react-icons/ri";
@@ -22,13 +23,15 @@ const Navbar: React.FC = () => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -70, opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeOut", delay: 1.8 }}
-      className="z-100000 fixed top-0 left-0 right-0 w-full shadow flex items-center justify-between px-6 py-3 bg-[var(--light-dark-color)] h-[60px] border-b-[1px] border-b-[var(--light-blur-grey-color)]">
+      className="nav-main z-100000 fixed top-0 left-0 right-0  shadow flex items-center justify-between px-6 py-3 bg-[var(--light-dark-color)] h-[60px] border-b-[1px] border-b-[var(--light-blur-grey-color)]">
         <div className="nav-enclose flex items-center justify-between w-full">
           <motion.div className="logo flex items-center justify-center" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.97 }}>
-            <Logo className="h-[20px]" />
+            <Logo className="hidden md:block h-[20px]" />
+            <Mobilelogo className="block md:hidden h-[50px]" />
+
           </motion.div>
-          <div className="nav-content flex items-center w-[80vw] justify-between">
-            <div className="search-box w-[35vw] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
+          <div className="nav-content flex items-cente justify-between gap-[50px]">
+            <div className="header-search-box w-[70%] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
               <FiSearch className="text-[1.3rem] ml-2 text-[var(--light-grey-color)]" />
               <input type="search" placeholder="Search..." className="outline-none text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] text-[.80rem] px-3 w-full"/>
               <Button
@@ -162,7 +165,7 @@ const Navbar: React.FC = () => {
                   <GoOrganization className="text-[1rem] text-[var(--white-color)]" />
                 </div>
                 <div className="profile-btn-content">
-                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">Focus Media</span>
+                  <span className="text-[.80rem] w-[75px] font-medium text-[var(--white-color)] flex">Focus Media</span>
                   <span className="text-[.50rem] text-[var(--light-grey-color)] flex">Admin</span>
                 </div>
               </Button>
@@ -172,7 +175,7 @@ const Navbar: React.FC = () => {
                   animate={{ y: 0, opacity: 1 }}
                   exit={{ y: 40, opacity: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
-                  className="absolute -right-3 mt-4 w-40 bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded shadow-lg z-50 text-[.75rem] backdrop-blur-md">
+                  className="absolute -right-3 rounded-tr-[15px] rounded-bl-[15px] mt-4 w-40 bg-[var(--light-dark-color)] border border-[var(--light-blur-grey-color)] rounded shadow-lg z-50 text-[.75rem] backdrop-blur-md">
                   <Link to="/profile" className="block px-4 py-2 text-[var(--white-color)] hover:bg-[var(--light-purple-color)] transition-all duration-200">Profile</Link>
                   <Link to="/settings" className="block px-4 py-2 text-[var(--white-color)] hover:bg-[var(--light-purple-color)] transition-all duration-200">Settings</Link>
                   <Button

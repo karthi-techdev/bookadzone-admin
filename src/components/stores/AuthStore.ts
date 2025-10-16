@@ -18,6 +18,8 @@ interface AuthState {
   stopExpirationCheck: () => void;
 }
 
+
+
 export const useAuthStore = create<AuthState>((set) => {
   const token = localStorage.getItem('token');
   const storedExpiry = localStorage.getItem('tokenExpiry');

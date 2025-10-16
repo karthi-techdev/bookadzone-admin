@@ -16,7 +16,7 @@ interface ManagementTableProps<T> {
   onDelete?: (row: T) => void;
   onView?: (row: T) => void;
   onDownload?: (row: T) => void;
-  onRestore?: (row: T) => void; 
+  onRestore?: (row: T) => void;
   onPermanentDelete?: (row: T) => void;
   currentPage?: number;
   limit?: number;
@@ -41,13 +41,13 @@ const ManagementTable = <T extends Record<string, any>>({
   onDelete,
   onView,
   onDownload,
-  onRestore, 
-  onPermanentDelete, 
+  onRestore,
+  onPermanentDelete,
   currentPage = 1,
-  limit = 5, 
+  limit = 5,
 }: ManagementTableProps<T>) => {
 
-  const StatusBadge = ({ status }: { status: boolean | string }) => {   
+  const StatusBadge = ({ status }: { status: boolean | string }) => {
     const isActive = status === true || status === 'active';
     const bgColor = isActive ? 'bg-green-900/30' : 'bg-red-900/30';
     const textColor = isActive ? 'text-green-400' : 'text-red-400';
@@ -80,11 +80,11 @@ const ManagementTable = <T extends Record<string, any>>({
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="bg-[var(--light-dark-color)] rounded-xl shadow-sm border border-[var(--light-blur-grey-color)] overflow-hidden"
+      className="table-list bg-[var(--light-dark-color)] rounded-xl shadow-sm border border-[var(--light-blur-grey-color)] overflow-hidden"
     >
 
 
-      
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="text-left text-xs font-medium text-[var(--light-grey-color)] uppercase tracking-wider border-b border-[var(--light-blur-grey-color)]">

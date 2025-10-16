@@ -19,6 +19,7 @@
     "apexcharts": "^5.2.0",
     "axios": "^1.11.0",
     "country-state-city": "^3.2.1",
+    "hamburger-react": "^2.5.2",
     "jodit-react": "^5.2.25",
     "jwt-decode": "^4.0.0",
     "motion": "^12.12.1",
