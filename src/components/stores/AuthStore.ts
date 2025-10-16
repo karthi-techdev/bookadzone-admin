@@ -43,50 +43,8 @@ interface AuthState {
   fetchCurrentUser: () => Promise<void>;
 }
 
-<<<<<<< HEAD
-
-
-export const useAuthStore = create<AuthState>((set) => {
-  const token = localStorage.getItem('token');
-  const storedExpiry = localStorage.getItem('tokenExpiry');
-
-
-  axios.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-
-  axios.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('tokenExpiry');
-        set({ user: null, token: null });
-        delete axios.defaults.headers.common['Authorization'];
-        stopExpirationCheck();
-      }
-      return Promise.reject(error);
-    }
-  );
-
-  // Initialize token validation
-  if (token && storedExpiry) {
-    if (checkTokenValidity()) {
-      startExpirationCheck();
-    }
-  }
-
-=======
 export const useAuthStore = create<AuthState>((set, get) => {
   const storedMenus = localStorage.getItem('menus');
->>>>>>> 6d68b3d53446aca9522715e11cc55b96757cc2cb
   return {
     user: null,
     token: localStorage.getItem('token'),

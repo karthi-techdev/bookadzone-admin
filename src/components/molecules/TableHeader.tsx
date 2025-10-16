@@ -44,7 +44,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     <div className="mb-6">
       <div className="table-head flex gap-[90px] flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
         {/* LEFT SIDE */}
-        <div className="left-side flex w-[65%] justify-between items-center">
+        <div className="left-side flex w-[75%] justify-between items-center">
           {/* Breadcrumbs */}
           <div className="mobile-Head">
             <h1 className="mobile-header text-2xl font-bold text-white mb-1">{managementName}</h1>
@@ -114,7 +114,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           {/* 🔽 Filter Dropdown — Left on Mobile/Tablet, Middle/Left on Large */}
           {statFilters.length > 0 && (
             <div className="add-btn order-1 md:order-1 lg:order-2">
-              <div className="relative w-[90%]">
+              <div className="relative w-[60%]">
                 <select
                   className="mobile-appearance appearance-none bg-[var(--dark-color)] w-[160px] border border-[var(--light-blur-grey-color)] rounded-lg pl-3 pr-10 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[var(--puprle-color)] focus:border-transparent"
                   value={selectedFilterId}

@@ -979,7 +979,7 @@ const AddProperties: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-[20px]">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Add Property</h1>
         <p className="text-xs text-[var(--light-grey-color)]">Add a new advertising property to your portfolio</p>

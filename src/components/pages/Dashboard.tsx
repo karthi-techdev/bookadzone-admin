@@ -194,7 +194,7 @@ const Dashboard: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-5">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>

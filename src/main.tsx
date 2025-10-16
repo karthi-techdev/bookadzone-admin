@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Login from './components/templates/auth/loginTemplate';
 import LoginOtp from './components/templates/auth/otpTemplate';
 import Advertiser from './components/templates/auth/advertiserTemplate';
-// import ResetPassword from './components/templates/auth/resetPasswordTemplate';
+import ResetPassword from './components/templates/auth/resetPasswordTemplate';
 const rootElement = document.getElementById('root');
 if (rootElement) {
   createRoot(rootElement).render(

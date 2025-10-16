@@ -222,7 +222,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
                 {type === 'password' && (
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] mt-[10px] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
