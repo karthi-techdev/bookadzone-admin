@@ -1,10 +1,14 @@
-
 import { create } from 'zustand';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import type { User } from '../types/common';
 import ImportedURL from '../common/urls';
+
+const HTTP_RESPONSE = {
+  SUCCESS: 'success',
+  FAIL: 'fail'
+} as const;
 import { checkTokenValidity } from '../utils/auth/tokenValidation';
 import { startExpirationCheck, stopExpirationCheck } from '../utils/auth/expirationCheck';
 import { parseExpiresIn } from '../utils/auth/utils';
@@ -35,7 +39,7 @@ interface AuthState {
   login: (payload: { email: string; password: string }) => Promise<void>;
   logout: () => void;
   refreshAuth: () => Promise<void>;
-  forgotPassword: (email: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<{status: boolean, message: string}>;
   resetPassword: (token: string, password: string) => Promise<void>;
   checkTokenValidity: () => boolean;
   startExpirationCheck: () => void;
@@ -110,7 +114,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
         set({ user, token: newToken, menus });
         axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
         startExpirationCheck();
-      } catch (err: any) {
+      } catch (err) {
+        // If the token verification fails, log the user out
+        console.error('Token verification failed:', err);
         get().logout();
       }
     },
@@ -124,7 +130,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
           return;
         }
         const response = await axios.get(API.me);
-        if (!response.data || !response.data.data) throw new Error('Invalid response format');
+        if (!response.data?.data) throw new Error('Invalid response format');
         const { data, csrfToken } = response.data;
         if (csrfToken) {
           localStorage.setItem('csrf-token', csrfToken);
@@ -143,13 +149,28 @@ export const useAuthStore = create<AuthState>((set, get) => {
     },
     forgotPassword: async (email: string) => {
       try {
-        await axios.post(API.forgotPassword, { email }, {
+        const response = await axios.post(API.forgotPassword, { email }, {
           headers: { 'Content-Type': 'application/json' },
         });
-        toast.success('Password reset link sent to your email!', {
-          position: 'top-right',
-          autoClose: 5000,
-        });
+        
+        const { message, emailSent, status } = response.data;
+        if (emailSent) {
+          toast.success(message, {
+            position: 'top-right',
+            autoClose: 5000,
+          });
+        } else {
+          toast.error(message, {
+            position: 'top-right',
+            autoClose: 5000,
+          });
+        }
+        
+        return {
+          status: status === HTTP_RESPONSE.SUCCESS,
+          emailSent: emailSent || false,
+          message: message
+        };
       } catch (err: any) {
         const errorMessage = err.response?.data?.message || err.message || 'Failed to process request. Please try again.';
         toast.error(errorMessage, {
