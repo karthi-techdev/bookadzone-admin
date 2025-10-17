@@ -248,7 +248,7 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
         className={`space-y-2 ${className}`}
       >
         {label && (
-          <label htmlFor={name} className="block text-xs text-[var(--light-grey-color)]">
+          <label htmlFor={name} className="block  text-xs text-[var(--light-grey-color)]">
             {label}
             {required && <span className="text-red-400 ml-1">*</span>}
           </label>

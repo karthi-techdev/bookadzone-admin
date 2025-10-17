@@ -68,8 +68,8 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
           <div className="form-part flex flex-col items-center justify-center w-full">
             <div className="header-content flex flex-col justify-center items-center mt-8 mb-2">
               <img src={logo} alt={settings?.general?.siteName || 'logo'} className="w-[150px] mb-2"/>
-              <h2 className="welcome-back text-white text-[30px] font-sans font-bold">{pageTitle}</h2>
-              <p className="welcome-back text-[10px] font-mono text-[#ffffff9e] font-bold">{pageSubtitle}</p>
+              <h2 className="welcome-back text-white text-[30px]  font-bold">{pageTitle}</h2>
+              <p className="welcome-back text-[10px] text-[#ffffff9e] font-bold">{pageSubtitle}</p>
             </div>
             {formContent}
           </div>
@@ -86,7 +86,7 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
     <section className="login-page min-h-screen flex items-center justify-center bg-[var(--main-bg-color)] px-2 md:px-0">
       <div className="login-box bg-[var(--light-dark-color)] p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 rounded-[20px] border border-[var(--light-blur-grey-color)] shadow-lg shadow-[var(--puprle-color)]/20 w-full max-w-5xl">
         {/* Left Side - Carousel */}
-        <div className="carousel-part md:pr-2 h-[530px] flex items-center justify-center">
+        <div className="carousel-part md:pr-2 px-[20px] py-0 h-[530px] flex items-center justify-center">
           <div className="carousel bg-[var(--puprle-color)] rounded-[20px] py-3 w-full h-full flex items-center relative overflow-hidden">
             
             {/* Current Slide */}
@@ -161,7 +161,7 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
         </div>
 
         {/* Right Side - Form */}
-        <div className="form-part md:pl-2 flex flex-col items-center justify-center w-full">
+        <div className="form-part md:pl-2 h-[400px] mt-[50px] flex flex-col items-center justify-center w-full">
           <div className="header-content flex flex-col justify-center items-center mt-4 md:mt-8 mb-2">
             <img src={logo} alt={settings?.general?.siteName || 'logo'} className="w-[120px] md:w-[150px] mb-2"/>
             <h2 className="welcome-back text-white text-[30px] font-sans font-bold">{pageTitle}</h2>

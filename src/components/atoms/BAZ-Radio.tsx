@@ -31,7 +31,7 @@ const BAZRadio: React.FC<RadioProps> = ({
     className={`flex flex-col space-y-2 ${className}`}
   >
     {label && (
-      <label className="block text-xs text-[var(--light-grey-color)]">
+      <label className="lable-input absolute top-0 left-0 block text-xs text-[var(--light-grey-color)]">
         {label}
       </label>
     )}

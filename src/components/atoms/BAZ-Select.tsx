@@ -50,7 +50,7 @@ const BAZSelect: React.FC<CustomSelectProps> = ({
     >
       {label && (
         <label 
-          className="block text-xs text-[var(--light-grey-color)]"
+          className="block absolute top-0 left-0 text-xs text-[var(--light-grey-color)]"
           htmlFor={id}                  
         >
           {label}

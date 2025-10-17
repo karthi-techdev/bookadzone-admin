@@ -144,7 +144,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             >
               <Link
                 to={addButtonLink}
-                className="mobile-add w-[80px] flex items-center justify-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
+                className="mobile-add w-[130px] flex items-center justify-center px-4 py-2 bg-[var(--puprle-color)] hover:bg-[var(--puprle-color)]/90 text-white rounded-lg text-sm font-medium transition-colors"
               >
                 <FiPlus className="mr-2" /> {addButtonLabel}
               </Link>
