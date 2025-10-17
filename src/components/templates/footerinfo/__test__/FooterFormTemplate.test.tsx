@@ -78,9 +78,9 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 jest.mock('react-router-dom', () => ({
-	...jest.requireActual('react-router-dom'),
-	useNavigate: jest.fn(),
-	useParams: jest.fn(),
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn(),
+  useParams: jest.fn(),
 }));
 
 jest.mock('../../../stores/FooterInfoStore', () => ({

@@ -97,6 +97,7 @@ const FooterFormTemplate: React.FC = () => {
     methods.setValue(fieldName, rawValue, { shouldValidate: false });
   };
 
+
   useEffect(() => {
     if (id && !isInitialized) {
       const fetchData = async () => {

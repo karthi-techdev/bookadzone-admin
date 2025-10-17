@@ -221,13 +221,30 @@ export interface FieldConfig {
   valueAsNumber?: boolean;
   onChange?: (e: FormFieldChangeEvent) => void;
   dataTestId?: string;
-  value?: FieldValue;
+  value?:any;
+  tableConfig?: TableConfig;
+ 
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
   onClick?: () => void;
 }
 
+export interface TableConfig {
+  headers: string[];
+  rows: Array<{
+    key: string;
+    values: Array<
+      | string
+      | {
+          type: 'checkbox';
+          name: string;
+          checked: boolean;
+          onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+        }
+    >;
+  }>;
+}
 
 export interface FieldGroup {
   label: string;
@@ -246,6 +263,47 @@ export interface SelectOption {
   value: string | number;
 }
 
+export interface IRole {
+  _id: string;
+  name: string; // e.g., 'admin', 'subadmin'
+  status: 'active' | 'inactive';
+  isDeleted: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  rolePrivileges?: { menuGroupId: string; status: boolean }[];
+}
+
+export interface IMenu {
+  _id: string;
+  name: string; 
+  path: string;
+  status: 'active' | 'inactive';
+  isDeleted: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IMenuPermission {
+  _id: string;
+  menuId: string | IMenu;
+  roleId: string | IRole; 
+  permissions: string[]; 
+  status: 'active' | 'inactive';
+  isDeleted: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IUserRole {
+  _id?: string;
+  roles: string[] | IRole[];
+  menuPermissions: string[] | IMenuPermission[];
+  menus: string[] | IMenu[];
+  status: 'active' | 'inactive';
+  isDeleted: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
 export interface BlogCategory {
   _id?:string
   name:string;
