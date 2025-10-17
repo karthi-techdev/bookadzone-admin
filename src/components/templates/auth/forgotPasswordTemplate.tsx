@@ -106,14 +106,21 @@ const ForgotPassword: React.FC = () => {
     }
 
     try {
-      await forgotPassword(d.email);
-      // Success toast is shown in AuthStore
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      const response = await forgotPassword(d.email) as { status: boolean; message: string; emailSent: boolean };
+      // Check response status
+      if (response.status === true) {
+        if (!response.emailSent) {
+          // Email not found case
+          toast.error('This email address is not registered with us. Please check and try again.');
+          return;
+        }
+        // Email sent successfully case
+        toast.success(response.message || 'If an account exists with this email, you will receive password reset instructions.');
+      }
     } catch (error: any) {
       // Error toast is already shown by the AuthStore
       console.error('Forgot password error:', error?.message);
+      toast.error('Failed to process your request. Please try again later.');
     }
   };
 

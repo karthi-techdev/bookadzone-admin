@@ -322,6 +322,18 @@ export interface NewsLetter {
   template:string;
   status?: boolean;
 }
+
+export interface Page {
+  _id?: string;
+  title: string;
+  name: string;
+  slug: string;
+  type: 'link' | 'template';
+  url?: string;
+  description?: string;
+  status: 'active' | 'inactive';
+}
+
 export interface Country {
   name: string;
   iso2: string;

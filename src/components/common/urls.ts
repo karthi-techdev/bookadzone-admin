@@ -1,4 +1,4 @@
-const LIVE = false;
+const LIVE = true;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
@@ -64,7 +64,7 @@ const API = {
   trashconfiglist: `${ROOTURL}configs/trash`,
   restoreconfig: `${ROOTURL}configs/restore/`,
   permanentDeleteconfig: `${ROOTURL}configs/permanentDelete/`,
-
+  pagesConfig: `${ROOTURL}configs/pages`,
   // User endpoints
   adduserrole: `${ROOTURL}userrole/`,
   createprivilegetable: `${ROOTURL}userrole/createprivilegetable`,
@@ -101,6 +101,18 @@ const API = {
   resetPassword: `${ROOTURL}auth/reset-password`,
   me: `${ROOTURL}auth/me`,
 
+
+    // Page endpoints
+  addPage: `${ROOTURL}pages/`,
+  listPage: `${ROOTURL}pages/`,
+  getPage: `${ROOTURL}pages/getPageById/`,
+  updatePage: `${ROOTURL}pages/updatePage/`,
+  deletePage: `${ROOTURL}pages/softDeletePage/`,
+  toggleStatusPage: `${ROOTURL}pages/togglestatus/`,
+  trashPageList: `${ROOTURL}pages/trash`,
+  restorePage: `${ROOTURL}pages/restore/`,
+  permanentDeletePage: `${ROOTURL}pages/permanentDelete/`,
+  
   //BlogCategory endpoints
   addBlogCategory:`${ROOTURL}blogCategory/`,
   listBlogCategory:`${ROOTURL}blogCategory/`,
