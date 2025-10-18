@@ -85,25 +85,22 @@ const ConfigFormTemplate: React.FC = () => {
                 }))
               : [{ key: '', value: '' }];
 
-            // Set new values with a slight delay to ensure clean state
-            setTimeout(() => {
-              reset({
-                name: config.name || '',
-                slug: config.slug || '',
-                status: !!config.status,
-                configFields: formattedConfigFields.length > 0 
-                  ? formattedConfigFields 
-                  : [{ key: '', value: '' }]
-              }, { keepDirty: false, keepValues: false });
+            reset({
+              name: config.name || '',
+              slug: config.slug || '',
+              status: !!config.status,
+              configFields: formattedConfigFields.length > 0
+                ? formattedConfigFields
+                : [{ key: '', value: '' }]
+            }, { keepDirty: false, keepValues: false });
 
-              // Log the form data for debugging
-              console.log('Form Data:', {
-                name: config.name,
-                slug: config.slug,
-                status: !!config.status,
-                configFields: formattedConfigFields
-              });
-            }, 0);
+            // Log the form data for debugging
+            console.log('Form Data:', {
+              name: config.name,
+              slug: config.slug,
+              status: !!config.status,
+              configFields: formattedConfigFields
+            });
           }
           setIsInitialized(true);
         } catch (error: any) {
@@ -167,8 +164,6 @@ const ConfigFormTemplate: React.FC = () => {
     try {
       if (id) {
         await updateConfig(id, trimmedData);
-        // Force a reset of the form state
-        reset();
         await Swal.fire({
           title: 'Success!',
           text: 'Config updated successfully',
@@ -184,8 +179,6 @@ const ConfigFormTemplate: React.FC = () => {
           confirmButtonColor: 'var(--puprle-color)',
         });
       }
-      // Clear any cached values before navigating
-      reset();
       navigate('/config');
     } catch (error: any) {
       let errorMessage = 'Something went wrong';
@@ -211,6 +204,31 @@ const ConfigFormTemplate: React.FC = () => {
         icon: 'error',
         confirmButtonColor: 'var(--puprle-color)',
       });
+
+      // On error, refetch the config to restore the form to the current backend state
+      if (id) {
+        try {
+          const updatedConfig = await fetchConfigById(id + '?_=' + new Date().getTime());
+          if (updatedConfig) {
+            const formattedConfigFields = Array.isArray(updatedConfig.configFields)
+              ? updatedConfig.configFields.map(field => ({
+                  key: field.key || '',
+                  value: field.value || ''
+                }))
+              : [{ key: '', value: '' }];
+            reset({
+              name: updatedConfig.name || '',
+              slug: updatedConfig.slug || '',
+              status: !!updatedConfig.status,
+              configFields: formattedConfigFields.length > 0
+                ? formattedConfigFields
+                : [{ key: '', value: '' }]
+            });
+          }
+        } catch (refetchError) {
+          console.error('Error refetching config after submission error:', refetchError);
+        }
+      }
     }
   };
 
