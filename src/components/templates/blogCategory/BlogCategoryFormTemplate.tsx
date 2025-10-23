@@ -51,52 +51,24 @@ const BlogCategoryFormTemplate: React.FC = () => {
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting },setValue } = methods;
 
   const handleFieldClick = (name: keyof BlogCategoryFormData, minLengthValue?: number, maxValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
-    const rawValue = e.target.value;
+    let value = e.target.value;
     if (typeof methods.getValues(name) === 'boolean' && typeof e.target.checked === 'boolean') {
-      methods.setValue(name, e.target.checked, { shouldValidate: false });
-      return;
-    }
-
-    // Special handling for name field to auto-generate slug
-    if (name === 'name' && !id && typeof rawValue === 'string') {
-      const slugValue = generateSlug(rawValue);
-      setValue('slug', slugValue, { shouldValidate: false });
-    }
-
-    // Handle value normalization
-    const value = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
-    const validations: any[] = [];
-    
-    // Required field validation first
-    const field = blogCategoryFields.find(f => f.name === name);
-    if (field?.required) {
-      validations.push(ValidationHelper.isRequired(value, name.charAt(0).toUpperCase() + name.slice(1)));
-    }
-
-    // Only validate non-empty values
-    if (value) {
-      if (typeof value === 'string') {
-        // Length validations
-        if (minLengthValue) {
-          validations.push(ValidationHelper.minLength(value, name.charAt(0).toUpperCase() + name.slice(1), minLengthValue));
+      value = e.target.checked;
+    } 
+    if (name === 'name' && !id) {
+          const slugValue = generateSlug(value);
+          setValue('slug', slugValue, { shouldValidate: true });
         }
-        
-        // Add specific max length validations
-        if (name === 'name') {
-          validations.push(ValidationHelper.maxLength(value, 'Name', 25));
-        } else if (name === 'slug') {
-          validations.push(ValidationHelper.maxLength(value, 'Slug', 30));
-        }
-      }
 
-      // Status validation
-      if (name === 'status') {
-        validations.push(ValidationHelper.isValidEnum(
-          typeof value === 'boolean' ? (value ? 'active' : 'inactive') : value,
-          'Status',
-          ['active', 'inactive']
-        ));
-      }
+    // Build validation rules for this field
+    const validations = [
+      ValidationHelper.isRequired(value, name.charAt(0).toUpperCase() + name.slice(1)),
+    ];
+    if (minLengthValue && typeof value === 'string') {
+      validations.push(ValidationHelper.minLength(value, name.charAt(0).toUpperCase() + name.slice(1), minLengthValue));
+    }
+    if (maxValue && typeof value === 'number') {
+      validations.push(ValidationHelper.maxValue(value, name.charAt(0).toUpperCase() + name.slice(1), maxValue));
     }
 
     const errorsArr = ValidationHelper.validate(validations);
@@ -108,8 +80,7 @@ const BlogCategoryFormTemplate: React.FC = () => {
     } else {
       clearErrors(name);
     }
-    
-    methods.setValue(name, rawValue, { shouldValidate: false });
+    methods.setValue(name, value, { shouldValidate: false });
   };
 
   const fields = blogCategoryFields.map(field => {
@@ -148,40 +119,33 @@ const BlogCategoryFormTemplate: React.FC = () => {
 
   const onSubmit = async (data: BlogCategoryFormData) => {
     clearErrors();
-    
-    // Normalize values (trim strings)
-    const trimmedData: BlogCategory = {
+
+
+
+    const trimmedData : BlogCategory = {
       name: data.name.trim(),
       status: data.status,
-      slug: data.slug.trim(),
-      label: data.name.trim()
+      slug: data.slug,
+
+      label: data.name.trim(), // or provide appropriate value
     };
 
-    // First validate all form fields with precedence: required > length > other rules
-    const validations: any[] = [];
+    
 
-    // Name validations
-    validations.push(ValidationHelper.isRequired(trimmedData.name, 'Name'));
-    if (trimmedData.name) {
-      validations.push(ValidationHelper.minLength(trimmedData.name, 'Name', 5));
-      validations.push(ValidationHelper.maxLength(trimmedData.name, 'Name', 25));
-    }
+    // Frontend validation
+    const validationErrors = ValidationHelper.validate([
+      ValidationHelper.isRequired(trimmedData.name, 'Name'),
+      ValidationHelper.minLength(trimmedData.name, 'Name', 5),
+      ValidationHelper.maxLength(trimmedData.name, 'Name', 25),
+      
+      ValidationHelper.isValidEnum(
+        typeof trimmedData.status === 'boolean' ? (trimmedData.status ? 'active' : 'inactive') : trimmedData.status,
+        'Status',
+        ['active', 'inactive']
+      ),
 
-    // Slug validations
-    validations.push(ValidationHelper.isRequired(trimmedData.slug, 'Slug'));
-    if (trimmedData.slug) {
-      validations.push(ValidationHelper.minLength(trimmedData.slug, 'Slug', 3));
-      validations.push(ValidationHelper.maxLength(trimmedData.slug, 'Slug', 30));
-    }
 
-    // Status validation
-    validations.push(ValidationHelper.isValidEnum(
-      typeof trimmedData.status === 'boolean' ? (trimmedData.status ? 'active' : 'inactive') : trimmedData.status,
-      'Status',
-      ['active', 'inactive']
-    ));
-
-    const validationErrors = ValidationHelper.validate(validations.filter(Boolean));
+    ]);
 
     if (validationErrors.length > 0) {
       validationErrors.forEach((err) => {

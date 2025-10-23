@@ -82,11 +82,11 @@ const API = {
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
-  getcategorybyId: `${ROOTURL}category/getcategoryById/`,  // Make sure this matches the backend route
-  updatecategory: `${ROOTURL}category/updatecategory/`,
-  deletecategory: `${ROOTURL}category/softDeletecategory/`,
-  toggleStatuscategory: `${ROOTURL}category/togglestatus/`,  // Fix casing to match backend
-  trashcategorylist: `${ROOTURL}category/trash`,  // Remove trailing slash
+  getcategorybyId: `${ROOTURL}category/`,
+  updatecategory: `${ROOTURL}category/`,
+  deletecategory: `${ROOTURL}category/softDelete/`,
+  toggleStatuscategory: `${ROOTURL}category/toggleStatus/`,
+  trashcategorylist: `${ROOTURL}category/trash`,
   restorecategory: `${ROOTURL}category/restore/`,
   permanentDeletecategory: `${ROOTURL}category/permanentDelete/`,
 
@@ -114,16 +114,27 @@ const API = {
   permanentDeletePage: `${ROOTURL}pages/permanentDelete/`,
   
   //BlogCategory endpoints
-  addBlogCategory:`${ROOTURL}blogCategory/`,
-  listBlogCategory:`${ROOTURL}blogCategory/`,
-  getBlogCategory:`${ROOTURL}blogCategory/getblogCategoryById/`,
-  updateBlogCategory:`${ROOTURL}blogCategory/updateblogCategory/`,
-  deleteBlogCategory:`${ROOTURL}blogCategory/softDeleteblogCategory/`,
-  toggleStatusBlogCategory:`${ROOTURL}blogCategory/togglestatus/`,
-  trashBlogCategoryList:`${ROOTURL}blogCategory/trash`,
-  restoreBlogCategory:`${ROOTURL}blogCategory/restore/`,
-  permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
+  addBlogCategory: `${ROOTURL}blogCategory/`,
+  listBlogCategory: `${ROOTURL}blogCategory/`,
+  getBlogCategory: `${ROOTURL}blogCategory/getblogCategoryById/`,
+  updateBlogCategory: `${ROOTURL}blogCategory/updateblogCategory/`,
+  deleteBlogCategory: `${ROOTURL}blogCategory/softDeleteblogCategory/`,
+  toggleStatusBlogCategory: `${ROOTURL}blogCategory/togglestatus/`,
+  trashBlogCategoryList: `${ROOTURL}blogCategory/trash`,
+  restoreBlogCategory: `${ROOTURL}blogCategory/restore/`,
+  permanentDeleteBlogCategory: `${ROOTURL}blogCategory/permanentDelete/`,
+  activeBlogCategory: `${ROOTURL}blogCategory/activeBlogCategory/`,
 
+    // Blog endpoints
+  addBlog: `${ROOTURL}blog/`,
+  listBlog: `${ROOTURL}blog/`,
+  getBlogbyId: `${ROOTURL}blog/`,
+  updateBlog: `${ROOTURL}blog/`,
+  deleteBlog: `${ROOTURL}blog/softDelete/`,
+  toggleStatusBlog: `${ROOTURL}blog/toggleStatus/`,
+  trashBloglist: `${ROOTURL}blog/trash`,
+  restoreBlog: `${ROOTURL}blog/restore/`,
+  permanentDeleteBlog: `${ROOTURL}blog/permanentDelete/`,
   // Profile endpoints
   profile: {
     me: `${ROOTURL}auth/me`,

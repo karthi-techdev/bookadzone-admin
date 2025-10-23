@@ -37,6 +37,8 @@ const BlogCategoryListPage = lazy(() => import('../pages/blogCategory/BlogCaateg
 const BlogCategoryFormPage = lazy(() => import('../pages/blogCategory/BlogCategoryFormPage'));
 const CategoryListPage = lazy(() => import('../pages/category/CategoryListPage'));
 const CategoryFormPage = lazy(() => import('../pages/category/CategoryFormPage'));
+const BlogListPage = lazy(() => import('../pages/blogs/BlogListPage'));
+const BlogFormPage = lazy(() => import('../pages/blogs/BlogFormPage'));
 
 // Trash Pages (Lazy Loaded)
 const NewsLetterTrashListPage = lazy(() => import('../pages/trash/newsLetter/NewsLetterTrashListPage'));
@@ -46,6 +48,8 @@ const CategoryTrashListPage = lazy(() => import('../pages/trash/category/Categor
 const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
 const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
+const BlogTrashListPage = lazy(() => import('../pages/trash/blog/BlogTrashListPage'));
+
 
 //pages management (Lazy Loaded)
 const PageListPage = lazy(() => import('../pages/page/PageListPage'));
@@ -217,7 +221,7 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Newsletter Trash',
       component: <NewsLetterTrashListPage />,
     },
-    
+
     // Page routes
     {
       path: '/page',
@@ -306,7 +310,7 @@ export const routesData = (): RouteData[] => {
       component: <BlogCategoryTrashListPage />,
     },
 
-    // Category Routes
+    // Category routes
     {
       path: '/category',
       pageTitle: 'Category List',
@@ -314,19 +318,41 @@ export const routesData = (): RouteData[] => {
     },
     {
       path: '/category/add',
-      pageTitle: 'Add Category',
+      pageTitle: ' Add Category ',
       component: <CategoryFormPage />,
     },
     {
-      path: '/category/edit/:id',
+      path: '/categorys/edit/:id',
       pageTitle: 'Edit Category',
       component: <CategoryFormPage />,
     },
     {
-      path: '/trash/category',
-      pageTitle: 'Category Trash',
+      path: '/trash/categorys',
+      pageTitle: 'Trash Category',
       component: <CategoryTrashListPage />,
     },
+
+    {
+      path: '/blog',
+      pageTitle: 'Blog List',
+      component: <BlogListPage />,
+    },
+    {
+      path: '/blog/add',
+      pageTitle: ' Add Blog ',
+      component: <BlogFormPage />,
+    },
+    {
+      path: '/blogs/edit/:id',
+      pageTitle: 'Edit Blog',
+      component: <BlogFormPage />,
+    },
+    {
+      path: '/trash/blog',
+      pageTitle: 'Trash Blog',
+      component: <BlogTrashListPage />,
+    },
+
 
     // Settings Routes
     {

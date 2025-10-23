@@ -37,9 +37,8 @@ const CategoryTrashListTemplate: React.FC = () => {
   }, [error]);
 
   const handlePageChange = (selectedItem: { selected: number }) => {
-    const newPage = selectedItem.selected + 1;
-    setCurrentPage(newPage);
-    fetchTrashCategories(newPage, itemsPerPage);
+    setCurrentPage(selectedItem.selected + 1);
+    (selectedItem.selected + 1, itemsPerPage);
   };
 
   // Filter search term locally (after API filter is applied)
@@ -49,7 +48,7 @@ const CategoryTrashListTemplate: React.FC = () => {
   );
 
   const columns: ColumnConfig<Category>[] = [
-    { key: 'name', label: 'Name', render: (value) => truncate(value, 40) },
+    { key: 'name', label: 'Category Name', render: (value) => truncate(value, 40) },
     { key: 'slug', label: 'Slug', render: (value) => truncate(value, 40) },
     { key: 'description', label: 'Description', render: (value) => truncate(value, 40) },
     {
@@ -100,13 +99,13 @@ const CategoryTrashListTemplate: React.FC = () => {
   if (loading) return <BAZLoader />;
 
   // Debug: log the data being passed to the table
-  console.log('agencies:', categories);
-  console.log('searchedAgencies:', searchedCategories);
+  console.log('categories:', categories);
+  console.log('searchedCategories:', searchedCategories);
 
   return (
     <div className="p-6">
       <TableHeader
-        managementName="Deleted Categories"
+        managementName="Category Trash"
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         addButtonLabel="Back to List"

@@ -160,6 +160,19 @@ export interface Category {
   CategoryFields: { key: string; value: string }[];
 }
 
+export interface Blog {
+  _id?: string;
+  blogTitle: string;
+  blogCategory: string;
+  blogDescription: string;
+  blogImg: string | File;
+  status:boolean;
+  seoTitle: string;
+  seoDescription: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
 export interface Config {
   _id?: string;
   name: string;
@@ -313,7 +326,6 @@ export interface BlogCategory {
   required?: boolean;
   status?:boolean;
   slug: string;
-
 }
 export interface NewsLetter {
   _id?: string;
