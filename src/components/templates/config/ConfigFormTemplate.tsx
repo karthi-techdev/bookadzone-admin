@@ -40,70 +40,49 @@ const ConfigFormTemplate: React.FC = () => {
     mode: 'onSubmit',
   });
 
-  const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting }, setValue } = methods;
+  const {
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+    setValue,
+  } = methods;
 
-  // Use dynamic field config from utils
   const dynamicFieldConfig: FieldConfig[] = configFieldsDynamic;
 
-  // Prepare fields: for edit, make name and slug read-only
-  // For add: disable slug if it has a value (auto-generated)
+  // Prepare fields
   const fields = configFields.map(field => {
     if (id && (field.name === 'name' || field.name === 'slug')) {
       return { ...field, readOnly: true, disabled: true };
     }
     if (field.name === 'slug') {
       const slugValue = methods.watch('slug');
-      return {
-        ...field,
-        readOnly: !!slugValue,
-        disabled: !!slugValue,
-      };
+      return { ...field, readOnly: !!slugValue, disabled: !!slugValue };
     }
     return field;
   });
 
+  // Fetch data when editing
   useEffect(() => {
     const initializeForm = async () => {
       if (id) {
         try {
-          // Force refetch by adding timestamp to avoid cache
           const config = await fetchConfigById(id + '?_=' + new Date().getTime());
           if (config) {
-            // Clear form first
-            reset({
-              name: '',
-              slug: '',
-              status: true,
-              configFields: [{ key: '', value: '' }]
-            });
-
-            // Ensure configFields is properly formatted
-            const formattedConfigFields = Array.isArray(config.configFields) 
-              ? config.configFields.map(field => ({
-                  key: field.key || '',
-                  value: field.value || ''
+            const formattedFields = Array.isArray(config.configFields)
+              ? config.configFields.map(f => ({
+                  key: f.key || '',
+                  value: f.value || '',
                 }))
               : [{ key: '', value: '' }];
 
-            // Set new values with a slight delay to ensure clean state
-            setTimeout(() => {
-              reset({
-                name: config.name || '',
-                slug: config.slug || '',
-                status: !!config.status,
-                configFields: formattedConfigFields.length > 0 
-                  ? formattedConfigFields 
-                  : [{ key: '', value: '' }]
-              }, { keepDirty: false, keepValues: false });
-
-              // Log the form data for debugging
-              console.log('Form Data:', {
-                name: config.name,
-                slug: config.slug,
-                status: !!config.status,
-                configFields: formattedConfigFields
-              });
-            }, 0);
+            reset({
+              name: config.name || '',
+              slug: config.slug || '',
+              status: !!config.status,
+              configFields: formattedFields.length > 0 ? formattedFields : [{ key: '', value: '' }],
+            });
           }
           setIsInitialized(true);
         } catch (error: any) {
@@ -119,100 +98,144 @@ const ConfigFormTemplate: React.FC = () => {
     initializeForm();
   }, [id, reset, fetchConfigById, navigate]);
 
-  const handleFieldChange = (fieldName: keyof ConfigFormData, minLengthValue?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
-    let value = e.target.value;
-    if (fieldName === 'status' && typeof e.target.checked === 'boolean') {
-      value = e.target.checked;
-    }
-    // Auto-generate slug from name if fieldName is 'name' and not editing
-    if (fieldName === 'name' && !id) {
-      const slugValue = generateSlug(value);
-      setValue('slug', slugValue, { shouldValidate: true });
-    }
-    const validations = [
-      ValidationHelper.isRequired(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1)),
-      minLengthValue && typeof value === 'string' 
-        ? ValidationHelper.minLength(value, fieldName.charAt(0).toUpperCase() + fieldName.slice(1), minLengthValue)
-        : null,
-    ].filter(Boolean) as any[];
-    const errorsArr = ValidationHelper.validate(validations);
-    if (errorsArr.length > 0) {
-      setError(fieldName as any, { type: 'manual', message: errorsArr[0].message });
-    } else {
-      clearErrors(fieldName as any);
-    }
-    setValue(fieldName as any, value, { shouldValidate: true });
-  };
+  // Field change handler
+  const handleFieldChange = (fieldName: keyof ConfigFormData, minLengthValue?: number) => 
+    (e: { target: { value: any; checked?: boolean } }) => {
+      let value = e.target.value;
+      if (fieldName === 'status' && typeof e.target.checked === 'boolean') {
+        value = e.target.checked;
+      }
 
-  const onSubmit = async (data: ConfigFormData) => {
-    const trimmedData = {
-      ...data,
-      name: data.name.trim(),
-      slug: data.slug.trim(),
-      status: !!data.status,
-      configFields: data.configFields.map(cf => ({
-        key: cf.key.trim(),
-        value: cf.value.trim()
-      })).filter(cf => cf.key && cf.value),
+      // Auto-slug
+      if (fieldName === 'name' && !id) {
+        const slugValue = generateSlug(value);
+        setValue('slug', slugValue, { shouldValidate: true });
+      }
+
+      // Frontend validations
+      const validations = [
+        ValidationHelper.isRequired(value, fieldName),
+        minLengthValue && typeof value === 'string'
+          ? ValidationHelper.minLength(value, fieldName, minLengthValue)
+          : null,
+      ].filter(Boolean);
+
+      const error = validations.find(v => v !== null);
+      if (error) {
+        setError(fieldName as any, { type: 'manual', message: error.message });
+      } else {
+        clearErrors(fieldName as any);
+      }
+
+      setValue(fieldName as any, value, { shouldValidate: true });
     };
 
-    // Log the submission data for debugging
-    console.log('Submitting data:', trimmedData);
+ const onSubmit = async (data: ConfigFormData) => {
+  clearErrors();
 
-    if (id && trimmedData.configFields.length === 0) {
-      toast.error('At least one config field is required');
-      return;
-    }
+  const trimmedData = {
+    ...data,
+    name: data.name.trim(),
+    slug: data.slug.trim(),
+    status: !!data.status,
+    configFields: data.configFields
+      .map(cf => ({ key: cf.key.trim(), value: cf.value.trim() }))
+      .filter(cf => cf.key && cf.value),
+  };
 
-    try {
-      if (id) {
-        await updateConfig(id, trimmedData);
-        // Force a reset of the form state
-        reset();
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Config updated successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      } else {
-        await addConfig(trimmedData);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Config added successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      }
-      // Clear any cached values before navigating
-      reset();
-      navigate('/config');
-    } catch (error: any) {
-      let errorMessage = 'Something went wrong';
+  // Frontend Validation (same pattern as BlogCategory)
+  const validations: any[] = [];
 
-      // Handle different error types
-      if (typeof error === 'string') {
-        // Error thrown as string from store
-        errorMessage = error;
-      } else if (error?.response?.data?.message) {
-        // Axios error with backend message
-        errorMessage = error.response.data.message;
-      } else if (error?.response?.status === 409 && error?.response?.data?.message?.includes('already exists')) {
-        errorMessage = error.response.data.message;
-      } else if (error?.response?.data?.errors && Array.isArray(error.response.data.errors)) {
-        errorMessage = error.response.data.errors.map((err: { path: string; message: string }) => `${err.path}: ${err.message}`).join('\n');
-      } else if (error?.message) {
-        errorMessage = error.message;
-      }
+  // Name validations
+  validations.push(ValidationHelper.isRequired(trimmedData.name, 'Name'));
+  if (trimmedData.name) {
+    validations.push(ValidationHelper.minLength(trimmedData.name, 'Name', 3));
+    validations.push(ValidationHelper.maxLength(trimmedData.name, 'Name', 50));
+  }
 
+  // Slug validations
+  validations.push(ValidationHelper.isRequired(trimmedData.slug, 'Slug'));
+  if (trimmedData.slug) {
+    validations.push(ValidationHelper.minLength(trimmedData.slug, 'Slug', 3));
+    validations.push(ValidationHelper.maxLength(trimmedData.slug, 'Slug', 50));
+  }
+
+  // ConfigFields validation
+  if (!trimmedData.configFields.length) {
+    validations.push({
+      field: 'configFields',
+      message: 'At least one config field is required',
+    });
+  }
+
+  // Status validation
+  validations.push(
+    ValidationHelper.isValidEnum(
+      trimmedData.status ? 'active' : 'inactive',
+      'Status',
+      ['active', 'inactive']
+    )
+  );
+
+  const validationErrors = ValidationHelper.validate(validations.filter(Boolean));
+
+  if (validationErrors.length > 0) {
+    validationErrors.forEach((err: any) => {
+      const fieldName = err.field.toLowerCase() as keyof ConfigFormData;
+      setError(fieldName, {
+        type: 'manual',
+        message: err.message,
+      });
+    });
+    return; // stop here, don’t call API
+  }
+
+  // ✅ Only reach here if frontend validation passed
+  try {
+    if (id) {
+      await updateConfig(id, trimmedData);
       await Swal.fire({
-        title: 'Error',
-        text: errorMessage,
-        icon: 'error',
+        title: 'Success!',
+        text: 'Config updated successfully',
+        icon: 'success',
+        confirmButtonColor: 'var(--puprle-color)',
+      });
+    } else {
+      await addConfig(trimmedData);
+      await Swal.fire({
+        title: 'Success!',
+        text: 'Config added successfully',
+        icon: 'success',
         confirmButtonColor: 'var(--puprle-color)',
       });
     }
-  };
+    navigate('/config');
+  } catch (error: any) {
+    const errorData = error?.response?.data || {};
+
+    if (errorData.errors && Array.isArray(errorData.errors)) {
+      errorData.errors.forEach((err: { path: string; message: string }) => {
+        const fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+        setError(fieldPath as any, { type: 'server', message: err.message });
+      });
+      return;
+    }
+
+    if (error?.response?.status === 409 && errorData.message?.includes('already exists')) {
+      if (errorData.message.toLowerCase().includes('name')) {
+        setError('name', { type: 'server', message: errorData.message });
+      } else if (errorData.message.toLowerCase().includes('slug')) {
+        setError('slug', { type: 'server', message: errorData.message });
+      } else {
+        toast.error(errorData.message);
+      }
+      return;
+    }
+
+    toast.error(errorData.message || error?.message || 'Something went wrong');
+  }
+};
+
 
   const hasErrors = () => {
     return configFields.some(field => {

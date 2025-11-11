@@ -51,6 +51,7 @@ const FormField = memo(<T extends FieldValue = FieldValue>({
         type={field.type}
         value={value}
         onChange={handleChange}
+        
         onClick={onClick}
         readOnly={readOnly} 
         placeholder={field.placeholder}

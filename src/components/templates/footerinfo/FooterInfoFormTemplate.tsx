@@ -42,11 +42,11 @@ const FooterFormTemplate: React.FC = () => {
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
 
   const handleFieldChange = (fieldName: keyof FooterFormData, minLength?: number) => (e: { target: { name: string; value: any; files?: FileList; checked?: boolean } }) => {
-    const rawValue = fieldName === 'logo' && e.target.files 
-      ? e.target.files[0] 
+    const rawValue = fieldName === 'logo' && e.target.files
+      ? e.target.files[0]
       : fieldName === 'status' && typeof e.target.checked !== 'undefined'
-      ? e.target.checked
-      : e.target.value;
+        ? e.target.checked
+        : e.target.value;
 
     const valueForValidation = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
 
@@ -54,7 +54,7 @@ const FooterFormTemplate: React.FC = () => {
     if (!field) return;
 
     const validations: any[] = [];
-    
+
     // Required should consider trimmed value to avoid secondary validations first
     if (field.required) {
       const requiredError = ValidationHelper.isRequired(valueForValidation, fieldName);
@@ -77,14 +77,14 @@ const FooterFormTemplate: React.FC = () => {
             : { field: 'Logo', message: 'Logo file size must be less than 1MB' }
         );
       }
-      
+
       if (minLength && typeof valueForValidation === 'string') {
         validations.push(ValidationHelper.minLength(valueForValidation, fieldName, minLength));
       }
     }
 
     const errorsArr = ValidationHelper.validate(validations.filter(Boolean));
-    
+
     if (errorsArr.length > 0) {
       setError(fieldName, {
         type: 'manual',
@@ -93,7 +93,7 @@ const FooterFormTemplate: React.FC = () => {
     } else {
       clearErrors(fieldName);
     }
-    
+
     methods.setValue(fieldName, rawValue, { shouldValidate: false });
   };
 
@@ -128,55 +128,73 @@ const FooterFormTemplate: React.FC = () => {
 
   const onSubmit = async (data: FooterFormData) => {
     clearErrors();
-
-    // Normalize values (trim strings)
     const d = normalizeFormValues(data);
 
-    // Validate logo requirement for new entries
+    const validations: any[] = [];
+
+    // ✅ Logo required (Add form)
     if (!id && !(d.logo instanceof File)) {
-      setError('logo', { type: 'manual', message: 'Logo file is required' });
-      toast.error('Please upload a logo file');
-      return;
+      validations.push({ field: 'logo', message: 'Logo file is required' });
     }
 
-    const formData = new FormData();
+    // ✅ Description validation
+    validations.push(ValidationHelper.isRequired(d.description, 'description'));
+    validations.push(ValidationHelper.isRequired(d.socialmedia, 'socialmedia'));
+    validations.push(ValidationHelper.isRequired(d.socialmedialinks, 'socialmedialinks'));
+    validations.push(ValidationHelper.isRequired(d.google, 'google'));
+    validations.push(ValidationHelper.isRequired(d.appstore, 'appstore'));
 
-    // Handle file fields
+
+
+
+    if (d.description) {
+      validations.push(ValidationHelper.minLength(d.description, 'description', 5));
+      validations.push(ValidationHelper.maxLength(d.description, 'description', 2000));
+
+    }
+    // ✅ Other optional fields
+    if (d.socialmedia)
+      validations.push(ValidationHelper.maxLength(d.socialmedia, 'socialmedia', 500));
+    if (d.socialmedialinks)
+      validations.push(ValidationHelper.maxLength(d.socialmedialinks, 'socialmedialinks', 500));
+    if (d.google)
+      validations.push(ValidationHelper.maxLength(d.google, 'google', 500));
+    if (d.appstore)
+      validations.push(ValidationHelper.maxLength(d.appstore, 'appstore', 500));
+
+    // ✅ File validation (if present)
     if (d.logo instanceof File) {
-      formData.append('logo', d.logo);
+      validations.push(
+        ValidationHelper.isValidFileType(d.logo, 'logo', 'image/*'),
+        d.logo.size <= 1 * 1024 * 1024
+          ? null
+          : { field: 'logo', message: 'Logo file size must be less than 1MB' }
+      );
     }
 
-    // Handle text fields with validation
-    const validations = [
-      ValidationHelper.isRequired(d.description, 'Description'),
-      d.description ? ValidationHelper.minLength(d.description, 'Description', 5) : null,
-      d.description ? ValidationHelper.maxLength(d.description, 'Description', 2000) : null,
-      d.socialmedia ? ValidationHelper.maxLength(d.socialmedia, 'Social Media', 500) : null,
-      d.socialmedialinks ? ValidationHelper.maxLength(d.socialmedialinks, 'Social Media Links', 500) : null,
-      d.google ? ValidationHelper.maxLength(d.google, 'Google', 500) : null,
-      d.appstore ? ValidationHelper.maxLength(d.appstore, 'App Store', 500) : null,
-    ].filter(Boolean);
-
-    const validationErrors = ValidationHelper.validate(validations);
+    // ✅ Collect all validation errors
+    const validationErrors = ValidationHelper.validate(validations.filter(Boolean));
 
     if (validationErrors.length > 0) {
-      // Only set the first error per field so required errors are not overridden
       const seen = new Set<string>();
-      for (const err of validationErrors) {
-        const key = String(err.field).toLowerCase();
-        if (seen.has(key)) continue;
+
+      validationErrors.forEach((err) => {
+        const key = String(err.field).toLowerCase().trim(); // force match form keys
+        if (seen.has(key)) return;
         seen.add(key);
-        const fieldName = key as keyof FooterFormData;
-        setError(fieldName, {
+
+        setError(key as keyof FooterFormData, {
           type: 'manual',
           message: err.message,
         });
-      }
-      toast.error('Please fix all validation errors');
-      return;
+      });
+
+      return; // stop submission if there are validation errors
     }
 
-    // Append form data
+    // ✅ Build FormData
+    const formData = new FormData();
+    if (d.logo instanceof File) formData.append('logo', d.logo);
     formData.append('description', d.description);
     if (d.socialmedia) formData.append('socialmedia', d.socialmedia);
     if (d.socialmedialinks) formData.append('socialmedialinks', d.socialmedialinks);
@@ -207,13 +225,16 @@ const FooterFormTemplate: React.FC = () => {
       const errorData = error?.response?.data || {};
       if (errorData.errors && Array.isArray(errorData.errors)) {
         errorData.errors.forEach((err: { path: string; message: string }) => {
-          toast.error(`${err.path}: ${err.message}`);
+          setError(err.path as keyof FooterFormData, { type: 'server', message: err.message });
         });
-      } else {
-        toast.error(errorData.message || 'Something went wrong');
+        return;
       }
+      toast.error(errorData.message || 'Something went wrong');
     }
   };
+
+
+
 
   // Normalize values to trim strings
   const normalizeFormValues = (values: FooterFormData): FooterFormData => {
@@ -238,7 +259,7 @@ const FooterFormTemplate: React.FC = () => {
         type={id ? 'Edit' : 'Add'}
       />
       <ToastContainer position="top-right" autoClose={3000} />
-      
+
       <FormProvider {...methods}>
         <ManagementForm
           label={id ? 'Update' : 'Save'}

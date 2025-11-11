@@ -139,7 +139,7 @@ const Navbar: React.FC = () => {
                   <GoOrganization className="text-[1rem] text-[var(--white-color)]" />
                 </div>
                 <div className="profile-btn-content">
-                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">{user?.email?.split('@')[0] || 'Guest'}</span>
+                  <span className="text-[.80rem] font-medium text-[var(--white-color)] flex">{(user?.email?.split('@')[0] || 'Guest').replace(/^\w/, c => c.toUpperCase())}</span>
                   <span className="text-[.50rem] text-[var(--light-grey-color)] flex">{user?.role || 'Not logged in'}</span>
                 </div>
               </Button>
