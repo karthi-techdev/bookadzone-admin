@@ -70,18 +70,28 @@ const ConfigFormTemplate: React.FC = () => {
         try {
           const config = await fetchConfigById(id + '?_=' + new Date().getTime());
           if (config) {
-            const formattedFields = Array.isArray(config.configFields)
+            const formattedConfigFields = Array.isArray(config.configFields)
               ? config.configFields.map(f => ({
-                  key: f.key || '',
-                  value: f.value || '',
-                }))
+                key: f.key || '',
+                value: f.value || '',
+              }))
               : [{ key: '', value: '' }];
 
             reset({
               name: config.name || '',
               slug: config.slug || '',
               status: !!config.status,
-              configFields: formattedFields.length > 0 ? formattedFields : [{ key: '', value: '' }],
+              configFields: formattedConfigFields.length > 0
+                ? formattedConfigFields
+                : [{ key: '', value: '' }]
+            }, { keepDirty: false, keepValues: false });
+
+            // Log the form data for debugging
+            console.log('Form Data:', {
+              name: config.name,
+              slug: config.slug,
+              status: !!config.status,
+              configFields: formattedConfigFields
             });
           }
           setIsInitialized(true);
@@ -99,7 +109,7 @@ const ConfigFormTemplate: React.FC = () => {
   }, [id, reset, fetchConfigById, navigate]);
 
   // Field change handler
-  const handleFieldChange = (fieldName: keyof ConfigFormData, minLengthValue?: number) => 
+  const handleFieldChange = (fieldName: keyof ConfigFormData, minLengthValue?: number) =>
     (e: { target: { value: any; checked?: boolean } }) => {
       let value = e.target.value;
       if (fieldName === 'status' && typeof e.target.checked === 'boolean') {
@@ -130,111 +140,89 @@ const ConfigFormTemplate: React.FC = () => {
       setValue(fieldName as any, value, { shouldValidate: true });
     };
 
- const onSubmit = async (data: ConfigFormData) => {
-  clearErrors();
+  const onSubmit = async (data: ConfigFormData) => {
+    clearErrors();
 
-  const trimmedData = {
-    ...data,
-    name: data.name.trim(),
-    slug: data.slug.trim(),
-    status: !!data.status,
-    configFields: data.configFields
-      .map(cf => ({ key: cf.key.trim(), value: cf.value.trim() }))
-      .filter(cf => cf.key && cf.value),
-  };
+    const trimmedData: ConfigFormData = {
+      ...data,
+      name: (data.name || '').trim(),
+      slug: (data.slug || '').trim(),
+      status: !!data.status,
+      configFields: (data.configFields || [])
+        .map(cf => ({ key: (cf.key || '').trim(), value: (cf.value || '').trim() }))
+        .filter(cf => cf.key && cf.value),
+    };
 
-  // Frontend Validation (same pattern as BlogCategory)
-  const validations: any[] = [];
+    // Front-end validations
+    const validations: any[] = [];
 
-  // Name validations
-  validations.push(ValidationHelper.isRequired(trimmedData.name, 'Name'));
-  if (trimmedData.name) {
-    validations.push(ValidationHelper.minLength(trimmedData.name, 'Name', 3));
-    validations.push(ValidationHelper.maxLength(trimmedData.name, 'Name', 50));
-  }
-
-  // Slug validations
-  validations.push(ValidationHelper.isRequired(trimmedData.slug, 'Slug'));
-  if (trimmedData.slug) {
-    validations.push(ValidationHelper.minLength(trimmedData.slug, 'Slug', 3));
-    validations.push(ValidationHelper.maxLength(trimmedData.slug, 'Slug', 50));
-  }
-
-  // ConfigFields validation
-  if (!trimmedData.configFields.length) {
-    validations.push({
-      field: 'configFields',
-      message: 'At least one config field is required',
-    });
-  }
-
-  // Status validation
-  validations.push(
-    ValidationHelper.isValidEnum(
-      trimmedData.status ? 'active' : 'inactive',
-      'Status',
-      ['active', 'inactive']
-    )
-  );
-
-  const validationErrors = ValidationHelper.validate(validations.filter(Boolean));
-
-  if (validationErrors.length > 0) {
-    validationErrors.forEach((err: any) => {
-      const fieldName = err.field.toLowerCase() as keyof ConfigFormData;
-      setError(fieldName, {
-        type: 'manual',
-        message: err.message,
-      });
-    });
-    return; // stop here, don’t call API
-  }
-
-  // ✅ Only reach here if frontend validation passed
-  try {
-    if (id) {
-      await updateConfig(id, trimmedData);
-      await Swal.fire({
-        title: 'Success!',
-        text: 'Config updated successfully',
-        icon: 'success',
-        confirmButtonColor: 'var(--puprle-color)',
-      });
-    } else {
-      await addConfig(trimmedData);
-      await Swal.fire({
-        title: 'Success!',
-        text: 'Config added successfully',
-        icon: 'success',
-        confirmButtonColor: 'var(--puprle-color)',
-      });
-    }
-    navigate('/config');
-  } catch (error: any) {
-    const errorData = error?.response?.data || {};
-
-    if (errorData.errors && Array.isArray(errorData.errors)) {
-      errorData.errors.forEach((err: { path: string; message: string }) => {
-        const fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
-        setError(fieldPath as any, { type: 'server', message: err.message });
-      });
-      return;
+    validations.push(ValidationHelper.isRequired(trimmedData.name, 'Name'));
+    if (trimmedData.name) {
+      validations.push(ValidationHelper.minLength(trimmedData.name, 'Name', 3));
+      validations.push(ValidationHelper.maxLength(trimmedData.name, 'Name', 50));
     }
 
-    if (error?.response?.status === 409 && errorData.message?.includes('already exists')) {
-      if (errorData.message.toLowerCase().includes('name')) {
-        setError('name', { type: 'server', message: errorData.message });
-      } else if (errorData.message.toLowerCase().includes('slug')) {
-        setError('slug', { type: 'server', message: errorData.message });
+    validations.push(ValidationHelper.isRequired(trimmedData.slug, 'Slug'));
+    if (trimmedData.slug) {
+      validations.push(ValidationHelper.minLength(trimmedData.slug, 'Slug', 3));
+      validations.push(ValidationHelper.maxLength(trimmedData.slug, 'Slug', 50));
+    }
+
+    if (!trimmedData.configFields.length) {
+      validations.push({ field: 'configFields', message: 'At least one config field is required' });
+    }
+
+    validations.push(
+      ValidationHelper.isValidEnum(trimmedData.status ? 'active' : 'inactive', 'Status', ['active', 'inactive'])
+    );
+
+    const validationErrors = ValidationHelper.validate(validations.filter(Boolean));
+
+    if (validationErrors.length > 0) {
+      validationErrors.forEach((err: any) => {
+        const fieldName = (err.field || '').toLowerCase();
+        setError(fieldName as any, { type: 'manual', message: err.message });
+      });
+      return; // stop here, don’t call API
+    }
+
+    // Call API
+    try {
+      if (id) {
+        await updateConfig(id, trimmedData);
+        await Swal.fire({ title: 'Success!', text: 'Config updated successfully', icon: 'success', confirmButtonColor: 'var(--puprle-color)' });
       } else {
-        toast.error(errorData.message);
+        await addConfig(trimmedData);
+        await Swal.fire({ title: 'Success!', text: 'Config added successfully', icon: 'success', confirmButtonColor: 'var(--puprle-color)' });
       }
-      return;
-    }
+      navigate('/config');
+    } catch (error: any) {
+      const errorData = error?.response?.data || {};
 
-    toast.error(errorData.message || error?.message || 'Something went wrong');
-  }
-};
+      // Server-side field errors (array)
+      if (errorData.errors && Array.isArray(errorData.errors)) {
+        errorData.errors.forEach((err: { path: string; message: string }) => {
+          const fieldPath = err.path.replace(/\[(\d+)\]/g, '.$1');
+          setError(fieldPath as any, { type: 'server', message: err.message });
+        });
+        return;
+      }
+
+      // Conflict (already exists)
+      if (error?.response?.status === 409 && typeof errorData.message === 'string' && errorData.message.toLowerCase().includes('already exists')) {
+        if (errorData.message.toLowerCase().includes('name')) {
+          setError('name', { type: 'server', message: errorData.message });
+        } else if (errorData.message.toLowerCase().includes('slug')) {
+          setError('slug', { type: 'server', message: errorData.message });
+        } else {
+          toast.error(errorData.message);
+        }
+        return;
+      }
+
+      toast.error(errorData.message || error?.message || 'Something went wrong');
+    }
+  };
 
 
   const hasErrors = () => {
