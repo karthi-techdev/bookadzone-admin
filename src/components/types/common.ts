@@ -53,6 +53,9 @@ export interface BannerTwo {
   buttonUrl: string;
 }
 
+
+
+
 export interface Banner {
   homepage: {
     bannerOne: BannerOne;
@@ -125,9 +128,11 @@ export interface User {
   username: string;
   email?: string;
   role?: string;
-  name?: string;
+  userType?: string;
   phone?: string;
+  password?: string;
 }
+
 
 export interface Faq {
   _id?: string;
@@ -221,9 +226,9 @@ export interface FieldConfig {
   valueAsNumber?: boolean;
   onChange?: (e: FormFieldChangeEvent) => void;
   dataTestId?: string;
-  value?:any;
+  value?: any;
   tableConfig?: TableConfig;
- 
+
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
@@ -237,11 +242,11 @@ export interface TableConfig {
     values: Array<
       | string
       | {
-          type: 'checkbox';
-          name: string;
-          checked: boolean;
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-        }
+        type: 'checkbox';
+        name: string;
+        checked: boolean;
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+      }
     >;
   }>;
 }
@@ -275,7 +280,7 @@ export interface IRole {
 
 export interface IMenu {
   _id: string;
-  name: string; 
+  name: string;
   path: string;
   status: 'active' | 'inactive';
   isDeleted: boolean;
@@ -286,8 +291,8 @@ export interface IMenu {
 export interface IMenuPermission {
   _id: string;
   menuId: string | IMenu;
-  roleId: string | IRole; 
-  permissions: string[]; 
+  roleId: string | IRole;
+  permissions: string[];
   status: 'active' | 'inactive';
   isDeleted: boolean;
   createdAt?: string;
@@ -305,21 +310,21 @@ export interface IUserRole {
   updatedAt?: string;
 }
 export interface BlogCategory {
-  _id?:string
-  name:string;
-  label:string;
+  _id?: string
+  name: string;
+  label: string;
   className?: string;
   placeholder?: string;
   required?: boolean;
-  status?:boolean;
+  status?: boolean;
   slug: string;
 
 }
 export interface NewsLetter {
   _id?: string;
   name: string;
-  slug: string ;
-  template:string;
+  slug: string;
+  template: string;
   status?: boolean;
 }
 
@@ -343,7 +348,7 @@ export interface State {
   country_code: string;
   iso2: string;
 }
- export interface City {
+export interface City {
   name: string;
   country_code: string;
   state_code: string;

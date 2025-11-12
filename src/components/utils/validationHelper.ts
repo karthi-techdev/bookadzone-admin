@@ -1,10 +1,25 @@
-
 interface ValidationError {
   field: string;
   message: string;
 }
 
 export class ValidationHelper {
+  // ✅ new helper to format field names nicely
+  static formatFieldName(field: string): string {
+  if (!field) return field;
+  let formatted = field.replace(/[_-]+/g, ' ');
+  formatted = formatted.replace(/([A-Z])/g, ' $1');
+  formatted = formatted.replace(/([a-z])([A-Z])/g, '$1 $2');
+  formatted = formatted
+    .split(' ')
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+
+  return formatted.trim();
+}
+
+
   static capitalize(field: string): string {
     if (!field) return field;
     return field.charAt(0).toUpperCase() + field.slice(1);
@@ -22,16 +37,15 @@ export class ValidationHelper {
       if (allowedTypes.some(type => type.startsWith('.') && fileName.endsWith(type))) {
         return null;
       }
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} must be of type: ${accept}` };
     }
     return null;
   }
+
   static isRequired(value: any, field: string): ValidationError | null {
-    console.log(">>>?>?>>?>",field,value);
-    
     if (value === null || value === undefined || (typeof value === "string" && value.trim() === "")) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} is required` };
     }
     return null;
@@ -39,7 +53,7 @@ export class ValidationHelper {
 
   static minLength(value: string, field: string, min: number): ValidationError | null {
     if (typeof value !== "string" || value.trim().length < min) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} must be at least ${min} characters long` };
     }
     return null;
@@ -47,7 +61,7 @@ export class ValidationHelper {
 
   static maxLength(value: string, field: string, max: number): ValidationError | null {
     if (typeof value !== "string" || value.trim().length > max) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} must not exceed ${max} characters` };
     }
     return null;
@@ -56,7 +70,7 @@ export class ValidationHelper {
   static isValidEmail(value: any, field: string): ValidationError | null {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (typeof value !== "string" || !emailRegex.test(value)) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} must be a valid email address` };
     }
     return null;
@@ -65,7 +79,7 @@ export class ValidationHelper {
   static isValidPassword(value: any, field: string): ValidationError | null {
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (typeof value !== "string" || !passwordRegex.test(value)) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return {
         field,
         message: `${capField} must be at least 8 characters long and include at least one letter, one number, and one special character`
@@ -76,7 +90,7 @@ export class ValidationHelper {
 
   static isValidEnum(value: any, field: string, allowedValues: string[]): ValidationError | null {
     if (value !== undefined && !allowedValues.includes(value)) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} must be one of: ${allowedValues.join(", ")}` };
     }
     return null;
@@ -84,7 +98,7 @@ export class ValidationHelper {
 
   static maxValue(value: any, field: string, max: number): ValidationError | null {
     if (typeof value !== "number" || isNaN(value) || value > max) {
-      const capField = ValidationHelper.capitalize(field);
+      const capField = ValidationHelper.formatFieldName(field);
       return { field, message: `${capField} must not exceed ${max}` };
     }
     return null;
@@ -94,7 +108,6 @@ export class ValidationHelper {
     return rules.filter((error): error is ValidationError => error !== null);
   }
 
-
   static getFileType = (photo: string | File | (string | File)[] | undefined, filePath: string | undefined): 'image' | 'pdf' | 'other' => {
     if (!filePath) return 'other';
     const ext = filePath.split('.').pop()?.toLowerCase();
@@ -103,15 +116,16 @@ export class ValidationHelper {
     if (['pdf'].includes(ext)) return 'pdf';
     return 'other';
   };
-static passwordMatch(password: string, confirmPassword: string): ValidationError | null {
-  if (password !== confirmPassword) {
-    return {
-      field: 'confirmPassword',
-      message: 'Passwords do not match'
-    };
+
+  static passwordMatch(password: string, confirmPassword: string): ValidationError | null {
+    if (password !== confirmPassword) {
+      return {
+        field: 'confirmPassword',
+        message: 'Passwords do not match'
+      };
+    }
+    return null;
   }
-  return null;
-}
 }
 
 export default ValidationHelper;

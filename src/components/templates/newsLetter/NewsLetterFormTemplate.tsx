@@ -41,61 +41,60 @@ const NewsLetterFormTemplate: React.FC = () => {
 
   const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting }, setValue } = methods;
 
-  const handleFieldChange = (fieldName: keyof NewsLetterFormData, minLength?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
-    let rawValue = e.target.value;
-    if (fieldName === 'status' && typeof e.target.checked === 'boolean') {
-      rawValue = e.target.checked;
-    }
+  // ---------- handleFieldChange ----------
+const handleFieldChange = (fieldName: keyof NewsLetterFormData, minLength?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
+  let rawValue = e.target.value;
+  if (fieldName === 'status' && typeof e.target.checked === 'boolean') {
+    rawValue = e.target.checked;
+  }
 
-    const valueForValidation = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
-    
-    // Auto-generate slug when typing name (only on Add, not Edit)
-    if (fieldName === 'name' && !id) {
-      const slugValue = generateSlug(rawValue);
-      setValue('slug', slugValue, { shouldValidate: true });
-    }
-    
-    if(fieldName === 'slug'){
-      return {readOnly: true, disabled: true}
-    }
-    
-    const field = newsLetterFields.find(f => f.name === fieldName);
-    if (!field) return;
+  const valueForValidation = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
 
-    const validations = [] as any[];
-    
-    // Required should consider trimmed value to avoid showing secondary validations first
-    if (field.required) {
-      const requiredError = ValidationHelper.isRequired(valueForValidation, fieldName);
-      if (requiredError) {
-        setError(fieldName, {
-          type: 'manual',
-          message: requiredError.message,
-        });
-        setValue(fieldName, rawValue, { shouldValidate: false });
-        return;
-      }
-    }
-    
-    if (valueForValidation) {
-      if (minLength && typeof valueForValidation === 'string') {
-        validations.push(ValidationHelper.minLength(valueForValidation, fieldName, minLength));
-      }
-    }
+  // Auto-generate slug when typing name (only on Add, not Edit)
+  if (fieldName === 'name' && !id) {
+    const slugValue = generateSlug(rawValue);
+    setValue('slug', slugValue, { shouldValidate: true });
+  }
 
-    const errorsArr = ValidationHelper.validate(validations);
-    
-    if (errorsArr.length > 0) {
+  // NOTE: do NOT try to return input props from here. Mark slug readOnly/disabled at the form field config.
+  const field = newsLetterFields.find(f => f.name === fieldName);
+  if (!field) return;
+
+  const validations = [] as any[];
+
+  // Required should consider trimmed value to avoid showing secondary validations first
+  if (field.required) {
+    const requiredError = ValidationHelper.isRequired(valueForValidation, fieldName);
+    if (requiredError) {
       setError(fieldName, {
         type: 'manual',
-        message: errorsArr[0].message,
+        message: requiredError.message,
       });
-    } else {
-      clearErrors(fieldName);
+      setValue(fieldName, rawValue, { shouldValidate: false });
+      return;
     }
-    
-    setValue(fieldName, rawValue, { shouldValidate: false });
-  };
+  }
+
+  if (valueForValidation) {
+    if (minLength && typeof valueForValidation === 'string') {
+      validations.push(ValidationHelper.minLength(valueForValidation, fieldName, minLength));
+    }
+  }
+
+  const errorsArr = ValidationHelper.validate(validations);
+
+  if (errorsArr.length > 0) {
+    setError(fieldName, {
+      type: 'manual',
+      message: errorsArr[0].message,
+    });
+  } else {
+    clearErrors(fieldName);
+  }
+
+  setValue(fieldName, rawValue, { shouldValidate: false });
+};
+
 
   useEffect(() => {
     if (id && !isInitialized) {
@@ -117,85 +116,104 @@ const NewsLetterFormTemplate: React.FC = () => {
     }
   }, [id, fetchNewsLetterById, reset, isInitialized]);
 
-  const onSubmit = async (data: NewsLetterFormData) => {
-    clearErrors();
+ // ---------- onSubmit ----------
+const onSubmit = async (data: NewsLetterFormData) => {
+  clearErrors();
 
-    // Normalize values (trim strings) so required takes precedence over minLength/format
-    const d = normalizeFormValues(data);
+  // Normalize values (trim strings) so required takes precedence over minLength/format
+  const d = normalizeFormValues(data);
 
-    // First validate all form fields with precedence: required > other rules
-    const validations: any[] = [];
-    validations.push(ValidationHelper.isRequired(d.name, 'name'));
-    if (d.name) validations.push(ValidationHelper.minLength(d.name, 'name', 5));
-    if (d.name) validations.push(ValidationHelper.maxLength(d.name, 'name', 500));
+  
 
-    
-    validations.push(ValidationHelper.isRequired(d.template, 'template'));
+  // First validate all form fields with precedence: required > other rules
+  const validations: any[] = [];
+  validations.push(ValidationHelper.isRequired(d.name, 'name'));
+  if (d.name) validations.push(ValidationHelper.minLength(d.name, 'name', 5));
+  if (d.name) validations.push(ValidationHelper.maxLength(d.name, 'name', 500));
 
-    validations.push(ValidationHelper.isValidEnum(
-      typeof d.status === 'boolean' ? (d.status ? 'active' : 'inactive') : d.status,
-      'Status',
-      ['active', 'inactive']
-    ));
+  // <-- Add slug required validation here -->
+  validations.push(ValidationHelper.isRequired(d.slug, 'slug'));
+  if (d.slug) validations.push(ValidationHelper.minLength(d.slug, 'slug', 3));
 
-    const validationErrors = ValidationHelper.validate(validations);
+  validations.push(ValidationHelper.isRequired(d.template, 'template'));
 
-    if (validationErrors.length > 0) {
-      // Only set the first error per field so required errors are not overridden
-      const seen = new Set<string>();
-      for (const err of validationErrors) {
-        const fieldName = err.field as keyof NewsLetterFormData;
-        const key = String(err.field);
-        if (seen.has(key)) continue;
-        seen.add(key);
-        setError(fieldName, {
-          type: 'manual',
-          message: err.message,
-        });
-      }
-      toast.error('Please fix all validation errors');
+  // Use lowercase 'status' as the field so setError maps correctly
+  validations.push(ValidationHelper.isValidEnum(
+    typeof d.status === 'boolean' ? (d.status ? 'active' : 'inactive') : d.status,
+    'status',
+    ['active', 'inactive']
+  ));
+
+  const validationErrors = ValidationHelper.validate(validations);
+
+  if (validationErrors.length > 0) {
+    // Only set the first error per field so required errors are not overridden
+    const seen = new Set<string>();
+    for (const err of validationErrors) {
+      const fieldName = err.field as keyof NewsLetterFormData;
+      const key = String(err.field);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      setError(fieldName, {
+        type: 'manual',
+        message: err.message,
+      });
+    }
+
+    // <-- REMOVE the toast here so only field-level messages are shown. -->
+    // toast.error('Please fix all validation errors');
+    return;
+  }
+
+  try {
+    if (id) {
+      await updateNewsLetter(id, d);
+      await Swal.fire({
+        title: 'Success!',
+        text: 'NewsLetter updated successfully',
+        icon: 'success',
+        confirmButtonColor: 'var(--puprle-color)',
+      });
+    } else {
+      await addNewsLetter(d);
+      await Swal.fire({
+        title: 'Success!',
+        text: 'NewsLetter added successfully',
+        icon: 'success',
+        confirmButtonColor: 'var(--puprle-color)',
+      });
+    }
+    navigate('/newsletter');
+  } catch (error: any) {
+    const errorData = error?.response?.data || {};
+
+    // Keep server-side toasts (conflict/duplication) but avoid toast on client validation
+    if (error?.response?.status === 409 && errorData.message?.includes('already exists')) {
+      toast.error(errorData.message);
       return;
     }
 
-    try {
-      if (id) {
-        await updateNewsLetter(id, d);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'NewsLetter updated successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      } else {
-        await addNewsLetter(d);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'NewsLetter added successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      }
-      navigate('/newsletter');
-    } catch (error: any) {
-      const errorData = error?.response?.data || {};
-      if (error?.response?.status === 409 && errorData.message?.includes('already exists')) {
-        toast.error(errorData.message);
-        return;
-      }
-      if (errorData.errors && Array.isArray(errorData.errors)) {
-        errorData.errors.forEach((err: { path: string; message: string }) => {
+    if (errorData.errors && Array.isArray(errorData.errors)) {
+      errorData.errors.forEach((err: { path: string; message: string }) => {
+        // set field errors for server-side validation if possible
+        if (err.path) {
+          setError(err.path as any, { type: 'server', message: err.message });
+        } else {
           toast.error(`${err.path}: ${err.message}`);
-        });
-      } else if (typeof error === 'string') {
-        toast.error(error);
-      } else if (error?.message) {
-        toast.error(error.message);
-      } else {
-        const message = errorData.message || 'Something went wrong';
-        toast.error(message);
-      }
+        }
+      });
+      return;
+    } else if (typeof error === 'string') {
+      toast.error(error);
+    } else if (error?.message) {
+      toast.error(error.message);
+    } else {
+      const message = errorData.message || 'Something went wrong';
+      toast.error(message);
     }
-  };
+  }
+};
+
 
   // Normalize values to trim strings
   const normalizeFormValues = (values: NewsLetterFormData): NewsLetterFormData => {

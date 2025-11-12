@@ -27,10 +27,16 @@ import FooterInfoListPage from '../pages/footerinfo/FooterInfoListPage';
 import FooterInfoFormPage from '../pages/footerinfo/FooterInfoFormPage';
 import ConfigListPage from '../pages/config/ConfigListPage';
 import ConfigFormPage from '../pages/config/ConfigFormPage';
+import UserFormPage from '../templates/user/userFormTemplate';
+import UserListPage from '../templates/user/userListTemplate';
+
+
 
 // Authentication Pages (Lazy Loaded)
 const ForgotPassword = lazy(() => import('../templates/auth/forgotPasswordTemplate'));
 const ResetPassword = lazy(() => import('../templates/auth/resetPasswordTemplate'));
+
+
 
 // Content Management (Lazy Loaded)
 const BlogCategoryListPage = lazy(() => import('../pages/blogCategory/BlogCaategoryListPage'));
@@ -96,6 +102,22 @@ export const routesData = (): RouteData[] => {
       component: <ResetPassword />,
     },
 
+    {
+      path: '/user',
+      pageTitle: 'User List',
+      component: <UserListPage />,
+    },
+    {
+      path: '/add-user',
+      pageTitle: 'Add User',
+      component: <UserFormPage />,
+    },
+    {
+      path: '/edit-user/:id',
+      pageTitle: 'edit User',
+      component: <UserFormPage />,
+    },
+
     // Property Management Routes
     {
       path: '/listings/properties',
@@ -157,6 +179,8 @@ export const routesData = (): RouteData[] => {
       component: <AboutBannerPage />,
     },
 
+
+
     // Content Management Routes
     {
       path: '/faq',
@@ -217,7 +241,7 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Newsletter Trash',
       component: <NewsLetterTrashListPage />,
     },
-    
+
     // Page routes
     {
       path: '/page',
