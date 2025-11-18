@@ -1,4 +1,4 @@
-const LIVE = false;
+const LIVE = ture;
 
 const SITEURL = 'https://bookadzonebackend.onrender.com/';
 const LIVEURL = LIVE ? SITEURL : 'http://localhost:5000/';
