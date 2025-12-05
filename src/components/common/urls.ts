@@ -92,6 +92,7 @@ const API = {
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
+  getAllCategories: `${ROOTURL}category/all`,
   getcategorybyId: `${ROOTURL}category/getcategoryById/`,  // Make sure this matches the backend route
   updatecategory: `${ROOTURL}category/updatecategory/`,
   deletecategory: `${ROOTURL}category/softDeletecategory/`,
@@ -140,6 +141,19 @@ const API = {
     update: `${ROOTURL}auth/profile`,
     changePassword: `${ROOTURL}auth/change-password`
   },
+
+
+   // Property endpoints
+  addProperty: `${ROOTURL}properties/`,
+  listProperty: `${ROOTURL}properties/`,
+  getProperty: `${ROOTURL}properties/`,
+  updateProperty: `${ROOTURL}properties/`,
+  deleteProperty: `${ROOTURL}properties/softDelete/`,
+  toggleStatusProperty: `${ROOTURL}properties/toggleStatus/`,
+  trashPropertyList: `${ROOTURL}properties/trash`,
+  restoreProperty: `${ROOTURL}properties/restore/`,
+  permanentDeleteProperty: `${ROOTURL}properties/permanentDelete/`,
+  propertyConfig: `${ROOTURL}configs/properties`,
 
   // Template Images
   templateImage: `${ROOTURL}editer/image`

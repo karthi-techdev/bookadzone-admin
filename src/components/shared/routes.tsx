@@ -67,6 +67,11 @@ const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
 const UserRoleListPage = lazy(() => import('../pages/userrole/UserRoleListPage'));
 const UserRoleFormPage = lazy(() => import('../pages/userrole/UserRoleFormPage'));
 
+
+// Property Management Pages (Lazy Loaded)
+const PropertyFormPage = lazy(() => import('../pages/property/PropertyFormPage'));
+const PropertyListPage = lazy(() => import('../pages/property/PropertyListPage'));
+
 // Profile Pages (Lazy Loaded)
 const ProfileUpdatePage = lazy(() => import('../pages/profile/ProfileUpdatePage'));
 const ChangePasswordPage = lazy(() => import('../pages/profile/ChangePasswordPage'));
@@ -308,6 +313,22 @@ export const routesData = (): RouteData[] => {
       component: <ConfigTrashListPage />,
     },
 
+    // property routes
+{
+      path: '/properties',
+      pageTitle: 'Property List',
+      component: <PropertyListPage />,
+    },
+    {
+      path: '/properties/add',
+      pageTitle: 'Add Property',
+      component: <PropertyFormPage />,
+    },
+    {
+      path: '/properties/edit/:id',
+      pageTitle: 'Edit Property',
+      component: <PropertyFormPage />,
+    },
     // Blog Category Routes
     {
       path: '/blogcategory',

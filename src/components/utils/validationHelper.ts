@@ -96,6 +96,18 @@ export class ValidationHelper {
     return null;
   }
 
+
+  
+  static isValidNumber(value: any, field: string, allowedValues: any[] = []): ValidationError | null {
+    if (value !== undefined && value !== null && value !== '') {
+      const num = Number(value);
+      if (isNaN(num)) {
+        const capField = ValidationHelper.formatFieldName(field);
+        return { field, message: `${capField} must be a valid number` };
+      }
+    }
+    return null;
+  }
   static maxValue(value: any, field: string, max: number): ValidationError | null {
     if (typeof value !== "number" || isNaN(value) || value > max) {
       const capField = ValidationHelper.formatFieldName(field);
