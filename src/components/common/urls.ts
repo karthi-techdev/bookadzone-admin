@@ -13,6 +13,7 @@ const API = {
   // Agency endpoints
   addAgency: `${ROOTURL}agencies/`,
   listAgency: `${ROOTURL}agencies/`,
+  checkmail: `${ROOTURL}agencies/check-emails`,
   getAgency: `${ROOTURL}agencies/`,
   updateAgency: `${ROOTURL}agencies/`,
   deleteAgency: `${ROOTURL}agencies/softDelete/`,
@@ -31,6 +32,12 @@ const API = {
   trashfaqlist: `${ROOTURL}faqs/trash`,
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
+
+
+  //notified User endpoints
+  listNotifiedUsers: `${ROOTURL}notifyuser/`,
+  getNotifiedUserById: `${ROOTURL}notifyuser/getnotifyUserById/`,
+  deleteNotifiedUser: `${ROOTURL}notifyuser/`,
 
   // User endpoints
   addUser: `${ROOTURL}users/`,
@@ -88,7 +95,10 @@ const API = {
   restoreuserrole: `${ROOTURL}userrole/restore/`,
   permanentDeleteuserrole: `${ROOTURL}userrole/permanentDelete/`,
 
-
+//agencyprofile endpoints
+updateagencyprofile: `${ROOTURL}agencyprofile/updateagencyProfile/`,
+updatedocument: `${ROOTURL}agencyprofile/updatedocument/`,
+getagencyprofile: `${ROOTURL}agencyprofile/getagencyprofile`,
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,

@@ -216,7 +216,7 @@ export const useAgencyStore = create<AgencyState>((set) => ({
   checkEmailsExist: async (yourEmail: string, companyEmail: string, currentId?: string) => {
     try {
       set({ loading: true, error: null });
-      const res = await axios.post(`${API.listAgency}/check-emails`, {
+      const res = await axios.post(`${API.checkmail}`, {
         yourEmail,
         companyEmail,
         currentId // Pass the current agency ID to exclude from uniqueness check

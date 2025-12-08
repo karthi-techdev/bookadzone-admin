@@ -18,12 +18,6 @@ type ConfigFormData = {
   configFields: Array<{ key: string; value: string }>;
 };
 
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
-};
-
 const ConfigFormTemplate: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -232,12 +226,7 @@ const ConfigFormTemplate: React.FC = () => {
     }
   };
 
-  const hasErrors = () => {
-    return configFields.some(field => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
-  };
+ 
 
   if (!isInitialized) return <div>Loading...</div>;
 
@@ -264,11 +253,7 @@ const ConfigFormTemplate: React.FC = () => {
             status: handleFieldChange('status'),
           }}
         />
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
+       
       </FormProvider>
     </div>
   );

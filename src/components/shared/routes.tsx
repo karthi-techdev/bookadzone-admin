@@ -10,11 +10,19 @@ import Properties from '../pages/Properties';
 import AddProperties from '../pages/Add-Properties';
 import CampaignList from '../pages/Campaign-List';
 import CampaignDetails from '../pages/Campaign-Details';
+//profile management
+import AgencyProfile from '../templates/profileInfo/agency/agencyProfileInfo';
+
 
 // Agency Management
 import AgencyListPage from '../pages/agency/AgencyListPage';
 import AgencyFormPage from '../pages/agency/AgencyFormPage';
 import AgencyViewPage from '../pages/agency/AgencyViewPage';
+
+
+import NotifyUserListPage from '../templates/notifyUser/notifiedUserList';
+import NotifyUserViewPage from '../templates/notifyUser/notifiedUserView';
+
 
 // Content Management
 import BannerPage from '../pages/banner/HomeBannerPage';
@@ -52,6 +60,7 @@ const CategoryTrashListPage = lazy(() => import('../pages/trash/category/Categor
 const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
 const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
+const UserTrashListPage = lazy(() => import('../pages/trash/user/UserTrashListPage'));
 
 //pages management (Lazy Loaded)
 const PageListPage = lazy(() => import('../pages/page/PageListPage'));
@@ -89,7 +98,11 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Dashboard',
       component: <Dashboard />,
     },
-
+ {
+      path: '/agencyprofile',
+      pageTitle: 'agencyprofile',
+      component: <AgencyProfile />,
+    },
     // Authentication Routes
     {
       path: '/login',
@@ -121,6 +134,22 @@ export const routesData = (): RouteData[] => {
       path: '/edit-user/:id',
       pageTitle: 'edit User',
       component: <UserFormPage />,
+    },
+    {
+      path: '/trash/user',
+      pageTitle: 'User Trash',
+      component: <UserTrashListPage />,
+    },
+      //Enquiry Management Routes
+    {
+      path: '/notifyuser',
+      pageTitle: 'Notified User List',
+      component: <NotifyUserListPage />,
+    },
+    {
+      path: '/notifyuser/view/:id',
+      pageTitle: 'View Notified User',
+      component: <NotifyUserViewPage />,
     },
 
     // Property Management Routes

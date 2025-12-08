@@ -20,7 +20,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   loading: false,
   error: null,
 
-  fetchSettings: async () => {
+       fetchSettings: async () => {
     const token = localStorage.getItem('token');
     if (!token) {
       set({ error: 'No authentication token', loading: false });
@@ -42,7 +42,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     }
   },
 
-  updateSettings: async (data: Partial<Settings> | FormData) => {
+   updateSettings: async (data: Partial<Settings> | FormData) => {
     try {
       set({ loading: true, error: null });
       let config = {};

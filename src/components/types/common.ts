@@ -26,7 +26,40 @@ export interface Agency {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface Location {
+  city: string;
+  region: string;
+  country: string;
+  isp: string;
+  lat: number;
+  lon: number;
+  // optional fields if present
+  phone?: string;
+  address?: string;
+  pincode?: string;
+}
 
+export interface NotifiedUser {
+  _id?: string;
+  fullName: string;
+  email: string;
+  companyName?: string;
+  profileType: 'Advertiser' | 'Publisher' | 'Agency' | string;
+  position?: string;
+  status?: 'active' | 'inactive';
+  isDeleted: boolean;
+  signupDate: string;
+  createdAt: string;
+  updatedAt: string;
+
+  // Location object from IP geolocation
+  location: Location;
+
+  // Optional uploads
+  uploadIdProof?: string;
+  uploadBusinessProof?: string;
+  photo?: string;
+}
 export interface AgencyInput extends Omit<Agency, '_id' | 'userId' | 'status' | 'priority' | 'createdAt' | 'updatedAt'> {
   password: string; // Make password required for new agencies
 }

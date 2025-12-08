@@ -164,12 +164,9 @@ export const useUserStore = create<UserState>((set) => ({
         set({ loading: true, error: null });
 
         const payload = { ...user };
-        console.log("🟢 [addUser] Sending payload to backend:", payload);
 
         const res = await axios.post(API.addUser, payload);
 
-        console.log("🟢 [addUser] API endpoint:", API.addUser);
-        console.log("🟢 [addUser] Backend response:", res.data);
 
         const responseData = res.data as { data: User };
         set((state) => ({
@@ -179,8 +176,6 @@ export const useUserStore = create<UserState>((set) => ({
         }));
     } catch (error: any) {
         const errorMessage = error?.response?.data?.message || error?.message || 'Failed to add user';
-        console.error("🔴 [addUser] Error:", errorMessage);
-        console.error("🔴 [addUser] Error details:", error?.response?.data);
         set({ error: errorMessage, loading: false });
         throw errorMessage;
     }

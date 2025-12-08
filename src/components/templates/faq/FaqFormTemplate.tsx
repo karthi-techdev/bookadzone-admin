@@ -17,11 +17,7 @@ type FaqFormData = {
   priority: number;
 };
 
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
-};
+
 
 const FaqFormTemplate: React.FC = () => {
   const { id } = useParams();
@@ -39,7 +35,7 @@ const FaqFormTemplate: React.FC = () => {
     mode: 'onSubmit',
   });
 
-  const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
+  const { handleSubmit, reset, setError, clearErrors, formState: {  isSubmitting } } = methods;
 
   // Validation config for each field
   const fieldValidations: Record<string, any> = {
@@ -203,12 +199,7 @@ const FaqFormTemplate: React.FC = () => {
     return onSubmit(values);
   };
 
-  const hasErrors = () => {
-    return faqFields.some(field => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
-  };
+  
 
   return (
     <div className="p-6">
@@ -232,11 +223,7 @@ const FaqFormTemplate: React.FC = () => {
             priority: handleFieldChange('priority'),
           }}
         />
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
+        
       </FormProvider>
     </div>
   );

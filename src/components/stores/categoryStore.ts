@@ -75,12 +75,15 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.getcategorybyId}${id}`);
-      return res.data?.data as Category;
+      const category = res.data?.data || res.data || null;
+      set({ loading: false, error: null });
+      return category as Category | null;
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch category', loading: false });
       return null;
     }
   },
+
 
   addCategory: async (formData: FormData) => {
     try {
@@ -108,7 +111,17 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.deletecategory}${id}`);
-      set({ loading: false });
+      // Immediately remove the deleted category from state if present
+      set((state) => {
+        const remaining = state.categories.filter(cat => cat._id !== id);
+        const recalculated = Math.max(1, Math.ceil(remaining.length / 20));
+        return {
+          categories: remaining,
+          loading: false,
+          error: null,
+          totalPages: recalculated
+        };
+      });
     } catch (error: any) {
       set({ error: error?.response?.data?.message || error?.message || 'Failed to delete category', loading: false });
       throw error;
@@ -165,12 +178,16 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.trashcategorylist}?page=${page}&limit=${limit}`);
-      // Fix: use agencies from backend response
-      const data = res.data as { categories: Category[]; total?: number; page?: number; limit?: number };
+      const data = res.data || {};
+      const categories = data.data || data.categories || [];
+      const respPage = data.page || data.meta?.page || page;
+      const totalCount = data.total || data.meta?.total || data.meta?.totalCount || null;
+      const totalPages = totalCount ? Math.max(1, Math.ceil(totalCount / (data.limit || limit))) : (data.meta?.totalPages || 1);
+
       set({
-        categories: Array.isArray(data.categories) ? data.categories : [],
-        page: data.page || page,
-        totalPages: data.total ? Math.ceil(data.total / (data.limit || limit)) : 1,
+        categories: Array.isArray(categories) ? categories : [],
+        page: respPage,
+        totalPages,
         loading: false,
         error: null
       });

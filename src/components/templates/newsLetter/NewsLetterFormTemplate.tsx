@@ -17,11 +17,6 @@ type NewsLetterFormData = {
   status?: boolean;
 };
 
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
-};
 
 const NewsLetterFormTemplate: React.FC = () => {
   const { id } = useParams();
@@ -39,7 +34,7 @@ const NewsLetterFormTemplate: React.FC = () => {
     mode: 'onSubmit',
   });
 
-  const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting }, setValue } = methods;
+  const { handleSubmit, reset, setError, clearErrors, formState: {  isSubmitting }, setValue } = methods;
 
   // ---------- handleFieldChange ----------
 const handleFieldChange = (fieldName: keyof NewsLetterFormData, minLength?: number) => (e: { target: { name: string; value: any; checked?: boolean } }) => {
@@ -230,12 +225,7 @@ const onSubmit = async (data: NewsLetterFormData) => {
     return onSubmit(values);
   };
 
-  const hasErrors = () => {
-    return newsLetterFields.some(field => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
-  };
+  
 
   return (
     <div className="p-6">
@@ -259,11 +249,7 @@ const onSubmit = async (data: NewsLetterFormData) => {
             template: handleFieldChange('template'),
           }}
         />         
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
+       
       </FormProvider>
     </div>
   );

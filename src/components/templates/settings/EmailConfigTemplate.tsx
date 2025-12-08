@@ -37,6 +37,7 @@ const EmailConfigTemplate: React.FC = () => {
   // Validation logic for a single field
   const validateField = (field: any, value: any) => {
     let error = null;
+    
     if (field.required) {
       if (field.type === 'file') {
         if (value === '__invalid_file_type__') {
@@ -98,7 +99,6 @@ const EmailConfigTemplate: React.FC = () => {
           setError(err.field as any, { type: 'manual', message: err.message });
         }
       });
-      toast.error('Please fix validation errors');
       return;
     }
 

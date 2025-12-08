@@ -21,11 +21,7 @@ type PageFormData = {
   status: 'active' | 'inactive';
 };
 
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
-};
+
 
 const PageFormTemplate: React.FC = () => {
   const { id } = useParams();
@@ -204,12 +200,7 @@ const PageFormTemplate: React.FC = () => {
     }
   };
 
-  const hasErrors = () => {
-    return PagesFields.some(field => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
-  };
+  
 
   return (
     <div className="p-6">
@@ -238,11 +229,7 @@ const PageFormTemplate: React.FC = () => {
           status: handleFieldChange('status'),
         }}
       />
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
+       
       </FormProvider>
     </div>
   );

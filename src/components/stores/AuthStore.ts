@@ -115,7 +115,6 @@ export const useAuthStore = create<AuthState>((set, get) => {
         axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
         startExpirationCheck();
       } catch (err) {
-        // If the token verification fails, log the user out
         console.error('Token verification failed:', err);
         get().logout();
       }
