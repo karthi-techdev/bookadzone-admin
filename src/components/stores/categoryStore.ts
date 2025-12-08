@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import ImportedURL from '../common/urls';
 import type { Category } from '../types/common';
 
@@ -18,6 +17,7 @@ interface CategoryState {
   page: number;
   totalPages: number;
   fetchCategories: (page?: number, limit?: number) => Promise<void>;
+  fetchAllCategories: () => Promise<Category[]>;
   fetchCategoryById: (id: string) => Promise<Category | null>;
   addCategory: (category: FormData) => Promise<void>;
   updateCategory: (id: string, category: FormData) => Promise<void>;
@@ -36,45 +36,53 @@ export const useCategoryStore = create<CategoryState>((set) => ({
   totalPages: 1,
 
   fetchCategories: async (page = 1, limit = 20) => {
-  try {
-    set({ loading: true, error: null });
-
-    const res = await axios.get(`${API.listcategory}?page=${page}&limit=${limit}`);
-    console.log("Category API Response:", res.data);
-
-    const api = res.data;
-
-    set({
-      categories: Array.isArray(api.categories) ? api.categories : [],
-      page: api.page || page,
-      totalPages: Math.ceil((api.total || 1) / limit),
-      loading: false,
-    });
-
-  } catch (error: any) {
-    set({
-      error: error?.response?.data?.message || error?.message || "Failed to fetch categories",
-      loading: false,
-    });
-    throw error;
-  }
-},
-
-
- fetchCategoryById: async (id: string) => {
-  try {
-    const res = await axios.get(`${API.getcategorybyId}${id}`);
-
-    if (res.data && res.data.category) {
-      return res.data.category;   
+    try {
+      set({ loading: true, error: null });
+      const res = await axios.get(`${API.listcategory}?page=${page}&limit=${limit}`);
+      const categories = res.data.categories || res.data.data || [];
+      const totalPages = res.data.meta?.totalPages ?? 1;
+      set({
+        categories: Array.isArray(categories) ? categories : [],
+        page,
+        totalPages,
+        loading: false,
+        error: null
+      });
+    } catch (error: any) {
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch categories', loading: false });
+      throw error;
     }
+  },
 
-    return null; 
-  } catch (error) {
-    console.error("fetchCategoryById error:", error);
-    throw error;
-  }
-},
+  fetchAllCategories: async () => {
+    try {
+      console.log('Fetching all categories from:', API.getAllCategories);
+      set({ loading: true, error: null });
+      const res = await axios.get(API.getAllCategories);
+      console.log('fetchAllCategories response:', res.data);
+      const categories = res.data.data || [];
+      console.log('Processed categories:', categories);
+      set({ loading: false, error: null });
+      return Array.isArray(categories) ? categories : [];
+    } catch (error: any) {
+      console.error('fetchAllCategories error:', error);
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch all categories', loading: false });
+      throw error;
+    }
+  },
+
+  fetchCategoryById: async (id: string) => {
+    try {
+      set({ loading: true, error: null });
+      const res = await axios.get(`${API.getcategorybyId}${id}`);
+      const category = res.data?.data || res.data || null;
+      set({ loading: false, error: null });
+      return category as Category | null;
+    } catch (error: any) {
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch category', loading: false });
+      return null;
+    }
+  },
 
 
   addCategory: async (formData: FormData) => {
@@ -103,20 +111,19 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.deletecategory}${id}`);
-
-      // Immediately remove the deleted category from state
-      set(state => ({
-        categories: state.categories.filter(cat => cat._id !== id),
-        loading: false,
-        error: null,
-        // Recalculate totalPages
-        totalPages: Math.ceil((state.categories.length - 1) / 20)
-      }));
-
-      // Do not return any value to match the expected Promise<void> type
+      // Immediately remove the deleted category from state if present
+      set((state) => {
+        const remaining = state.categories.filter(cat => cat._id !== id);
+        const recalculated = Math.max(1, Math.ceil(remaining.length / 20));
+        return {
+          categories: remaining,
+          loading: false,
+          error: null,
+          totalPages: recalculated
+        };
+      });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete category';
-      set({ error: errorMessage, loading: false });
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to delete category', loading: false });
       throw error;
     }
   },
@@ -171,22 +178,21 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.trashcategorylist}?page=${page}&limit=${limit}`);
-      console.log('Trash categories response:', res.data); // Debug log
-
-      const categories = res.data?.data || [];
-      const meta = res.data?.meta || {};
+      const data = res.data || {};
+      const categories = data.data || data.categories || [];
+      const respPage = data.page || data.meta?.page || page;
+      const totalCount = data.total || data.meta?.total || data.meta?.totalCount || null;
+      const totalPages = totalCount ? Math.max(1, Math.ceil(totalCount / (data.limit || limit))) : (data.meta?.totalPages || 1);
 
       set({
         categories: Array.isArray(categories) ? categories : [],
-        page: meta.page || page,
-        totalPages: meta.totalPages || 1,
+        page: respPage,
+        totalPages,
         loading: false,
         error: null
       });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch trashed categories';
-      set({ error: errorMessage, loading: false });
-      console.error('Fetch trash categories error:', error);
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch trashed categories', loading: false });
       throw error;
     }
   },

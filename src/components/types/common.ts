@@ -372,6 +372,49 @@ export interface Page {
   status: 'active' | 'inactive';
 }
 
+
+export interface Property {
+  _id?: string;
+  title: string;
+  slug: string;
+  bannerCode: string;
+  category: string | { _id?: string; name?: string; slug?: string };
+  locationType: string;
+  locationName: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  landmark?: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  images?: string[] | File[];
+  previewImage?: string | File;
+  size: { height: number; width: number };
+  orientation: string;
+  pricingType: string;
+  days: number;
+  priceRange: { min: number; max: number };
+  description?: string;
+  specifications?: { title: string; feature: string }[];
+  estimatedMonthlyImpressions?: string;
+  dailyVisibilityDuration?: string;
+  vehicleTrafficData?: number;
+  audienceDwellTime?: string;
+  nearbyInstitutions?: string[];
+  zone: string;
+  interests?: string[];
+  bannerVisibilityRange?: number;
+  fileTypeAllowed?: string;
+  status?: 'active' | 'inactive';
+  propertyStatus?: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Country {
   name: string;
   iso2: string;
