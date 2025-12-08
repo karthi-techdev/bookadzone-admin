@@ -38,19 +38,17 @@ const UserListTemplate: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedFilter, setSelectedFilter] = useState<'total' | 'admin' | 'editor' | 'viewer'>('total');
 
-    // Use default items per page from constants
     const itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
-    // Calculate total items for pagination based on selected filter
     const getTotalItems = () => {
         if (selectedFilter === 'admin') return stats.admin;
         if (selectedFilter === 'editor') return stats.editor;
         if (selectedFilter === 'viewer') return stats.viewer;
         return stats.total;
     };
+
     const filteredTotalPages = Math.max(1, Math.ceil(getTotalItems() / itemsPerPage));
 
-    // Fetch data on page or filter change
     useEffect(() => {
         const loadUsers = async () => {
             try {
@@ -62,17 +60,14 @@ const UserListTemplate: React.FC = () => {
         loadUsers();
     }, [currentPage, selectedFilter, itemsPerPage, fetchUsers]);
 
-    // Show error toast
     useEffect(() => {
         if (error) toast.error(error);
     }, [error]);
 
-    // Handle pagination
     const handlePageChange = (selectedItem: { selected: number }) => {
         setCurrentPage(selectedItem.selected + 1);
     };
 
-    // Filter search term locally (after API filter is applied)
     const searchedUsers = users.filter((user) =>
         (user.username?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
         (user.email?.toLowerCase().includes(searchTerm.toLowerCase()) || '') ||
@@ -81,50 +76,21 @@ const UserListTemplate: React.FC = () => {
         (user.phone?.toLowerCase().includes(searchTerm.toLowerCase()) || '')
     );
 
-    // Stats for filter buttons
     const statFilters: StatFilter[] = [
-        {
-            id: 'total',
-            title: 'All Users',
-            value: stats.total,
-            trend: 'up',
-            change: '2%',
-            icon: null,
-        },
-        {
-            id: 'admin',
-            title: 'Admin Users',
-            value: stats.admin,
-            trend: 'up',
-            change: '1%',
-            icon: null,
-        },
-        {
-            id: 'editor',
-            title: 'Editor Users',
-            value: stats.editor,
-            trend: 'down',
-            change: '1%',
-            icon: null,
-        },
-        {
-            id: 'viewer',
-            title: 'Viewer Users',
-            value: stats.viewer,
-            trend: 'down',
-            change: '1%',
-            icon: null,
-        },
+        { id: 'total', title: 'All Users', value: stats.total, trend: 'up', change: '2%', icon: null },
+        { id: 'admin', title: 'Admin Users', value: stats.admin, trend: 'up', change: '1%', icon: null },
+        { id: 'editor', title: 'Editor Users', value: stats.editor, trend: 'down', change: '1%', icon: null },
+        { id: 'viewer', title: 'Viewer Users', value: stats.viewer, trend: 'down', change: '1%', icon: null },
     ];
 
-    // Delete handler
+    // ✅ Fixed SweetAlert2 styling issue
     const handleDelete = (user: User) => {
         Swal.fire({
             title: 'Are you sure?',
             text: `You are about to delete "${user.username}"`,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: 'var(--purple-color)',
+            confirmButtonColor: 'var(--puprle-color)',
             cancelButtonColor: 'var(--light-blur-grey-color)',
             confirmButtonText: 'Yes, delete it!',
         }).then(async (result) => {
@@ -135,44 +101,22 @@ const UserListTemplate: React.FC = () => {
                 const newTotalItems = users.length - 1;
                 const newTotalPages = Math.ceil(newTotalItems / itemsPerPage);
 
-                // Adjust current page if necessary
                 if (updatedLength === 0 && currentPage > newTotalPages) {
-                    setCurrentPage(newTotalPages || 1); // Go to the last page or page 1 if no pages remain
+                    setCurrentPage(newTotalPages || 1);
                 } else {
                     await fetchUsers(currentPage, itemsPerPage, selectedFilter);
                 }
 
-                Swal.fire('Deleted!', 'The user has been removed.', 'success');
+                toast.success('User deleted successfully');
             }
         });
     };
 
     const columns: ColumnConfig<User>[] = [
-        {
-            key: 'username',
-            label: 'Username',
-            render: (value) => truncate(value || '', 40),
-        },
-        {
-            key: 'email',
-            label: 'Email',
-            render: (value) => truncate(value || '', 40),
-        },
-        {
-            key: 'role',
-            label: 'Role',
-            render: (value) => truncate(value || '', 40),
-        },
-        {
-            key: 'userType',
-            label: 'User Type',
-            render: (value) => truncate(value || '', 40),
-        },
-        {
-            key: 'phone',
-            label: 'Phone',
-            render: (value) => truncate(value || '', 40),
-        },
+        { key: 'username', label: 'Username', render: (value) => truncate(value || '', 40) },
+        { key: 'email', label: 'Email', render: (value) => truncate(value || '', 40) },
+        { key: 'userType', label: 'User Type', render: (value) => truncate(value || '', 40) },
+        { key: 'phone', label: 'Phone', render: (value) => truncate(value || '', 40) },
     ];
 
     if (loading) return <BAZLoader />;

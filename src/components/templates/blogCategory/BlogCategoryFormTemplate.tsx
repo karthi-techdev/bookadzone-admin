@@ -27,11 +27,6 @@ type BlogCategoryFormData = {
  
 };
 
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
-};
 
 const BlogCategoryFormTemplate: React.FC = () => {
   const { id } = useParams();
@@ -238,13 +233,7 @@ const BlogCategoryFormTemplate: React.FC = () => {
     }
   };
 
-  const hasErrors = () => {
-    return blogCategoryFields.some(field => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
-  };
-
+ 
   return (
     <div className="p-6">
       <FormHeader
@@ -266,11 +255,7 @@ const BlogCategoryFormTemplate: React.FC = () => {
 
           }}
         />
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
+        
       </FormProvider>
     </div>
   );

@@ -44,7 +44,7 @@ const CategoryFormTemplate: React.FC = () => {
 					console.log('Fetching category with ID:', id); // Debug log
 					const category = await fetchCategoryById(id);
 					console.log('Fetched category data:', category); // Debug log
-					
+
 					if (category) {
 						setExistingCategoryData(category);
 						reset({
@@ -69,123 +69,122 @@ const CategoryFormTemplate: React.FC = () => {
 		}
 	}, [id, fetchCategoryById, reset, isInitialized, navigate]);
 
-  const handleFieldChange = (fieldName: keyof CategoryFormData, minLength?: number) => (e: { target: { name: string; value: any } }) => {
-    const rawValue = e.target.value;
-    const field = CategoryFields.find(f => f.name === fieldName);
+	const handleFieldChange = (fieldName: keyof CategoryFormData, minLength?: number) => (e: { target: { name: string; value: any } }) => {
+		const rawValue = e.target.value;
+		const field = CategoryFields.find(f => f.name === fieldName);
 
-    if (!field) return;
+		if (!field) return;
 
-    // Special handling for name field to auto-generate slug
-    if (fieldName === 'name' && typeof rawValue === 'string') {
-      const slugValue = rawValue.trim().replace(/\s+/g, '-').toLowerCase();
-      setValue('slug', slugValue, { shouldValidate: false });
-    }
+		// Special handling for name field to auto-generate slug
+		if (fieldName === 'name' && typeof rawValue === 'string') {
+			const slugValue = rawValue.trim().replace(/\s+/g, '-').toLowerCase();
+			setValue('slug', slugValue, { shouldValidate: false });
+		}
 
-    // Handle file validation separately
-    if (field.type === 'file') {
-      if (rawValue === '__invalid_file_type__') {
-        setError(fieldName, {
-          type: 'manual',
-          message: `${field.label} must be of type: ${field.accept}`
-        });
-        setValue(fieldName, rawValue, { shouldValidate: false });
-        return;
-      }
-    }
+		// Handle file validation separately
+		if (field.type === 'file') {
+			if (rawValue === '__invalid_file_type__') {
+				setError(fieldName, {
+					type: 'manual',
+					message: `${field.label} must be of type: ${field.accept}`
+				});
+				setValue(fieldName, rawValue, { shouldValidate: false });
+				return;
+			}
+		}
 
-    const value = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
-    const validations: any[] = [];
+		const value = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+		const validations: any[] = [];
+		// Required field validation first
+		if (field.required) {
+			validations.push(ValidationHelper.isRequired(value, fieldName));
+		}
 
-    // Required field validation first
-    if (field.required) {
-      validations.push(ValidationHelper.isRequired(value, fieldName));
-    }
+		// Only validate non-empty values
+		if (value) {
+			if (typeof value === 'string') {
+				if (minLength) {
+					validations.push(ValidationHelper.minLength(value, fieldName, minLength));
+				}
+				// Add max length validation where needed
+				if (fieldName === 'description') {
+					validations.push(ValidationHelper.maxLength(value, 'description', 2000));
+				}
+			}
 
-    // Only validate non-empty values
-    if (value) {
-      if (typeof value === 'string') {
-        if (minLength) {
-          validations.push(ValidationHelper.minLength(value, fieldName, minLength));
-        }
-        // Add max length validation where needed
-        if (fieldName === 'description') {
-          validations.push(ValidationHelper.maxLength(value, 'description', 2000));
-        }
-      }
+			if (field.type === 'file' && value instanceof File) {
+				validations.push(ValidationHelper.isValidFileType(value, fieldName, field.accept || ''));
+			}
+		}
 
-      if (field.type === 'file' && value instanceof File) {
-        validations.push(ValidationHelper.isValidFileType(value, fieldName, field.accept || ''));
-      }
-    }
+		const errorsArr = ValidationHelper.validate(validations);
 
-    const errorsArr = ValidationHelper.validate(validations);
+		if (errorsArr.length > 0) {
+			setError(fieldName, {
+				type: 'manual',
+				message: errorsArr[0].message,
+			});
+		} else {
+			clearErrors(fieldName);
+		}
 
-    if (errorsArr.length > 0) {
-      setError(fieldName, {
-        type: 'manual',
-        message: errorsArr[0].message,
-      });
-    } else {
-      clearErrors(fieldName);
-    }
-    
-    setValue(fieldName, rawValue, { shouldValidate: false });
-  };  const onSubmit = async (data: CategoryFormData) => {
-    clearErrors();
-    
-    // Normalize values (trim strings)
-    const d = {
-      name: data.name?.trim() || '',
-      description: data.description?.trim() || '',
-      photo: data.photo,
-      slug: data.slug?.trim() || '',
-      isFeatured: data.isFeatured
-    };
+		setValue(fieldName, rawValue, { shouldValidate: false });
+	}; const onSubmit = async (data: CategoryFormData) => {
+		clearErrors();
 
-    // First validate all form fields with precedence: required > other rules
-    const validations: any[] = [];
+		// Normalize values (trim strings)
+		const d = {
+			name: data.name?.trim() || '',
+			description: data.description?.trim() || '',
+			photo: data.photo,
+			slug: data.slug?.trim() || '',
+			isFeatured: data.isFeatured
+		};
 
-    // Name validations
-    validations.push(ValidationHelper.isRequired(d.name, 'name'));
-    if (d.name) validations.push(ValidationHelper.minLength(d.name, 'name', 3));
-    
-    // Description validations 
-    validations.push(ValidationHelper.isRequired(d.description, 'description'));
-    if (d.description) {
-      validations.push(ValidationHelper.minLength(d.description, 'description', 20));
-      validations.push(ValidationHelper.maxLength(d.description, 'description', 2000));
-    }
+		// First validate all form fields with precedence: required > other rules
+		const validations: any[] = [];
 
-    // Photo validations
-    validations.push(ValidationHelper.isRequired(d.photo, 'photo'));
-    if (d.photo instanceof File) {
-      validations.push(ValidationHelper.isValidFileType(d.photo, 'photo', 'image/*'));
-    } else if (id && !d.photo) {
-      // Skip photo validation on edit if no new photo uploaded
-      validations.pop();
-    }
+		// Name validations
+		validations.push(ValidationHelper.isRequired(d.name, 'name'));
+		validations.push(ValidationHelper.isRequired(d.slug, 'slug'));
+		if (d.name) validations.push(ValidationHelper.minLength(d.name, 'name', 3));
 
-    // Optional fields
-    if (d.slug) validations.push(ValidationHelper.minLength(d.slug, 'slug', 3));
+		// Description validations 
+		validations.push(ValidationHelper.isRequired(d.description, 'description'));
+		if (d.description) {
+			validations.push(ValidationHelper.minLength(d.description, 'description', 20));
+			validations.push(ValidationHelper.maxLength(d.description, 'description', 2000));
+		}
 
-    const validationErrors = ValidationHelper.validate(validations);
+		// Photo validations
+		validations.push(ValidationHelper.isRequired(d.photo, 'photo'));
+		if (d.photo instanceof File) {
+			validations.push(ValidationHelper.isValidFileType(d.photo, 'photo', 'image/*'));
+		} else if (id && !d.photo) {
+			// Skip photo validation on edit if no new photo uploaded
+			validations.pop();
+		}
 
-    if (validationErrors.length > 0) {
-      // Only set the first error per field so required errors are not overridden
-      const seen = new Set<string>();
-      for (const err of validationErrors) {
-        const key = String(err.field).toLowerCase();
-        if (seen.has(key)) continue;
-        seen.add(key);
-        const fieldName = key as keyof CategoryFormData;
-        setError(fieldName, {
-          type: 'manual',
-          message: err.message,
-        });
-      }
-      toast.error('Please fix validation errors');
-      return;
-    }		try {
+		// Optional fields
+		if (d.slug) validations.push(ValidationHelper.minLength(d.slug, 'slug', 3));
+
+		const validationErrors = ValidationHelper.validate(validations);
+
+		if (validationErrors.length > 0) {
+			// Only set the first error per field so required errors are not overridden
+			const seen = new Set<string>();
+			for (const err of validationErrors) {
+				const key = String(err.field).toLowerCase();
+				if (seen.has(key)) continue;
+				seen.add(key);
+				const fieldName = key as keyof CategoryFormData;
+				setError(fieldName, {
+					type: 'manual',
+					message: err.message,
+				});
+			}
+			return;
+		} try {
 			const formData = new FormData();
 			Object.entries(data).forEach(([key, value]) => {
 				if (value instanceof File) {

@@ -3,12 +3,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { useUserStore } from '../../stores/userStore';
-import { useUserRoleStore } from '../../stores/UserRoleStore'; // ✅ import role store
+import { useUserRoleStore } from '../../stores/UserRoleStore';
 import FormHeader from '../../molecules/FormHeader';
 import ManagementForm from '../../organisms/ManagementForm';
 import { userFields as baseUserFields } from '../../utils/fields/userFields';
 import ValidationHelper from '../../utils/validationHelper';
-import Swal from 'sweetalert2';
 
 type UserFormData = {
   username: string;
@@ -19,18 +18,11 @@ type UserFormData = {
   password?: string;
 };
 
-const getNestedError = (errors: any, path: string): any => {
-  return path.split('.').reduce((acc: any, part: string) => {
-    return acc && part in acc ? acc[part] : undefined;
-  }, errors);
-};
-
 const UserFormTemplate: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { fetchUserById, addUser, updateUser } = useUserStore();
 
- 
+  const { fetchUserById, addUser, updateUser } = useUserStore();
   const { fetchRoles, roles, loading: roleLoading } = useUserRoleStore();
 
   const [isInitialized, setIsInitialized] = useState(false);
@@ -47,21 +39,28 @@ const UserFormTemplate: React.FC = () => {
     mode: 'onSubmit',
   });
 
-  const { handleSubmit, reset, setError, clearErrors, formState: { errors, isSubmitting } } = methods;
+  const {
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    formState: { isSubmitting },
+  } = methods;
 
-  // Validation config
+  // ✅ Validation config
   const fieldValidations: Record<string, any> = {
     username: { required: true, min: 2, max: 100 },
     email: { email: true },
-    role: { required: true }, // ✅ role required
+    role: { required: true },
     userType: { enum: ['full-time', 'part-time', 'contractor'] },
     phone: { pattern: /^\+?\d{10,15}$/ },
-    password: { required: !id, min: 6 },
+    password: { required: !id, min: 8 },
   };
 
   const validateField = (field: keyof UserFormData, value: any) => {
     const config = fieldValidations[field];
     const label = field.charAt(0).toUpperCase() + field.slice(1);
+
     if (config?.required) {
       const err = ValidationHelper.isRequired(value, label);
       if (err) return err;
@@ -81,26 +80,28 @@ const UserFormTemplate: React.FC = () => {
     return null;
   };
 
-  const handleFieldChange = (fieldName: keyof UserFormData) => (e: { target: { name: string; value: any } }) => {
-    const value = e.target.value.trim();
-    const error = validateField(fieldName, value);
-    if (error) {
-      setError(fieldName, {
-        type: 'manual',
-        message: error.message,
-      });
-    } else {
-      clearErrors(fieldName);
-    }
-    methods.setValue(fieldName, value, { shouldValidate: false });
-  };
+  const handleFieldChange =
+    (fieldName: keyof UserFormData) =>
+    (e: { target: { name: string; value: any } }) => {
+      const value = e.target.value.trim();
+      const error = validateField(fieldName, value);
+      if (error) {
+        setError(fieldName, {
+          type: 'manual',
+          message: error.message,
+        });
+      } else {
+        clearErrors(fieldName);
+      }
+      methods.setValue(fieldName, value, { shouldValidate: false });
+    };
 
-  // ✅ Fetch roles from store once
+  // ✅ Fetch roles once
   useEffect(() => {
     fetchRoles().catch((err) => toast.error(`Failed to load roles: ${err}`));
   }, [fetchRoles]);
 
-  // Fetch user for edit
+  // ✅ Fetch user details for edit
   useEffect(() => {
     if (id && !isInitialized) {
       const fetchData = async () => {
@@ -123,7 +124,7 @@ const UserFormTemplate: React.FC = () => {
     }
   }, [id, fetchUserById, reset, isInitialized]);
 
-  // ✅ Map roles into select field options dynamically
+ 
   const userFields = useMemo(() => {
     const dynamicFields = baseUserFields.map((field) => {
       if (field.name === 'role') {
@@ -140,6 +141,7 @@ const UserFormTemplate: React.FC = () => {
     return dynamicFields;
   }, [roles]);
 
+  // ✅ Submit form
   const onSubmit = async (data: UserFormData) => {
     clearErrors();
     const trimmedData = {
@@ -154,22 +156,14 @@ const UserFormTemplate: React.FC = () => {
     try {
       if (id) {
         await updateUser(id, trimmedData);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'User updated successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--purple-color)',
-        });
+        toast.success('User updated successfully');
       } else {
         await addUser(trimmedData);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'User added successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--purple-color)',
-        });
+        toast.success('User added successfully');
       }
-      navigate('/user');
+
+      // Redirect after short delay to let toast show
+      setTimeout(() => navigate('/user'), 1500);
     } catch (error: any) {
       const errorData = error?.response?.data || {};
       toast.error(errorData.message || 'Something went wrong');
@@ -179,13 +173,6 @@ const UserFormTemplate: React.FC = () => {
   const onInvalid = () => {
     const values = methods.getValues();
     return onSubmit(values);
-  };
-
-  const hasErrors = () => {
-    return userFields.some((field) => {
-      const error = getNestedError(errors, field.name);
-      return error?.message !== undefined;
-    });
   };
 
   return (
@@ -212,11 +199,6 @@ const UserFormTemplate: React.FC = () => {
             password: handleFieldChange('password'),
           }}
         />
-        {hasErrors() && (
-          <div className="text-red-500 text-sm mt-2">
-            Please fix the errors before proceeding.
-          </div>
-        )}
       </FormProvider>
     </div>
   );

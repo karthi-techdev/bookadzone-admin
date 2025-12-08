@@ -1,4 +1,4 @@
-// src/utils/fields/userFields.ts
+
 import type { FieldConfig } from '../../types/common';
 
 export const userFields: FieldConfig[] = [
@@ -18,13 +18,19 @@ export const userFields: FieldConfig[] = [
     name: 'role',
     label: 'Role',
     type: 'select',
-    options: [], 
+    options: [],
   },
   {
     name: 'userType',
     label: 'User Type',
-    type: 'text',
-    placeholder: 'Enter user type',
+    type: 'select',
+    options: [
+      { value: 'admin', label: 'Admin' },
+      { value: 'agency', label: 'Agency' },
+      { value: 'subadmin', label: 'Subadmin' },
+      { value: 'advertiser', label: 'Advertiser' },
+      { value: 'others', label: 'Others' },
+    ],
   },
   {
     name: 'phone',

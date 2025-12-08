@@ -79,23 +79,19 @@ const AboutBannertTemplate: React.FC = () => {
   const methods = useForm<AboutBannerFormData>({ defaultValues: {}, mode: 'onSubmit' });
   const { handleSubmit, reset, clearErrors, setValue, getValues, formState: { isSubmitting } } = methods;
 
-  // Handler for image field changes - separates new, existing and removed images
   const handleImageFieldChange = (fieldName: string, removedFieldName: string) => (e: { target: { value: any; removedFiles?: string[] } }) => {
     const currentValue = getValues(fieldName) || [];
     const newFiles: File[] = [];
     const existingImages: { id: number; url: string }[] = [];
     
-    // Handle existing images
     currentValue.forEach((img: any) => {
       if (img && typeof img === 'object' && 'url' in img && 'id' in img) {
-        // Only keep existing images that haven't been removed
         if (!e.target.removedFiles?.includes(img.url)) {
           existingImages.push(img);
         }
       }
     });
 
-    // Handle new files
     if (Array.isArray(e.target.value)) {
       e.target.value.forEach((file: File) => {
         if (file instanceof File) {
@@ -106,12 +102,9 @@ const AboutBannertTemplate: React.FC = () => {
       newFiles.push(e.target.value);
     }
 
-    // Update removed files if any
     if (e.target.removedFiles?.length) {
       setValue(removedFieldName, e.target.removedFiles, { shouldValidate: true });
     }
-
-    // Set the combined value but keep new files and existing images separate in the internal structure
     setValue(fieldName, [...existingImages, ...newFiles], { shouldValidate: true });
   };
 
@@ -137,7 +130,6 @@ const AboutBannertTemplate: React.FC = () => {
         bannerFour
       });
 
-      // Convert images to array of objects with id and url
       const bannerOneImages = Array.isArray(bannerOne.images)
         ? bannerOne.images.map((img: any, idx: number) =>
             typeof img === 'string'
@@ -152,7 +144,6 @@ const AboutBannertTemplate: React.FC = () => {
               : img
           )
         : [];
-      // Log the raw banner data before processing
       console.log('Raw banner data:', {
         bannerThree,
         bannerFour
@@ -411,20 +402,7 @@ const AboutBannertTemplate: React.FC = () => {
           formDataObj.append(`aboutBanner.bannerFour.history[${index}][year]`, item.year?.toString() || '');
           formDataObj.append(`aboutBanner.bannerFour.history[${index}][month]`, item.month || '');
           formDataObj.append(`aboutBanner.bannerFour.history[${index}][description]`, item.description || '');
-        });
-
-        // Log the data being sent (for debugging)
-        console.log('Sending bannerFour data:', {
-          title: formData.aboutBannerFourTitle,
-          history: aboutBannerFourHistory
-        });
-        
-        // Log the FormData entries
-        console.log('FormData content:');
-        for (let pair of formDataObj.entries()) {
-          console.log('FormData entry:', pair[0], pair[1]);
-        }
-        
+        });        
         await updateBanner(formDataObj);
         toast.success('Banner Four updated successfully');
       }
@@ -434,8 +412,7 @@ const AboutBannertTemplate: React.FC = () => {
   };
 
   const handleTabChange = (tabId: number) => {
-    setActiveTab(tabId);
-    // Clear any existing errors when switching tabs
+    setActiveTab(tabId);    
     clearErrors();
   };
 

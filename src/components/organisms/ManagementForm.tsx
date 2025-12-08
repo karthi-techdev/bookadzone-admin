@@ -176,7 +176,6 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
   };
 
   const handleRemoveField = (index: number) => {
-    // Prevent removing if it's the only field and it's empty
     if (dynamicFields.length === 1) {
       const fieldValues = getValues(`${dynamicFieldNameToUse}[${index}]`) || {};
       const hasValues = dynamicFieldConfigToUse.some(config => {
@@ -216,6 +215,21 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
       register('template');
     }
   }, [isJodit, register]);
+  // 🔽 Automatically scroll to the first error when validation fails
+  useEffect(() => {
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField) {
+      const el = document.querySelector(`[name="${firstErrorField}"]`) as HTMLElement | null;
+      if (el) {
+        // smooth scroll
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // optional: add focus & red border highlight
+        el.focus({ preventScroll: true });
+        el.classList.add('ring-2', 'ring-red-500', 'animate-pulse');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-red-500', 'animate-pulse'), 1500);
+      }
+    }
+  }, [errors]);
 
   // AUTH FORM RENDER
   if (isAuth) {
@@ -244,7 +258,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
               <div key={field.name} className="w-full">
                 <FormField
                   field={fieldWithOptions}
-                  value={getValues(field.name)}
+                  value={watch(field.name) || ''}
                   onChange={onFieldChange[field.name] || ((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
                     if (field.type === 'file' && 'files' in e.target && e.target.files) {
                       setValue(field.name, e.target.files[0], { shouldValidate: true });
@@ -399,7 +413,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
               <div key={field.name} className={field.className || 'md:col-span-6 col-span-12'}>
                 <FormField
                   field={fieldWithOptions}
-                  value={getValues(field.name)}
+                  value={watch(field.name) || ''}
                   onChange={onFieldChange[field.name] || ((e) => {
                     setValue(field.name, e.target.value, { shouldValidate: true });
                   })}
@@ -438,7 +452,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
                           <FormField
                             key={fieldPath}
                             field={{ ...dField, name: fieldPath }}
-                            value={getValues(fieldPath)}
+                            value={watch(dField.name) || ''}
                             onChange={handleDynamicFieldChange(index, dField.name)}
                             error={getNestedError(errors, fieldPath)}
                           />

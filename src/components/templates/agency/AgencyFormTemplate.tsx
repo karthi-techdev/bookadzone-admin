@@ -26,7 +26,7 @@ type AgencyFormData = {
   state: string;
   city: string;
   pincode: string;
-  password: string;
+  password?: string;
   agencyLogo: File | string;
   photo: File | string;
   uploadIdProof: File | string;
@@ -34,13 +34,14 @@ type AgencyFormData = {
 };
 
 const AgencyFormTemplate: React.FC = () => {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { fetchAgencyById, addAgency, updateAgency } = useAgencyStore();
-  const [isInitialized, setIsInitialized] = useState(false);
 
+  const [isInitialized, setIsInitialized] = useState(false);
   const [existingAgencyData, setExistingAgencyData] = useState<any>(null);
   const [isCheckingEmails, setIsCheckingEmails] = useState(false);
+
   const countryOptions = useMemo(() => getAllCountries(), []);
   const [stateOptions, setStateOptions] = useState<{ label: string; value: string }[]>([]);
   const [cityOptions, setCityOptions] = useState<{ label: string; value: string }[]>([]);
@@ -59,158 +60,121 @@ const AgencyFormTemplate: React.FC = () => {
       website: '',
       agencyAddress: '',
       agencyLocation: '',
-      country: countryOptions.find(c => c.value === 'IN')?.value || (countryOptions[0]?.value ?? ''),
+      country: '',
       state: '',
       city: '',
       pincode: '',
       password: '',
+      agencyLogo: '',
+      photo: '',
+      uploadIdProof: '',
+      uploadBusinessProof: '',
     },
     mode: 'onSubmit',
   });
 
-  // Set default country if not set
+  const {
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = methods;
+
+  const watchedCountry = watch('country');
+  const watchedState = watch('state');
+
   useEffect(() => {
-    const defaultCountry = countryOptions.find(c => c.value === 'IN')?.value || (countryOptions[0]?.value ?? '');
-    if (methods.getValues('country') !== defaultCountry) {
-      methods.setValue('country', defaultCountry);
+    if (watchedCountry) {
+      const states = getStatesOfCountry(watchedCountry);
+      setStateOptions(states);
+      setValue('state', '');
+      setValue('city', '');
+      setCityOptions([]);
+    } else {
+      setStateOptions([]);
+      setCityOptions([]);
     }
-  }, [countryOptions, methods]);
+  }, [watchedCountry, setValue]);
 
-  // Update state options when country changes
   useEffect(() => {
-    const subscription = methods.watch((values, { name }) => {
-      if (name === 'country') {
-        const selectedCountry = values.country || 'IN';
-        const states = getStatesOfCountry(selectedCountry);
-        setStateOptions(states);
-        if (values.state && !states.find(s => s.value === values.state)) {
-          methods.setValue('state', '', { shouldDirty: false });
-          methods.setValue('city', '', { shouldDirty: false });
-          setCityOptions([]);
-        }
+    if (watchedCountry && watchedState) {
+      const cacheKey = `${watchedCountry}_${watchedState}`;
+      if (cityCache.current[cacheKey]) {
+        setCityOptions(cityCache.current[cacheKey]);
+      } else {
+        const cities = getCitiesOfState(watchedCountry, watchedState);
+        cityCache.current[cacheKey] = cities;
+        setCityOptions(cities);
       }
-    });
-    return () => subscription.unsubscribe();
-  }, [methods]);
-
-  // Update city options when state changes
-  useEffect(() => {
-    const subscription = methods.watch((values, { name }) => {
-      if (name === 'state') {
-        const selectedCountry = values.country || 'IN';
-        const selectedState = values.state;
-        if (selectedCountry && selectedState) {
-          const cacheKey = `${selectedCountry}_${selectedState}`;
-          if (cityCache.current[cacheKey]) {
-            setCityOptions(cityCache.current[cacheKey]);
-          } else {
-            const cities = getCitiesOfState(selectedCountry, selectedState);
-            cityCache.current[cacheKey] = cities;
-            setCityOptions(cities);
-          }
-          if (!cityCache.current[cacheKey]?.find(c => c.value === values.city)) {
-            methods.setValue('city', '', { shouldDirty: false });
-          }
-        } else {
-          setCityOptions([]);
-        }
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [methods]);
-
-  const { handleSubmit, reset, setError, clearErrors, setValue, formState: { errors, isSubmitting } } = methods;
-
-  // Fetch agency data if editing
-  useEffect(() => {
-    setStateOptions(getStatesOfCountry('IN'));
-  }, []);
+    } else {
+      setCityOptions([]);
+    }
+  }, [watchedCountry, watchedState]);
 
   useEffect(() => {
     if (id && !isInitialized) {
       const fetchData = async () => {
-        const agency = await fetchAgencyById(id);
-        if (agency) {
-          setExistingAgencyData(agency);
-          reset({
-            agencyName: agency.agencyName || '',
-            name: agency.name || '',
-            position: agency.position || '',
-            yourEmail: agency.yourEmail || '',
-            yourPhone: agency.yourPhone || '',
-            companyEmail: agency.companyEmail || '',
-            companyPhone: agency.companyPhone || '',
-            companyRegistrationNumberGST: agency.companyRegistrationNumberGST || '',
-            website: agency.website || '',
-            agencyAddress: agency.agencyAddress || '',
-            agencyLocation: agency.agencyLocation || '',
-            country: agency.country || '',
-            state: agency.state || '',
-            city: agency.city || '',
-            pincode: agency.pincode || '',
-            password: agency.password || '',
-            agencyLogo: agency.agencyLogo || '',
-            photo: agency.photo || '',
-            uploadIdProof: agency.uploadIdProof || '',
-            uploadBusinessProof: agency.uploadBusinessProof || '',
-          });
-          setIsInitialized(true);
-          if (agency.state) {
-            setCityOptions(getCitiesOfState('IN', agency.state));
+        try {
+          const agency = await fetchAgencyById(id);
+          if (agency) {
+            setExistingAgencyData(agency);
+            reset({
+              agencyName: agency.agencyName || '',
+              name: agency.name || '',
+              position: agency.position || '',
+              yourPhone: agency.yourPhone || '',
+              yourEmail: agency.yourEmail || '',
+              companyEmail: agency.companyEmail || '',
+              companyPhone: agency.companyPhone || '',
+              companyRegistrationNumberGST: agency.companyRegistrationNumberGST || '',
+              website: agency.website || '',
+              agencyAddress: agency.agencyAddress || '',
+              agencyLocation: agency.agencyLocation || '',
+              country: agency.country || '',
+              state: agency.state || '',
+              city: agency.city || '',
+              pincode: agency.pincode || '',
+              agencyLogo: agency.agencyLogo || '',
+              photo: agency.photo || '',
+              uploadIdProof: agency.uploadIdProof || '',
+              uploadBusinessProof: agency.uploadBusinessProof || '',
+            });
+            setIsInitialized(true);
+          } else {
+            toast.error('Failed to load agency');
+            navigate('/agency');
           }
-        } else {
-          toast.error('Failed to load agency data');
+        } catch {
+          toast.error('Error loading agency');
+          navigate('/agency');
         }
       };
       fetchData();
     }
-  }, [id, fetchAgencyById, reset, isInitialized]);
+  }, [id, fetchAgencyById, reset, isInitialized, navigate]);
 
-  // Update cities when state changes
-  useEffect(() => {
-    const subscription = methods.watch((values) => {
-      if (values.state) {
-        setCityOptions(getCitiesOfState('IN', values.state));
-      } else {
-        setCityOptions([]);
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [methods]);
+  const handleFieldChange = (fieldName: keyof AgencyFormData, minLength?: number) => (e: { target: { value: any } }) => {
 
-  const handleFieldChange = (fieldName: keyof AgencyFormData, minLength?: number) => (e: { target: { name: string; value: any } }) => {
     const rawValue = e.target.value;
-    const valueForValidation = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
+    const value = typeof rawValue === 'string' ? rawValue.trim() : rawValue;
     const field = agencyFields.find(f => f.name === fieldName);
-    
     if (!field) return;
 
-    const validations = [] as any[];
-    
-    if (field.required) {
-      const requiredError = ValidationHelper.isRequired(valueForValidation, fieldName);
-      if (requiredError) {
-        setError(fieldName, {
-          type: 'manual',
-          message: requiredError.message,
-        });
-        setValue(fieldName, rawValue, { shouldValidate: false });
-        return;
-      }
+    const validations: any[] = [];
+
+    if (field.required && !value) {
+      setError(fieldName, { type: 'manual', message: `${field.label || fieldName} is required` });
+      setValue(fieldName, rawValue, { shouldValidate: false });
+      return;
     }
-    
-    if (valueForValidation) {
-      if (field.type === 'email') {
-        validations.push(ValidationHelper.isValidEmail(valueForValidation, fieldName));
-      }
-      
-      if (field.type === 'password') {
-        validations.push(ValidationHelper.isValidPassword(valueForValidation, fieldName));
-      }
-      
-      if (minLength && typeof valueForValidation === 'string') {
-        validations.push(ValidationHelper.minLength(valueForValidation, fieldName, minLength));
-      }
+
+    if (value) {
+      if (field.type === 'email') validations.push(ValidationHelper.isValidEmail(value, fieldName));
+      if (field.type === 'password') validations.push(ValidationHelper.isValidPassword(value, fieldName));
+      if (minLength && typeof value === 'string') validations.push(ValidationHelper.minLength(value, fieldName, minLength));
     }
 
     if (field.type === 'file' && rawValue instanceof File) {
@@ -218,286 +182,136 @@ const AgencyFormTemplate: React.FC = () => {
     }
 
     const errorsArr = ValidationHelper.validate(validations);
-    
-    if (errorsArr.length > 0) {
-      setError(fieldName, {
-        type: 'manual',
-        message: errorsArr[0].message,
-      });
+    if (errorsArr.length) {
+      setError(fieldName, { type: 'manual', message: errorsArr[0].message });
     } else {
       clearErrors(fieldName);
     }
-    
+
     setValue(fieldName, rawValue, { shouldValidate: false });
   };
 
-  // Real-time email check on blur
   const handleEmailBlur = async (fieldName: 'yourEmail' | 'companyEmail') => {
-    const yourEmail = methods.getValues('yourEmail');
-    const companyEmail = methods.getValues('companyEmail');
-    
-    // Only check if both emails are filled and valid
-    if (!yourEmail || !companyEmail) return;
-    
-    // Skip if emails haven't changed in edit mode
-    if (id && existingAgencyData) {
-      if (fieldName === 'yourEmail' && yourEmail === existingAgencyData.yourEmail) return;
-      if (fieldName === 'companyEmail' && companyEmail === existingAgencyData.companyEmail) return;
-    }
+    if (id) return;
 
-    // Clear previous email errors
+    const yourEmail = methods.getValues('yourEmail').trim();
+    const companyEmail = methods.getValues('companyEmail').trim();
+    if (!yourEmail || !companyEmail) return;
+
     clearErrors('yourEmail');
     clearErrors('companyEmail');
 
     try {
       setIsCheckingEmails(true);
-      const emailCheck = await useAgencyStore.getState().checkEmailsExist(yourEmail, companyEmail, id);
-      
-      if (emailCheck.yourEmailExists) {
-        setError('yourEmail', {
-          type: 'manual',
-          message: 'This personal email is already registered'
-        });
-      }
-      
-      if (emailCheck.companyEmailExists) {
-        setError('companyEmail', {
-          type: 'manual',
-          message: 'This company email is already registered'
-        });
-      }
-    } catch (error) {
-      console.error('Error checking emails:', error);
+      const check = await useAgencyStore.getState().checkEmailsExist(yourEmail, companyEmail);
+      if (check.yourEmailExists) setError('yourEmail', { type: 'manual', message: 'Personal email already registered' });
+      if (check.companyEmailExists) setError('companyEmail', { type: 'manual', message: 'Company email already registered' });
+    } catch {
+      toast.error('Email check failed');
     } finally {
       setIsCheckingEmails(false);
     }
   };
+
   const onSubmit = async (data: AgencyFormData) => {
     clearErrors();
-
-    // Prevent double submission
     if (isCheckingEmails) {
-      toast.error('Please wait while we verify email availability');
+      toast.error('Verifying emails...');
       return;
     }
 
-    // Normalize values
-    const d = normalizeFormValues(data);
+    const d = Object.fromEntries(Object.entries(data).map(([k, v]) => [k, typeof v === 'string' ? v.trim() : v])) as AgencyFormData;
 
-    // Validate all fields
-    const validations: any[] = [];
-    validations.push(ValidationHelper.isRequired(d.agencyName, 'agencyName'));
-    if (d.agencyName) validations.push(ValidationHelper.minLength(d.agencyName, 'agencyName', 3));
-
-    validations.push(ValidationHelper.isRequired(d.name, 'name'));
-    if (d.name) validations.push(ValidationHelper.minLength(d.name, 'name', 3));
-
-    validations.push(ValidationHelper.isRequired(d.position, 'position'));
-
-    validations.push(ValidationHelper.isRequired(d.yourEmail, 'yourEmail'));
-    if (d.yourEmail) validations.push(ValidationHelper.isValidEmail(d.yourEmail, 'yourEmail'));
-
-    validations.push(ValidationHelper.isRequired(d.yourPhone, 'yourPhone'));
-    if (d.yourPhone) validations.push(ValidationHelper.minLength(d.yourPhone, 'yourPhone', 10));
-
-    validations.push(ValidationHelper.isRequired(d.companyEmail, 'companyEmail'));
-    if (d.companyEmail) validations.push(ValidationHelper.isValidEmail(d.companyEmail, 'companyEmail'));
-
-    validations.push(ValidationHelper.isRequired(d.companyPhone, 'companyPhone'));
-    if (d.companyPhone) validations.push(ValidationHelper.minLength(d.companyPhone, 'companyPhone', 10));
-
-    validations.push(ValidationHelper.isRequired(d.companyRegistrationNumberGST, 'companyRegistrationNumberGST'));
-    validations.push(ValidationHelper.isRequired(d.website, 'website'));
-    validations.push(ValidationHelper.isRequired(d.agencyAddress, 'agencyAddress'));
-    validations.push(ValidationHelper.isRequired(d.agencyLocation, 'agencyLocation'));
-    validations.push(ValidationHelper.isRequired(d.country, 'country'));
-    validations.push(ValidationHelper.isRequired(d.state, 'state'));
-    validations.push(ValidationHelper.isRequired(d.city, 'city'));
-    validations.push(ValidationHelper.isRequired(d.pincode, 'pincode'));
-
-    validations.push(ValidationHelper.isRequired(d.agencyLogo, 'agencyLogo'));
-    if (d.agencyLogo instanceof File) validations.push(ValidationHelper.isValidFileType(d.agencyLogo, 'agencyLogo', 'image/*'));
-
-    validations.push(ValidationHelper.isRequired(d.photo, 'photo'));
-    if (d.photo instanceof File) validations.push(ValidationHelper.isValidFileType(d.photo, 'photo', 'image/*'));
-
-    validations.push(ValidationHelper.isRequired(d.uploadIdProof, 'uploadIdProof'));
-    if (d.uploadIdProof instanceof File) validations.push(ValidationHelper.isValidFileType(d.uploadIdProof, 'uploadIdProof', '.pdf,application/pdf'));
-
-    validations.push(ValidationHelper.isRequired(d.uploadBusinessProof, 'uploadBusinessProof'));
-    if (d.uploadBusinessProof instanceof File) validations.push(ValidationHelper.isValidFileType(d.uploadBusinessProof, 'uploadBusinessProof', '.pdf,application/pdf'));
+    const validations: any[] = [
+      ValidationHelper.isRequired(d.agencyName, 'agencyName'),
+      d.agencyName && ValidationHelper.minLength(d.agencyName, 'agencyName', 3),
+      ValidationHelper.isRequired(d.name, 'name'),
+      d.name && ValidationHelper.minLength(d.name, 'name', 3),
+      ValidationHelper.isRequired(d.position, 'position'),
+      ValidationHelper.isRequired(d.yourEmail, 'yourEmail'),
+      d.yourEmail && ValidationHelper.isValidEmail(d.yourEmail, 'yourEmail'),
+      ValidationHelper.isRequired(d.yourPhone, 'yourPhone'),
+      d.yourPhone && ValidationHelper.minLength(d.yourPhone, 'yourPhone', 10),
+      ValidationHelper.isRequired(d.companyEmail, 'companyEmail'),
+      d.companyEmail && ValidationHelper.isValidEmail(d.companyEmail, 'companyEmail'),
+      ValidationHelper.isRequired(d.companyPhone, 'companyPhone'),
+      d.companyPhone && ValidationHelper.minLength(d.companyPhone, 'companyPhone', 10),
+      ValidationHelper.isRequired(d.companyRegistrationNumberGST, 'companyRegistrationNumberGST'),
+      ValidationHelper.isRequired(d.website, 'website'),
+      ValidationHelper.isRequired(d.agencyAddress, 'agencyAddress'),
+      ValidationHelper.isRequired(d.agencyLocation, 'agencyLocation'),
+      ValidationHelper.isRequired(d.country, 'country'),
+      ValidationHelper.isRequired(d.state, 'state'),
+      ValidationHelper.isRequired(d.city, 'city'),
+      ValidationHelper.isRequired(d.pincode, 'pincode'),
+      ValidationHelper.isRequired(d.agencyLogo, 'agencyLogo'),
+      d.agencyLogo instanceof File && ValidationHelper.isValidFileType(d.agencyLogo, 'agencyLogo', 'image/*'),
+      ValidationHelper.isRequired(d.photo, 'photo'),
+      d.photo instanceof File && ValidationHelper.isValidFileType(d.photo, 'photo', 'image/*'),
+      ValidationHelper.isRequired(d.uploadIdProof, 'uploadIdProof'),
+      d.uploadIdProof instanceof File && ValidationHelper.isValidFileType(d.uploadIdProof, 'uploadIdProof', '.pdf'),
+      ValidationHelper.isRequired(d.uploadBusinessProof, 'uploadBusinessProof'),
+      d.uploadBusinessProof instanceof File && ValidationHelper.isValidFileType(d.uploadBusinessProof, 'uploadBusinessProof', '.pdf'),
+    ].filter(Boolean);
 
     if (!id) {
       validations.push(ValidationHelper.isRequired(d.password, 'password'));
-      if (d.password) validations.push(ValidationHelper.isValidPassword(d.password, 'password'));
+      d.password && validations.push(ValidationHelper.isValidPassword(d.password, 'password'));
     }
 
-    const validationErrors = ValidationHelper.validate(validations);
-
-    if (validationErrors.length > 0) {
-      const seen = new Set<string>();
-      for (const err of validationErrors) {
-        const fieldName = err.field as keyof AgencyFormData;
-        const key = String(err.field);
-        if (seen.has(key)) continue;
-        seen.add(key);
-        setError(fieldName, {
-          type: 'manual',
-          message: err.message,
-        });
-      }
-      toast.error('Please fix all validation errors');
+    const errors = ValidationHelper.validate(validations);
+    if (errors.length) {
+      errors.forEach(e => setError(e.field as keyof AgencyFormData, { type: 'manual', message: e.message }));
+      
       return;
     }
 
-    // Final email check before submission
-    try {
-      setIsCheckingEmails(true);
-      const emailCheck = await useAgencyStore.getState().checkEmailsExist(d.yourEmail, d.companyEmail, id);
-      
-      if (emailCheck.yourEmailExists) {
-        setError('yourEmail', {
-          type: 'manual',
-          message: 'This personal email is already registered'
-        });
-        toast.error('This personal email is already registered');
-        setIsCheckingEmails(false);
+    if (!id) {
+      try {
+        setIsCheckingEmails(true);
+        const check = await useAgencyStore.getState().checkEmailsExist(d.yourEmail, d.companyEmail);
+        if (check.yourEmailExists || check.companyEmailExists) {
+          check.yourEmailExists && setError('yourEmail', { type: 'manual', message: 'Email already registered' });
+          check.companyEmailExists && setError('companyEmail', { type: 'manual', message: 'Email already registered' });
+          toast.error('Email already in use');
+          return;
+        }
+      } catch {
+        toast.error('Email check failed');
         return;
-      }
-      
-      if (emailCheck.companyEmailExists) {
-        setError('companyEmail', {
-          type: 'manual',
-          message: 'This company email is already registered'
-        });
-        toast.error('This company email is already registered');
+      } finally {
         setIsCheckingEmails(false);
-        return;
       }
-    } catch (error: any) {
-      toast.error('Error checking email availability');
-      setIsCheckingEmails(false);
-      return;
-    } finally {
-      setIsCheckingEmails(false);
     }
 
-    try {
-      const formData = new FormData();
-      Object.entries(d).forEach(([key, value]) => {
-        if (key === 'country') {
-          formData.append('country', value ?? '');
-        } else if (value instanceof File) {
-          formData.append(key, value);
-        } else {
-          formData.append(key, String(value));
-        }
-      });
-      
-      if (id && existingAgencyData?.userId) {
-        formData.append('userId', existingAgencyData.userId);
-      }
+    const formData = new FormData();
+    Object.entries(d).forEach(([k, v]) => v != null && formData.append(k, v instanceof File ? v : String(v)));
+    if (id && existingAgencyData?.userId) formData.append('userId', existingAgencyData.userId);
 
-      if (id) {
-        await updateAgency(id, formData);
-        await Swal.fire({
-          title: 'Success!',
-          text: 'Agency updated successfully',
-          icon: 'success',
-          confirmButtonColor: 'var(--puprle-color)',
-        });
-      } else {
-        try {
-          await addAgency(formData);
-          await Swal.fire({
-            title: 'Success!',
-            text: 'Agency added successfully',
-            icon: 'success',
-            confirmButtonColor: 'var(--puprle-color)',
-          });
-        } catch (addError: any) {
-          if (addError?.response?.data?.code === 11000 || 
-              (addError?.response?.data?.message && addError.response.data.message.includes('duplicate'))) {
-            const errorMessage = addError?.response?.data?.message || '';
-            const keyPattern = addError?.response?.data?.keyPattern || {};
-            
-            if (errorMessage.includes('yourEmail') || keyPattern.yourEmail) {
-              setError('yourEmail', {
-                type: 'manual',
-                message: 'This personal email address is already registered'
-              });
-              toast.error('This personal email address is already registered');
-              return;
-            }
-            
-            if (errorMessage.includes('companyEmail') || keyPattern.companyEmail) {
-              setError('companyEmail', {
-                type: 'manual',
-                message: 'This company email address is already registered'
-              });
-              toast.error('This company email address is already registered');
-              return;
-            }
-            
-            const field = Object.keys(keyPattern)[0] || 'field';
-            setError(field as keyof AgencyFormData, {
-              type: 'manual',
-              message: `This ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} already exists`
-            });
-            toast.error(`This ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} already exists`);
-            return;
-          }
-          throw addError;
-        }
-      }
+    try {
+      id ? await updateAgency(id, formData) : await addAgency(formData);
+      await Swal.fire({ title: 'Success!', text: `Agency ${id ? 'updated' : 'added'}`, icon: 'success' });
       navigate('/agency');
-    } catch (error: any) {
-      const errorData = error?.response?.data || {};
-      if (errorData.errors && Array.isArray(errorData.errors)) {
-        errorData.errors.forEach((err: { path: string; message: string }) => {
-          toast.error(`${err.path}: ${err.message}`);
-        });
-      } else {
-        toast.error(errorData.message || 'Something went wrong');
-      }
+    } catch (err: any) {
+      const data = err?.response?.data;
+      data?.errors?.forEach((e: any) => toast.error(`${e.path}: ${e.message}`));
+      toast.error(data?.message || 'Error');
     }
   };
-  
-  const normalizeFormValues = (values: AgencyFormData): AgencyFormData => {
-    const normalized: any = {};
-    Object.entries(values).forEach(([k, v]) => {
-      normalized[k] = typeof v === 'string' ? v.trim() : v;
+
+  const onInvalid = () => toast.error('Fix form errors');
+
+  const filteredFields = agencyFields
+    .filter(f => !id || f.name !== 'password')
+    .map(f => {
+      if (f.name === 'agencyName') return { ...f, className: id ? 'md:col-span-12' : 'md:col-span-6' };
+      if (id && ['yourEmail', 'companyEmail'].includes(f.name)) return { ...f, disabled: true };
+      return f;
     });
-    return normalized as AgencyFormData;
-  };
-  
-  const onInvalid = () => {
-    const values = methods.getValues();
-    return onSubmit(values);
-  };
-  
-
-
-  const filteredFields = (id
-    ? agencyFields.filter(field => field.name !== 'password')
-    : agencyFields
-  ).map(field => {
-    if (field.name === 'agencyName') {
-      return {
-        ...field,
-        className: id ? 'md:col-span-12' : 'md:col-span-6',
-      };
-    }
-    return field;
-  });
 
   return (
     <div className="p-6">
-      <FormHeader
-        managementName="Agency"
-        addButtonLink="/agency"
-        type={id ? 'Edit' : 'Add'}
-      />
+      <FormHeader managementName="Agency" addButtonLink="/agency" type={id ? 'Edit' : 'Add'} />
       <ToastContainer position="top-right" autoClose={3000} />
       <FormProvider {...methods}>
         <ManagementForm
@@ -506,12 +320,7 @@ const AgencyFormTemplate: React.FC = () => {
           isSubmitting={isSubmitting || isCheckingEmails}
           onSubmit={handleSubmit(onSubmit, onInvalid)}
           data-testid="agency-form"
-          extraProps={{
-
-            countryOptions,
-            stateOptions,
-            cityOptions,
-          }}
+          extraProps={{ countryOptions, stateOptions, cityOptions }}
           existingFiles={{
             agencyLogo: existingAgencyData?.agencyLogo ?? '',
             photo: existingAgencyData?.photo ?? '',
@@ -522,19 +331,9 @@ const AgencyFormTemplate: React.FC = () => {
             agencyName: handleFieldChange('agencyName', 3),
             name: handleFieldChange('name', 3),
             position: handleFieldChange('position'),
-            yourEmail: (e) => {
-              handleFieldChange('yourEmail')(e);
-              // Debounce email check
-              const timer = setTimeout(() => handleEmailBlur('yourEmail'), 500);
-              return () => clearTimeout(timer);
-            },
+            yourEmail: id ? () => {} : (e: any) => { handleFieldChange('yourEmail')(e); setTimeout(() => handleEmailBlur('yourEmail'), 500); },
             yourPhone: handleFieldChange('yourPhone', 10),
-            companyEmail: (e) => {
-              handleFieldChange('companyEmail')(e);
-              // Debounce email check
-              const timer = setTimeout(() => handleEmailBlur('companyEmail'), 500);
-              return () => clearTimeout(timer);
-            },
+            companyEmail: id ? () => {} : (e: any) => { handleFieldChange('companyEmail')(e); setTimeout(() => handleEmailBlur('companyEmail'), 500); },
             companyPhone: handleFieldChange('companyPhone', 10),
             companyRegistrationNumberGST: handleFieldChange('companyRegistrationNumberGST'),
             website: handleFieldChange('website'),
@@ -544,7 +343,6 @@ const AgencyFormTemplate: React.FC = () => {
             state: handleFieldChange('state'),
             city: handleFieldChange('city'),
             pincode: handleFieldChange('pincode'),
-            ...(id ? {} : { password: handleFieldChange('password') }),
             agencyLogo: handleFieldChange('agencyLogo'),
             photo: handleFieldChange('photo'),
             uploadIdProof: handleFieldChange('uploadIdProof'),
