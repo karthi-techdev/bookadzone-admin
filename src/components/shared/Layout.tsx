@@ -24,7 +24,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
         <div className="h-[60px] backdrop-blur-md fixed top-0 left-0 right-0 -z-0"></div>
       )}
       <main
-        className={`transition-all duration-300 px-4 ${
+        className={`table-list w-[85%] transition-all duration-300  ${
           isLoginPage ? "mt-0 ml-0" : "mt-[70px] " + (collapsed ? "ml-[70px]" : "ml-[210px]")
         }`}
       >

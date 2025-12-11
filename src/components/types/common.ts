@@ -268,6 +268,15 @@ export interface FieldConfig {
   onClick?: () => void;
 }
 
+<<<<<<< HEAD
+export interface LloginFieldconfig{
+  name:string;
+  type:InputType;
+  required?:boolean;
+  placeholder:string;
+  className:string
+}
+=======
 export interface TableConfig {
   headers: string[];
   rows: Array<{
@@ -284,6 +293,7 @@ export interface TableConfig {
   }>;
 }
 
+>>>>>>> 6d68b3d53446aca9522715e11cc55b96757cc2cb
 export interface FieldGroup {
   label: string;
   fields: FieldConfig[];

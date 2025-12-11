@@ -1,22 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import BAZButton from "../atoms/BAZ-Button";
 import { HiOutlineMenuAlt1 } from "react-icons/hi";
-import { TbMenu2 } from "react-icons/tb";
-import { RiListIndefinite } from "react-icons/ri";
+import { IoGrid } from "react-icons/io5";
+import { TbCategoryPlus, TbMenu2, TbCategoryFilled } from "react-icons/tb";
+import { RiListIndefinite, RiAdvertisementFill, RiShieldUserFill } from "react-icons/ri";
+import { MdSettings } from "react-icons/md";
+import { FaTrashCan } from "react-icons/fa6";
 import { FiChevronDown, FiChevronRight } from "react-icons/fi";
+import { BsUiChecks } from "react-icons/bs";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, useEffect } from "react";
-import type { JSX } from "react";
-import { useAuthStore } from "../stores/AuthStore";
-import * as BsIcons from "react-icons/bs";
-import * as MdIcons from "react-icons/md";
-import * as FaIcons from "react-icons/fa";
-import * as RiIcons from "react-icons/ri";
-import * as IoIcons from "react-icons/io";
-import * as Io5Icons from "react-icons/io5";
-
+import { useState, useEffect } from "react";
 
 interface SidebarProps {
   collapsed: boolean;
@@ -25,65 +20,90 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const location = useLocation();
-  const { menus } = useAuthStore();
   const [expandedMenuIdx, setExpandedMenuIdx] = useState<number | null>(null);
 
-  const getIcon = (iconName?: string): JSX.Element => {
-  if (!iconName) return <RiListIndefinite />;
+  const navItems = [
+    { icon: <IoGrid />, text: "Dashboard", path: "/", special: true },
+    { icon: <TbCategoryPlus />, text: "Category", path: "/category", special: true },
+    { icon: <RiShieldUserFill />, text: "Agency", path: "/agency", special: true },
+    {
+      icon: <RiAdvertisementFill />,
+      text: "Banners",
+      path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "Home Page", path: "/banner/homepage" },
+        { icon: <RiListIndefinite />, text: "About Page", path: "/banner/about" },
+      ],
+    },
+    {
+      icon: <BsUiChecks />,
+      text: "Manage Blog",
+      path: "#",
+      children: [{ icon: <TbCategoryFilled />, text: "Blog Category", path: "/blogcategory" }],
+    },
+    {
+      icon: <BsUiChecks />,
+      text: "Site Setting",
+      path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "FAQ", path: "/faq" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/config" },
+        { icon: <RiListIndefinite />, text: "NewsLetter", path: "/newsletter" },
+        { icon: <RiListIndefinite />, text: "FooterInfo", path: "/footerinfo" },
+      ],
+    },
+    {
+      icon: <MdSettings />,
+      text: "Setting",
+      path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "General Settings", path: "/settings/general" },
+        { icon: <RiListIndefinite />, text: "Contact Info", path: "/settings/contact" },
+        { icon: <RiListIndefinite />, text: "Email Configuration", path: "/settings/email" },
+        { icon: <RiListIndefinite />, text: "SEO Configuration", path: "/settings/seo" },
+        { icon: <RiListIndefinite />, text: "OG Configuration", path: "/settings/og" },
+      ],
+    },
+    {
+      icon: <FaTrashCan />,
+      text: "Trash",
+      path: "#",
+      children: [
+        { icon: <RiListIndefinite />, text: "Agency", path: "/trash/agency" },
+        { icon: <RiListIndefinite />, text: "FAQ", path: "/trash/faq" },
+        { icon: <RiListIndefinite />, text: "FooterInfo", path: "/trash/footerinfo" },
+        { icon: <RiListIndefinite />, text: "Config", path: "/trash/config" },
+        { icon: <RiListIndefinite />, text: "Category", path: "/trash/categorys" },
+        { icon: <RiListIndefinite />, text: "NewsLetter", path: "/trash/newsletter" },
+        { icon: <RiListIndefinite />, text: "BlogCategory", path: "/trash/blogcategory" },
+      ],
+    },
+  ];
 
-  // Split library and component name (e.g., "BsUiChecks" → "Bs" + "UiChecks")
-  const [library, ...componentParts] = iconName.split(/(?=[A-Z])/);
-  const componentName = componentParts.join("");
-
-  // Map supported libraries
-  const libraryMap: { [key: string]: any } = {
-    Bs: BsIcons,
-    Md: MdIcons,
-    Fa: FaIcons,
-    Ri: RiIcons,
-    Hi: { HiOutlineMenuAlt1 },
-    Tb: { TbMenu2 },
-    Fi: { FiChevronDown, FiChevronRight },
-    Io: IoIcons,
-    Io5: Io5Icons,
+// **Responsive Auto Collapse / Expand Sidebar**
+useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth < 1024) { 
+      // md breakpoint (768px) & below => close sidebar
+      setCollapsed(true);
+      setExpandedMenuIdx(null);
+    } else {
+      // lg breakpoint (1024px) & above => open sidebar
+      setCollapsed(false);
+    }
   };
 
-  // If the icon exists, render it, else fallback to RiListIndefinite
-  const IconComponent =
-    libraryMap[library]?.[`${library}${componentName}`] ||
-    libraryMap[library]?.[componentName] ||
-    RiListIndefinite;
+  handleResize(); // Run once on mount
+  window.addEventListener("resize", handleResize);
 
-  return <IconComponent />;
-};
-
-
-
-  useEffect(() => {
-    if (!menus) return;
-    let matchedIdx: number | null = null;
-    menus.forEach((item, idx) => {
-      if (item.children && item.children.some((child) => location.pathname.startsWith(child.path))) {
-        matchedIdx = idx;
-      }
-    });
-    setExpandedMenuIdx(matchedIdx);
-  }, [location.pathname, menus]);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+}, []);
 
   const toggleMenu = (idx: number) => {
     setExpandedMenuIdx((prev) => (prev === idx ? null : idx));
   };
-
-  if (!menus) {
-    return <div>Loading...</div>;
-  }
-
-
-  const sortedMenus = [...menus].sort((a, b) => {
-    const orderA = a.sequenceOrder !== undefined ? a.sequenceOrder : Infinity;
-    const orderB = b.sequenceOrder !== undefined ? b.sequenceOrder : Infinity;
-    return orderA - orderB;
-  });
 
   return (
     <motion.div
@@ -106,30 +126,34 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
 
       <div className="nav-links-side">
         <ul className="text-[.90rem]">
-          {sortedMenus.map((item, idx) => {
-            const isActive =
-              (item.path && location.pathname === item.path) ||
-              (item.children && item.children.some((child) => location.pathname.startsWith(child.path)));
-            const hasChildren = !!item.children && item.children.length > 0;
+          {navItems.map((item, idx) => {
+            const hasChildren = !!item.children;
+            let isActive = false;
+            if (item.path === "/") {
+              isActive = location.pathname === "/";
+            } else if (item.path !== "#") {
+              isActive = location.pathname.startsWith(item.path);
+            }
+            if (!isActive && hasChildren) {
+              isActive = item.children.some((child) => location.pathname.startsWith(child.path));
+            }
             const isExpanded = expandedMenuIdx === idx;
 
             if (item.special) {
               if (collapsed) {
                 return (
                   <li key={idx} className="flex flex-col items-center">
-                    <Tippy content={item.name} placement="right" arrow={true}>
+                    <Tippy content={item.text} placement="right" arrow={true}>
                       <Link
-                        to={item.path || "#"}
+                        to={item.path}
                         className={`group flex items-center text-[.78rem] text-[var(--white-color)] w-full mt-3 p-1 font-medium rounded-full justify-center ${isActive ? "bg-[var(--light-purple-color)]" : "hover:bg-[var(--light-purple-color)]"
                           }`}
                       >
                         <div
-                          className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full group-hover:bg-[var(--puprle-color)] ${isActive
-                              ? "bg-[var(--puprle-color)]"
-                              : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
+                          className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full group-hover:bg-[var(--puprle-color)] ${isActive ? "bg-[var(--puprle-color)]" : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
                             } transition duration-300`}
                         >
-                          {getIcon(item.icon)}
+                          {item.icon}
                         </div>
                       </Link>
                     </Tippy>
@@ -139,27 +163,26 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
               return (
                 <li key={idx} className="flex flex-col">
                   <Link
-                    to={item.path || "#"}
+                    to={item.path}
                     className={`group flex items-center text-[.78rem] text-[var(--white-color)] w-full mt-3 p-1 font-medium rounded-full justify-start ${isActive ? "bg-[var(--light-purple-color)]" : "hover:bg-[var(--light-purple-color)]"
                       }`}
                   >
                     <div
-                      className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full mr-3 group-hover:bg-[var(--puprle-color)] ${isActive
-                          ? "bg-[var(--puprle-color)]"
-                          : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
+                      className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full mr-3 group-hover:bg-[var(--puprle-color)] ${isActive ? "bg-[var(--puprle-color)]" : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
                         } transition duration-300`}
                     >
-                      {getIcon(item.icon)}
+                      {item.icon}
                     </div>
-                    {item.name}
+                    {item.text}
                   </Link>
                 </li>
               );
             }
+
             return (
               <li key={idx} className="flex flex-col justify-center items-center">
                 {collapsed ? (
-                  <Tippy content={item.name} placement="right" arrow={true}>
+                  <Tippy content={item.text} placement="right" arrow={true}>
                     <div>
                       <div
                         className={`group flex items-center text-[.78rem] text-[var(--white-color)] w-full mt-3 p-1 font-medium rounded-full justify-center ${isActive ? "bg-[var(--light-purple-color)]" : "hover:bg-[var(--light-purple-color)]"
@@ -168,12 +191,10 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                         style={{ cursor: hasChildren ? "pointer" : "auto" }}
                       >
                         <div
-                          className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full group-hover:bg-[var(--puprle-color)] ${isActive
-                              ? "bg-[var(--puprle-color)]"
-                              : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
+                          className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full group-hover:bg-[var(--puprle-color)] ${isActive ? "bg-[var(--puprle-color)]" : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
                             } transition duration-300`}
                         >
-                          {getIcon(item.icon)}
+                          {item.icon}
                         </div>
                       </div>
                       <AnimatePresence>
@@ -184,9 +205,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                             exit={{ opacity: 0, y: -10 }}
                             className="flex flex-col"
                           >
-                            {item.children!.map((sub, subidx) => (
+                            {item.children.map((sub, subidx) => (
                               <li key={subidx} className="mt-2 flex flex-col items-center justify-center">
-                                <Tippy content={sub.name} placement="right" arrow={true}>
+                                <Tippy content={sub.text} placement="right" arrow={true}>
                                   <Link
                                     to={sub.path}
                                     className={`flex items-center justify-center h-[35px] w-[35px] rounded-full text-[var(--white-color)] ${location.pathname === sub.path
@@ -194,7 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                                         : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
                                       } transition duration-300`}
                                   >
-                                    <span className="text-[.68rem]">{sub.name[0]}</span>
+                                    {sub.icon}
                                   </Link>
                                 </Tippy>
                               </li>
@@ -212,17 +233,13 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                       onClick={hasChildren ? () => toggleMenu(idx) : undefined}
                     >
                       <div
-                        className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full mr-3 group-hover:bg-[var(--puprle-color)] ${isActive
-                            ? "bg-[var(--puprle-color)]"
-                            : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
+                        className={`flex items-center justify-center text-[.90rem] h-[35px] w-[35px] rounded-full mr-3 group-hover:bg-[var(--puprle-color)] ${isActive ? "bg-[var(--puprle-color)]" : "bg-[var(--white-glass-color)] hover:bg-[var(--puprle-color)]"
                           } transition duration-300`}
                       >
-                        {getIcon(item.icon)}
+                        {item.icon}
                       </div>
-                      <span className="flex-1">{item.name}</span>
-                      {hasChildren && (
-                        <span className="mr-2">{isExpanded ? <FiChevronDown /> : <FiChevronRight />}</span>
-                      )}
+                      <span className="flex-1">{item.text}</span>
+                      {hasChildren && <span className="mr-2">{isExpanded ? <FiChevronDown /> : <FiChevronRight />}</span>}
                     </div>
                     <AnimatePresence>
                       {hasChildren && isExpanded && (
@@ -232,7 +249,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                           exit={{ height: 0, opacity: 0 }}
                           className="ml-4 w-full"
                         >
-                          {item.children!.map((sub, subidx) => (
+                          {item.children.map((sub, subidx) => (
                             <li key={subidx} className="mt-2 mr-2">
                               <Link
                                 to={sub.path}
@@ -241,7 +258,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
                                     : "hover:bg-[var(--puprle-color)]"
                                   } transition duration-300`}
                               >
-                                {sub.name}
+                                {sub.text}
                               </Link>
                             </li>
                           ))}

@@ -259,7 +259,7 @@ case "city-select":
                 {type === 'password' && (
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[1rem] mt-[10px] text-[var(--light-grey-color)] hover:text-[var(--white-color)] focus:outline-none"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
@@ -285,7 +285,7 @@ case "city-select":
         className={`space-y-2 ${className}`}
       >
         {label && (
-          <label htmlFor={name} className="block text-xs text-[var(--light-grey-color)]">
+          <label htmlFor={name} className="block mt-1 text-xs text-[var(--light-grey-color)]">
             {label}
             {required && <span className="text-red-400 ml-1">*</span>}
           </label>

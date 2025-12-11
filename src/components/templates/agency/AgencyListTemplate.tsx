@@ -21,6 +21,7 @@ const AgencyListTemplate: React.FC = () => {
     totalPages,
     loading,
     error,
+    
     // stats, // If you add stats to AgencyStore, you can use for statFilters
   } = useAgencyStore();
 

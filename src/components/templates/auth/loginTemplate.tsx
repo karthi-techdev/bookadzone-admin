@@ -182,7 +182,7 @@ const Login: React.FC = () => {
         }}
         extraProps={{}}
       />
-      <div className="mt-2 forgot-link w-full flex justify-end mb-4">
+      <div className="mt-2 forgot-link w-full flex justify-end mb-2">
         <Link to="/forgot-password" className="text-xs text-[var(--light-grey-color)] hover:text-[var(--white-color)] underline transition-all duration-300 ease-in-out">
           Forgot Password?
         </Link>

@@ -239,7 +239,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className="flex flex-col justify-center items-center w-full"
+        className="flex flex-col justify-center items-center w-full login-form-inp-sec"
         data-testid={dataTestId || 'auth-form'}
       >
         <div className="w-full space-y-2">
@@ -276,7 +276,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
             );
           })}
         </div>
-        <div className="mt-4 w-full flex justify-center">
+        <div className=" w-full flex justify-center">
           <Button
             type="submit"
             className="p-3 bg-[var(--puprle-color)] text-[var(--white-color)] font-medium text-[.75rem] cursor-pointer rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px] w-full disabled:opacity-50"

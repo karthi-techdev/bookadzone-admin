@@ -3,7 +3,7 @@ import BAZButton from "./BAZ-Button";
 import { FiSearch } from "react-icons/fi";
 
 const BAZSearchBox: FC = () => (
-  <div className="search-box w-[35vw] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
+  <div className="header-search-box w-[35vw] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
     <FiSearch className="text-[1.3rem] ml-2 text-[var(--light-grey-color)]" />
     <input
       type="search"

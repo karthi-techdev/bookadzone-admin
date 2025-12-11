@@ -97,7 +97,7 @@ const ExampleMultiStepForm: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen p-2 w-[100%]">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Example Multi-Step Form</h1>
         <p className="text-xs text-[var(--light-grey-color)]">A demo of a multi-step form layout</p>
