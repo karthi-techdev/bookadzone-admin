@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../atoms/BAZ-Logo";
 import Mobilelogo from "../atoms/BAZ-Mobilelogo"
 import Button from "../atoms/BAZ-Button";
@@ -15,15 +15,46 @@ import ImportedURL from "../common/urls";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const { logout } = useAuthStore(); 
+  const { logout } = useAuthStore();
   const notifDropdown = useDropdown();
   const profileDropdown = useDropdown();
+  
   // Use settings store hook for logo
-  const settings = useSettingsStore((state: any) => state.settings);
+  const { settings, fetchSettings, loading, error } = useSettingsStore();
+  
   // Get current user from auth store
   const user = useAuthStore(state => state.user);
 
+  // State for logo URL with fallback
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoError, setLogoError] = useState(false);
 
+  // Fetch settings on component mount
+  useEffect(() => {
+    fetchSettings();
+  }, [fetchSettings]);
+
+  // Update logo URL when settings change
+  useEffect(() => {
+    if (settings?.general?.siteLogo) {
+      const url = `${ImportedURL.FILEURL}/${settings.general.siteLogo}`.replace(/\/+/g, '/');
+      setLogoUrl(url);
+      setLogoError(false);
+    } else {
+      setLogoUrl(null);
+    }
+  }, [settings]);
+
+  // Handle logo image error
+  const handleLogoError = () => {
+    console.error('Failed to load logo:', logoUrl);
+    setLogoError(true);
+  };
+
+  // Handle logo image load
+  const handleLogoLoad = () => {
+    setLogoError(false);
+  };
 
   return (
     <motion.nav
@@ -72,25 +103,46 @@ const Navbar: React.FC = () => {
                       <li className="py-2 px-3 hover:bg-[var(--light-purple-color)] transition-all duration-200">
                         <Link to="/" className="flex items-center item-center justify-between">
                           <div className="avatar-img h-[50px] w-[30px] flex items-start justify-left">
-                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Avatar" className="h-[30px] w-[30px] rounded-full object-cover" />
+                            <img 
+                              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
+                              alt="Avatar" 
+                              className="h-[30px] w-[30px] rounded-full object-cover" 
+                            />
                           </div>
                           <div className="content w-[250px]">
-                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Karthi Rajendhiran <span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Skoda Motors</span></span>
-                            <p className="text-[.60rem] text-[var(--light-grey-color)]">Submitted a new booking request for “Medavakkam Flyover” billboard.</p>
+                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">
+                              Karthi Rajendhiran 
+                              <span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">
+                                Skoda Motors
+                              </span>
+                            </span>
+                            <p className="text-[.60rem] text-[var(--light-grey-color)]">
+                              Submitted a new booking request for "Medavakkam Flyover" billboard.
+                            </p>
                             <span className="text-[.50rem] text-[var(--light-grey-color)] flex mt-0.5">2 hours ago</span>
                           </div>
                           <span className="not-read-point h-[8px] w-[8px] bg-[var(--puprle-color)] rounded-full flex"></span>
                         </Link>
                       </li>
-                      {/* Other notification items remain unchanged */}
                       <li className="py-2 px-3 hover:bg-[var(--light-purple-color)] transition-all duration-200">
                         <Link to="/" className="flex items-center item-center justify-between">
                           <div className="avatar-img h-[50px] w-[30px] flex items-start justify-left">
-                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="Avatar" className="h-[30px] w-[30px] rounded-full object-cover" />
+                            <img 
+                              src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" 
+                              alt="Avatar" 
+                              className="h-[30px] w-[30px] rounded-full object-cover" 
+                            />
                           </div>
                           <div className="content w-[250px]">
-                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">Arun Kumar <span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">Nike Fashions</span></span>
-                            <p className="text-[.60rem] text-[var(--light-grey-color)]">Ad payment of ₹1,50,000 received for campaign ID #BAZ3241.</p>
+                            <span className="text-[.70rem] text-[var(--white-color)] font-semibold flex items-center mb-1">
+                              Arun Kumar 
+                              <span className="ml-2 text-[.50rem] font-normal text-[var(--light-grey-color)] flex">
+                                Nike Fashions
+                              </span>
+                            </span>
+                            <p className="text-[.60rem] text-[var(--light-grey-color)]">
+                              Ad payment of ₹1,50,000 received for campaign ID #BAZ3241.
+                            </p>
                             <span className="text-[.50rem] text-[var(--light-grey-color)] flex mt-0.5">5 hours ago</span>
                           </div>
                           <span className="read-point h-[8px] w-[8px] rounded-full flex"></span>
@@ -98,11 +150,17 @@ const Navbar: React.FC = () => {
                       </li>
                     </ul>
                     <div className="text-center m-3">
-                      <Link to="/notification" className="text-[.70rem] bg-[var(--puprle-color)] text-[var(--white-color)] w-full h-full flex items-center justify-center py-1.5 rounded-[3px] mt-2">View all</Link>
+                      <Link 
+                        to="/notification" 
+                        className="text-[.70rem] bg-[var(--puprle-color)] text-[var(--white-color)] w-full h-full flex items-center justify-center py-1.5 rounded-[3px] mt-2"
+                      >
+                        View all
+                      </Link>
                     </div>
                   </motion.div>
                 )}
               </div>
+
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.97 }}

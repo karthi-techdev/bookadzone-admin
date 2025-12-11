@@ -10,11 +10,19 @@ import Properties from '../pages/Properties';
 import AddProperties from '../pages/Add-Properties';
 import CampaignList from '../pages/Campaign-List';
 import CampaignDetails from '../pages/Campaign-Details';
+//profile management
+import AgencyProfile from '../templates/profileInfo/agency/agencyProfileInfo';
+
 
 // Agency Management
 import AgencyListPage from '../pages/agency/AgencyListPage';
 import AgencyFormPage from '../pages/agency/AgencyFormPage';
 import AgencyViewPage from '../pages/agency/AgencyViewPage';
+
+
+import NotifyUserListPage from '../templates/notifyUser/notifiedUserList';
+import NotifyUserViewPage from '../templates/notifyUser/notifiedUserView';
+
 
 // Content Management
 import BannerPage from '../pages/banner/HomeBannerPage';
@@ -27,10 +35,16 @@ import FooterInfoListPage from '../pages/footerinfo/FooterInfoListPage';
 import FooterInfoFormPage from '../pages/footerinfo/FooterInfoFormPage';
 import ConfigListPage from '../pages/config/ConfigListPage';
 import ConfigFormPage from '../pages/config/ConfigFormPage';
+import UserFormPage from '../templates/user/userFormTemplate';
+import UserListPage from '../templates/user/userListTemplate';
+
+
 
 // Authentication Pages (Lazy Loaded)
 const ForgotPassword = lazy(() => import('../templates/auth/forgotPasswordTemplate'));
 const ResetPassword = lazy(() => import('../templates/auth/resetPasswordTemplate'));
+
+
 
 // Content Management (Lazy Loaded)
 const BlogCategoryListPage = lazy(() => import('../pages/blogCategory/BlogCaategoryListPage'));
@@ -46,6 +60,7 @@ const CategoryTrashListPage = lazy(() => import('../pages/trash/category/Categor
 const FooterInfoTrashListPage = lazy(() => import('../pages/trash/footerinfo/FooterInfoTrashListPage'));
 const ConfigTrashListPage = lazy(() => import('../pages/trash/config/ConfigTrashListPage'));
 const AgencyTrashListPage = lazy(() => import('../pages/agency/AgencyTrashListPage'));
+const UserTrashListPage = lazy(() => import('../pages/trash/user/UserTrashListPage'));
 
 //pages management (Lazy Loaded)
 const PageListPage = lazy(() => import('../pages/page/PageListPage'));
@@ -60,6 +75,11 @@ const SeoConfigPage = lazy(() => import('../pages/settings/SeoConfigPage'));
 const OgConfigPage = lazy(() => import('../pages/settings/OgConfigPage'));
 const UserRoleListPage = lazy(() => import('../pages/userrole/UserRoleListPage'));
 const UserRoleFormPage = lazy(() => import('../pages/userrole/UserRoleFormPage'));
+
+
+// Property Management Pages (Lazy Loaded)
+const PropertyFormPage = lazy(() => import('../pages/property/PropertyFormPage'));
+const PropertyListPage = lazy(() => import('../pages/property/PropertyListPage'));
 
 // Profile Pages (Lazy Loaded)
 const ProfileUpdatePage = lazy(() => import('../pages/profile/ProfileUpdatePage'));
@@ -78,7 +98,11 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Dashboard',
       component: <Dashboard />,
     },
-
+ {
+      path: '/agencyprofile',
+      pageTitle: 'agencyprofile',
+      component: <AgencyProfile />,
+    },
     // Authentication Routes
     {
       path: '/login',
@@ -94,6 +118,38 @@ export const routesData = (): RouteData[] => {
       path: '/reset-password',
       pageTitle: 'Reset Password',
       component: <ResetPassword />,
+    },
+
+    {
+      path: '/user',
+      pageTitle: 'User List',
+      component: <UserListPage />,
+    },
+    {
+      path: '/add-user',
+      pageTitle: 'Add User',
+      component: <UserFormPage />,
+    },
+    {
+      path: '/edit-user/:id',
+      pageTitle: 'edit User',
+      component: <UserFormPage />,
+    },
+    {
+      path: '/trash/user',
+      pageTitle: 'User Trash',
+      component: <UserTrashListPage />,
+    },
+      //Enquiry Management Routes
+    {
+      path: '/notifyuser',
+      pageTitle: 'Notified User List',
+      component: <NotifyUserListPage />,
+    },
+    {
+      path: '/notifyuser/view/:id',
+      pageTitle: 'View Notified User',
+      component: <NotifyUserViewPage />,
     },
 
     // Property Management Routes
@@ -157,6 +213,8 @@ export const routesData = (): RouteData[] => {
       component: <AboutBannerPage />,
     },
 
+
+
     // Content Management Routes
     {
       path: '/faq',
@@ -217,7 +275,7 @@ export const routesData = (): RouteData[] => {
       pageTitle: 'Newsletter Trash',
       component: <NewsLetterTrashListPage />,
     },
-    
+
     // Page routes
     {
       path: '/page',
@@ -284,6 +342,22 @@ export const routesData = (): RouteData[] => {
       component: <ConfigTrashListPage />,
     },
 
+    // property routes
+{
+      path: '/properties',
+      pageTitle: 'Property List',
+      component: <PropertyListPage />,
+    },
+    {
+      path: '/properties/add',
+      pageTitle: 'Add Property',
+      component: <PropertyFormPage />,
+    },
+    {
+      path: '/properties/edit/:id',
+      pageTitle: 'Edit Property',
+      component: <PropertyFormPage />,
+    },
     // Blog Category Routes
     {
       path: '/blogcategory',

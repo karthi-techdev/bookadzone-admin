@@ -13,7 +13,16 @@ interface CheckboxProps {
   error?: string;
 }
 
-const BAZCheckbox: React.FC<CheckboxProps> = ({ id, name, checked, onChange, disabled, label, className, error }) => (
+const BAZCheckbox: React.FC<CheckboxProps> = ({
+  id,
+  name,
+  checked,
+  onChange,
+  disabled,
+  label,
+  className,
+  error,
+}) => (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -25,9 +34,9 @@ const BAZCheckbox: React.FC<CheckboxProps> = ({ id, name, checked, onChange, dis
         id={id}
         name={name}
         type="checkbox"
-        // checked={checked}
+        checked={checked}   // ← NOW CONTROLLED
         onChange={onChange}
-        className="h-4 w-4 text-[var(--puprle-color)] border-[var(--light-blur-grey-color)] rounded focus:ring-[var(--puprle-color)] disabled:opacity-50"
+        className="h-4 w-4 text-[var(--purple-color)] border-[var(--light-blur-grey-color)] rounded focus:ring-[var(--purple-color)] disabled:opacity-50"
         disabled={disabled}
       />
       {label && (

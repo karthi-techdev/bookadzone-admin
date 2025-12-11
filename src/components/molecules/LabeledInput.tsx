@@ -10,6 +10,7 @@ import BAZRadio from '../atoms/BAZ-Radio';
 import BAZSelect from '../atoms/BAZ-Select';
 import BAZFileInput from '../atoms/BAZ-FileInput';
 import type { InputType, SelectOption } from '../types/common';
+import CustomSelect from '../atoms/BAZ-CustomSelect';
 
 export interface LabeledInputProps {
   name: string;
@@ -159,29 +160,65 @@ const LabeledInput: React.FC<LabeledInputProps> = memo(
               )}
             </>
           );
-        case 'select':
-        case 'country-select':
-        case 'state-select':
-        case 'city-select':
-          return (
-            <>
-              <BAZSelect
-                id={name}
-                options={options}
-                value={multiple ? value : options.find((opt) => opt.value === value) || null}
-                onChange={selectChangeHandler}
-                placeholder={placeholder}
-                isMulti={multiple}
-                disabled={disabled}
-                error={undefined}
-              />
-              {error && (
-                <p className="text-xs text-red-400 flex items-center mt-1">
-                  <FiAlertCircle className="mr-1" /> {error}
-                </p>
-              )}
-            </>
-          );
+        // case 'select':
+        // case 'country-select':
+        // case 'state-select':
+        // case 'city-select':
+        //   return (
+        //     <>
+        //       <BAZSelect
+        //         id={name}
+        //         options={options}
+        //         value={multiple ? value : options.find((opt) => opt.value === value) || null}
+        //         onChange={selectChangeHandler}
+        //         placeholder={placeholder}
+        //         isMulti={multiple}
+        //         disabled={disabled}
+        //         error={undefined}
+        //       />
+        //       {error && (
+        //         <p className="text-xs text-red-400 flex items-center mt-1">
+        //           <FiAlertCircle className="mr-1" /> {error}
+        //         </p>
+        //       )}
+        //     </>
+        //   );
+                case "select":
+case "country-select":
+case "state-select":
+case "city-select":
+  return (
+    <>
+      <CustomSelect
+        options={options}
+        value={
+          multiple
+            ? options.filter((opt) => (value || []).includes(opt.value))
+            : options.find((opt) => opt.value === value) || null
+        }
+        onChange={(val) => {
+          const returnValue = multiple
+            ? (val as SelectOption[]).map((v) => v.value)
+            : (val as SelectOption)?.value || "";
+  
+          onChange?.({
+            target: { name, value: returnValue }
+          });
+        }}
+        placeholder={placeholder}
+        isMulti={multiple}
+        className="w-full"
+      />
+
+      {error && (
+        <p className="text-xs text-red-400 flex items-center mt-1">
+          <FiAlertCircle className="mr-1" /> {error}
+        </p>
+      )}
+    </>
+  );
+
+
         case 'file':
           return (
             <>

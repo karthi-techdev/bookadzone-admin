@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import ImportedURL from '../common/urls';
 import type { Category } from '../types/common';
 
@@ -18,6 +17,7 @@ interface CategoryState {
   page: number;
   totalPages: number;
   fetchCategories: (page?: number, limit?: number) => Promise<void>;
+  fetchAllCategories: () => Promise<Category[]>;
   fetchCategoryById: (id: string) => Promise<Category | null>;
   addCategory: (category: FormData) => Promise<void>;
   updateCategory: (id: string, category: FormData) => Promise<void>;
@@ -39,15 +39,8 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.listcategory}?page=${page}&limit=${limit}`);
-      console.log('Category response:', res.data); // Debug log
-      
-      // Handle nested data structure from API
-      const { data } = res.data;
-      const categories = data?.data || [];
-      const totalPages = data?.meta?.totalPages ?? 1;
-      
-      console.log('Processed categories:', categories); // Debug log
-      
+      const categories = res.data.categories || res.data.data || [];
+      const totalPages = res.data.meta?.totalPages ?? 1;
       set({
         categories: Array.isArray(categories) ? categories : [],
         page,
@@ -61,27 +54,36 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     }
   },
 
+  fetchAllCategories: async () => {
+    try {
+      console.log('Fetching all categories from:', API.getAllCategories);
+      set({ loading: true, error: null });
+      const res = await axios.get(API.getAllCategories);
+      console.log('fetchAllCategories response:', res.data);
+      const categories = res.data.data || [];
+      console.log('Processed categories:', categories);
+      set({ loading: false, error: null });
+      return Array.isArray(categories) ? categories : [];
+    } catch (error: any) {
+      console.error('fetchAllCategories error:', error);
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch all categories', loading: false });
+      throw error;
+    }
+  },
+
   fetchCategoryById: async (id: string) => {
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.getcategorybyId}${id}`);
-      console.log('Category by ID response:', res.data); // Debug log
-      
-      // Extract category data from response
-      const category = res.data?.data;
-      if (!category) {
-        throw new Error('Category data not found in response');
-      }
-      
-      set({ loading: false });
-      return category as Category;
+      const category = res.data?.data || res.data || null;
+      set({ loading: false, error: null });
+      return category as Category | null;
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch category';
-      set({ error: errorMessage, loading: false });
-      toast.error(errorMessage);
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch category', loading: false });
       return null;
     }
   },
+
 
   addCategory: async (formData: FormData) => {
     try {
@@ -109,20 +111,19 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.deletecategory}${id}`);
-      
-      // Immediately remove the deleted category from state
-      set(state => ({
-        categories: state.categories.filter(cat => cat._id !== id),
-        loading: false,
-        error: null,
-        // Recalculate totalPages
-        totalPages: Math.ceil((state.categories.length - 1) / 20)
-      }));
-      
-      // Do not return any value to match the expected Promise<void> type
+      // Immediately remove the deleted category from state if present
+      set((state) => {
+        const remaining = state.categories.filter(cat => cat._id !== id);
+        const recalculated = Math.max(1, Math.ceil(remaining.length / 20));
+        return {
+          categories: remaining,
+          loading: false,
+          error: null,
+          totalPages: recalculated
+        };
+      });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete category';
-      set({ error: errorMessage, loading: false });
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to delete category', loading: false });
       throw error;
     }
   },
@@ -177,22 +178,21 @@ export const useCategoryStore = create<CategoryState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.trashcategorylist}?page=${page}&limit=${limit}`);
-      console.log('Trash categories response:', res.data); // Debug log
-      
-      const categories = res.data?.data || [];
-      const meta = res.data?.meta || {};
-      
+      const data = res.data || {};
+      const categories = data.data || data.categories || [];
+      const respPage = data.page || data.meta?.page || page;
+      const totalCount = data.total || data.meta?.total || data.meta?.totalCount || null;
+      const totalPages = totalCount ? Math.max(1, Math.ceil(totalCount / (data.limit || limit))) : (data.meta?.totalPages || 1);
+
       set({
         categories: Array.isArray(categories) ? categories : [],
-        page: meta.page || page,
-        totalPages: meta.totalPages || 1,
+        page: respPage,
+        totalPages,
         loading: false,
         error: null
       });
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to fetch trashed categories';
-      set({ error: errorMessage, loading: false });
-      console.error('Fetch trash categories error:', error);
+      set({ error: error?.response?.data?.message || error?.message || 'Failed to fetch trashed categories', loading: false });
       throw error;
     }
   },

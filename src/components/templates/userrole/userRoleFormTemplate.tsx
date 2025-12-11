@@ -53,7 +53,6 @@ const UserRoleFormTemplate: React.FC = () => {
   const navigate = useNavigate();
   const { privilegeTable, error, fetchPrivilegeTable, fetchRoleById, createRole, updateRole, loading } = useUserRoleStore();
 
-
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
 
   const methods = useForm<RoleFormData>({
@@ -72,55 +71,51 @@ const UserRoleFormTemplate: React.FC = () => {
     });
   }, [fetchPrivilegeTable]);
 
-useEffect(() => {
+  useEffect(() => {
+    if (!id || !Object.keys(privilegeTable).length) return;
 
-  if (!id || !Object.keys(privilegeTable).length) return;
-  const loadRole = async () => {
-    try {
-      const role = await fetchRoleById(id);
-      if (!role) {
-        toast.error("Role not found");
-        navigate("/userrole");
-        return;
-      }
-      const initialPermissions: Record<
-        string,
-        { permissions: string[]; all: boolean }
-      > = {};
+    const loadRole = async () => {
+      try {
+        const role = await fetchRoleById(id);
+        if (!role) {
+          toast.error("Role not found");
+          navigate("/userrole");
+          return;
+        }
 
-      Object.values(privilegeTable).forEach((menu) => {
-        menu.submenus.forEach((submenu) => {
-          const permissions: string[] = submenu.permissions
-            .filter((perm) =>
-              role.rolePrivileges?.some(
-                (p) => p.menuGroupId === perm.menuGroupId && p.status
+        const initialPermissions: Record<
+          string,
+          { permissions: string[]; all: boolean }
+        > = {};
+
+        Object.values(privilegeTable).forEach((menu) => {
+          menu.submenus.forEach((submenu) => {
+            const permissions: string[] = submenu.permissions
+              .filter((perm) =>
+                role.rolePrivileges?.some(
+                  (p) => p.menuGroupId === perm.menuGroupId && p.status
+                )
               )
-            )
-            .map((perm) => perm.slug);
+              .map((perm) => perm.slug);
 
-          const allChecked =
-            permissions.length === submenu.permissions.length &&
-            permissions.length > 0;
+            const allChecked =
+              permissions.length === submenu.permissions.length && permissions.length > 0;
 
-          initialPermissions[submenu.id] = { permissions, all: allChecked };
+            initialPermissions[submenu.id] = { permissions, all: allChecked };
+          });
         });
-      });
 
+        setValue("role", role.name, { shouldDirty: true });
+        setValue("menuPermissions", initialPermissions, { shouldDirty: true });
+      } catch (error) {
+        console.error("Failed to fetch role data:", error);
+        toast.error("Failed to fetch role data");
+        navigate("/userrole");
+      }
+    };
 
-      setValue("role", role.name, { shouldDirty: true });
-      setValue("menuPermissions", initialPermissions, { shouldDirty: true });
-    } catch (error) {
-      console.error("Failed to fetch role data:", error);
-      toast.error("Failed to fetch role data");
-      navigate("/userrole");
-    }
-  };
-
-  loadRole();
-}, [id, privilegeTable, fetchRoleById, setValue, navigate]);
-
-
-
+    loadRole();
+  }, [id, privilegeTable, fetchRoleById, setValue, navigate]);
 
   useEffect(() => {
     if (!id && Object.keys(privilegeTable).length > 0 && !Object.keys(getValues("menuPermissions") ?? {}).length) {
@@ -143,7 +138,6 @@ useEffect(() => {
     }));
   };
 
-
   const submenuPermissionMap = useMemo(() => {
     const permissionMap: Record<string, string[]> = {};
     Object.values(privilegeTable).forEach((menu) => {
@@ -161,99 +155,79 @@ useEffect(() => {
     return all;
   }, [submenuPermissionMap]);
 
-  const handlePermissionChange = (submenuId: string, action: string, checked: boolean) => {
-    const currentPermissions = getValues(`menuPermissions.${submenuId}.permissions`) || [];
-    const updatedPermissions = checked
-      ? [...new Set([...currentPermissions, action])]
-      : currentPermissions.filter((perm) => perm !== action);
-    setValue(`menuPermissions.${submenuId}.permissions`, updatedPermissions);
-
-    const submenu = Object.values(privilegeTable)
-      .flatMap((menu) => menu.submenus)
-      .find((sub) => sub.id === submenuId);
-    const submenuSlug = submenu?.slug || submenu?.name.toLowerCase().replace(/\s+/g, "-") || "";
-    const allowedPermissions = submenuPermissionMap[submenuSlug] || [];
-
-    const allChecked =
-      allowedPermissions.length > 0 && allowedPermissions.every((perm) => updatedPermissions.includes(perm));
-    setValue(`menuPermissions.${submenuId}.all`, allChecked);
+  const handleAllPermissionChange = (submenuId: string, checked: boolean, allowedPermissions: string[]) => {
+    setValue(
+      `menuPermissions.${submenuId}.permissions`,
+      checked ? [...allowedPermissions] : [],
+      { shouldValidate: true, shouldDirty: true, shouldTouch: true }
+    );
+    setValue(`menuPermissions.${submenuId}.all`, checked, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
-  const handleAllPermissionChange = (submenuId: string, checked: boolean) => {
-    const submenu = Object.values(privilegeTable)
-      .flatMap((menu) => menu.submenus)
-      .find((sub) => sub.id === submenuId);
-    const submenuSlug = submenu?.slug || submenu?.name.toLowerCase().replace(/\s+/g, "-") || "";
-    const allowedPermissions = submenuPermissionMap[submenuSlug] || [];
+const onSubmit: SubmitHandler<RoleFormData> = async (data) => {
+  try {
+    const rolePrivileges: { menuGroupId: string; status: boolean }[] = [];
 
-    setValue(`menuPermissions.${submenuId}.permissions`, checked ? allowedPermissions : []);
-    setValue(`menuPermissions.${submenuId}.all`, checked);
-  };
+    Object.values(privilegeTable).forEach(menu => {
+      menu.submenus.forEach(submenu => {
+        submenu.permissions.forEach(perm => {
+          const submenuPermissions = data.menuPermissions?.[submenu.id]?.permissions || [];
+          const isChecked = submenuPermissions.includes(perm.slug);
 
-  const onSubmit: SubmitHandler<RoleFormData> = async (data, event) => {
-    event?.preventDefault?.();
-    try {
-      if (!data.menuPermissions || Object.keys(data.menuPermissions).length === 0) {
-        toast.error("At least one permission must be selected");
-        return;
-      }
-
-      const rolePrivileges: { menuGroupId: string; status: boolean }[] = [];
-      Object.entries(data.menuPermissions).forEach(([submenuId, permData]) => {
-        const submenu = Object.values(privilegeTable)
-          .flatMap((menu) => menu.submenus)
-          .find((sub) => sub.id === submenuId);
-
-        if (submenu && permData.permissions?.length > 0) {
-          permData.permissions.forEach((selectedPerm) => {
-            const perm = submenu.permissions.find((p) => p.slug === selectedPerm);
-            if (perm) {
-              rolePrivileges.push({ menuGroupId: perm.menuGroupId, status: true });
-            }
+          rolePrivileges.push({
+            menuGroupId: perm.menuGroupId,
+            status: isChecked
           });
-        }
+        });
       });
+    });
 
-      if (rolePrivileges.length === 0) {
-        toast.error("At least one valid permission must be selected");
-        return;
-      }
-
-      const roleData: IRole & { rolePrivileges: { menuGroupId: string; status: boolean }[] } = {
-        _id: id || "",
-        name: data.role,
-        slug: data.role.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
-        status: "active",
-        isDeleted: false,
-        rolePrivileges,
-      };
-
-      if (id) {
-        await updateRole(id, roleData);
-        toast.success("Role updated successfully");
-        navigate("/userrole");
-      } else {
-        const createData = { name: data.role, rolePrivileges };
-        await createRole(createData);
-        toast.success("Role created successfully");
-        reset();
-        navigate("/userrole");
-
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to save role");
+    if (!rolePrivileges.some(p => p.status)) {
+      toast.error("At least one permission must be selected");
+      return;
     }
-  };
+
+    // This is the correct payload type — no _id needed in body
+    const payload: {
+      name: string;
+      slug?: string;
+      status?: "active" | "inactive";
+      isDeleted?: boolean;
+      rolePrivileges: { menuGroupId: string; status: boolean }[];
+    } = {
+      name: data.role,
+      slug: data.role.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, ""),
+      status: "active",
+      isDeleted: false,
+      rolePrivileges,
+    };
+
+    if (id) {
+      // Pass id separately — payload doesn't need _id
+      await updateRole(id, payload as any); // or fix store type (see below)
+      toast.success("Role updated successfully");
+    } else {
+      await createRole({
+        name: data.role,
+        rolePrivileges,
+      });
+      toast.success("Role created successfully");
+    }
+
+    navigate("/userrole");
+  } catch (err: any) {
+    toast.error(err.message || "Failed to save role");
+  }
+};
 
   return (
     <div className="p-6 bg-[var(--light-dark-color)] min-h-screen">
-      {/* Dynamic Breadcrumb Header */}
-      <FormHeader
-        managementName="User Role"
-        addButtonLink="/userrole"
-        type={id ? "Edit" : "Add"}
-      />
+      <FormHeader managementName="User Role" addButtonLink="/userrole" type={id ? "Edit" : "Add"} />
       <ToastContainer position="top-right" autoClose={3000} />
+
       {loading && (
         <div className="text-center py-10 bg-[var(--dark-color)] border border-[var(--light-blur-grey-color)] rounded-xl shadow-sm">
           <div className="text-[var(--light-grey-color)]">Loading privileges...</div>
@@ -292,6 +266,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
+
           {selectedMenus.length > 0 ? (
             <div className="space-y-4">
               {selectedMenus.map((menuId) => {
@@ -299,6 +274,7 @@ useEffect(() => {
                 if (!menuData) return null;
                 const { name, submenus } = menuData;
                 const isExpanded = expandedMenus[menuId];
+
                 return (
                   <div
                     key={menuId}
@@ -310,7 +286,12 @@ useEffect(() => {
                       className="w-full px-6 py-4 bg-gradient-to-r from-[var(--purple-color)]/20 to-[var(--purple-color)]/10 hover:from-[var(--purple-color)]/30 hover:to-[var(--purple-color)]/20 transition-all duration-200 flex items-center justify-between"
                     >
                       <div className="flex items-center space-x-3">
-                        <span className={`transform transition-transform duration-200 ${isExpanded ? "rotate-90" : "rotate-0"}`}>▶</span>
+                        <span
+                          className={`transform transition-transform duration-200 ${isExpanded ? "rotate-90" : "rotate-0"
+                            }`}
+                        >
+                          ▶
+                        </span>
                         <h3 className="text-lg font-semibold text-[var(--white-color)]">
                           {name.charAt(0).toUpperCase() + name.slice(1)}
                         </h3>
@@ -319,6 +300,7 @@ useEffect(() => {
                         {submenus.length} submenu{submenus.length !== 1 ? "s" : ""}
                       </span>
                     </button>
+
                     {isExpanded && (
                       <div className="border-t border-[var(--light-blur-grey-color)]">
                         <div className="px-6 py-3 bg-[var(--dark-color)] border-b border-[var(--light-blur-grey-color)]">
@@ -335,13 +317,13 @@ useEffect(() => {
                             )}
                           </div>
                         </div>
+
                         <div className="divide-y divide-[var(--light-blur-grey-color)]">
                           {submenus.map((submenu) => {
                             const submenuId = submenu.id;
                             const submenuSlug = submenu.slug || submenu.name.toLowerCase().replace(/\s+/g, "-");
                             const allowedPermissions = submenuPermissionMap[submenuSlug] || [];
-                            const currentPerms = getValues(`menuPermissions.${submenuId}.permissions`) || [];
-                            const allChecked = getValues(`menuPermissions.${submenuId}.all`) || false;
+
                             return (
                               <div
                                 key={submenuId}
@@ -353,26 +335,35 @@ useEffect(() => {
                                       {submenu.name.charAt(0).toUpperCase() + submenu.name.slice(1)}
                                     </span>
                                   </div>
+
+                                  {/* All Checkbox */}
                                   <div className="col-span-2 flex justify-center">
                                     <Controller
                                       name={`menuPermissions.${submenuId}.all`}
                                       control={control}
-                                      defaultValue={false}
                                       render={({ field }) => (
-                                        <Checkbox
-                                          id={`menuPermissions.${submenuId}.all`}
+                                        <Controller
                                           name={`menuPermissions.${submenuId}.all`}
-                                          checked={!!field.value}
-                                          onChange={(e) => {
-                                            field.onChange(e.target.checked);
-                                            handleAllPermissionChange(submenuId, e.target.checked);
-                                          }}
-                                          disabled={allowedPermissions.length === 0}
-                                          className="checkbox-white"
+                                          control={control}
+                                          render={({ field }) => (
+                                            <Checkbox
+                                              id={`all-${submenuId}`}
+                                              name={`all-${submenuId}`}
+                                              checked={!!field.value}
+                                              onChange={(e) => {
+                                                field.onChange(e.target.checked);
+                                                handleAllPermissionChange(submenuId, e.target.checked, allowedPermissions);
+                                              }}
+                                              disabled={allowedPermissions.length === 0}
+                                              className="checkbox-white"
+                                            />
+                                          )}
                                         />
                                       )}
                                     />
                                   </div>
+
+                                  {/* Individual Permissions */}
                                   {["add", "edit", "view", "delete"].map(
                                     (action) =>
                                       allUsedPermissions.has(action) && (
@@ -381,19 +372,31 @@ useEffect(() => {
                                             <Controller
                                               name={`menuPermissions.${submenuId}.permissions`}
                                               control={control}
-                                              defaultValue={[]}
-                                              render={({ field }) => (
-                                                <Checkbox
-                                                  id={`menuPermissions.${submenuId}.${action}`}
-                                                  name={`menuPermissions.${submenuId}.${action}`}
-                                                  checked={field.value?.includes(action) || false}
-                                                  onChange={(e) =>
-                                                    handlePermissionChange(submenuId, action, e.target.checked)
-                                                  }
-                                                  disabled={allChecked}
-                                                  className="checkbox-white"
-                                                />
-                                              )}
+                                              render={({ field: permField }) => {
+                                                const currentPerms = Array.isArray(permField.value) ? permField.value : [];
+                                                const isChecked = currentPerms.includes(action);
+                                                const allChecked = getValues(`menuPermissions.${submenuId}.all`) || false;
+
+                                                return (
+                                                  <Controller
+                                                    name={`menuPermissions.${submenuId}.all`}
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                      <Checkbox
+                                                        id={`all-${submenuId}`}
+                                                        name={`all-${submenuId}`}
+                                                        checked={!!field.value}
+                                                        onChange={(e) => {
+                                                          field.onChange(e.target.checked);
+                                                          handleAllPermissionChange(submenuId, e.target.checked, allowedPermissions);
+                                                        }}
+                                                        disabled={allowedPermissions.length === 0}
+                                                        className="checkbox-white"
+                                                      />
+                                                    )}
+                                                  />
+                                                );
+                                              }}
                                             />
                                           ) : (
                                             <span className="text-[var(--light-grey-color)] text-sm">-</span>
@@ -417,6 +420,7 @@ useEffect(() => {
               <div className="text-[var(--light-grey-color)]">No permissions available.</div>
             </div>
           )}
+
           <div className="mt-6 flex justify-end">
             <button
               type="submit"

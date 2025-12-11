@@ -13,13 +13,14 @@ const API = {
   // Agency endpoints
   addAgency: `${ROOTURL}agencies/`,
   listAgency: `${ROOTURL}agencies/`,
-  getAgency: `${ROOTURL}agencies/`, 
-  updateAgency: `${ROOTURL}agencies/`, 
-  deleteAgency: `${ROOTURL}agencies/softDelete/`, 
-  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`, 
+  checkmail: `${ROOTURL}agencies/check-emails`,
+  getAgency: `${ROOTURL}agencies/`,
+  updateAgency: `${ROOTURL}agencies/`,
+  deleteAgency: `${ROOTURL}agencies/softDelete/`,
+  toggleStatusAgency: `${ROOTURL}agencies/toggleStatus/`,
   trashAgencyList: `${ROOTURL}agencies/trash`,
-  restoreAgency: `${ROOTURL}agencies/restore/`, 
-  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`, 
+  restoreAgency: `${ROOTURL}agencies/restore/`,
+  permanentDeleteAgency: `${ROOTURL}agencies/permanentDelete/`,
 
   // FAQ endpoints
   addfaq: `${ROOTURL}faqs/`,
@@ -32,6 +33,22 @@ const API = {
   restorefaq: `${ROOTURL}faqs/restore/`,
   permanentDeletefaq: `${ROOTURL}faqs/permanentDelete/`,
 
+
+  //notified User endpoints
+  listNotifiedUsers: `${ROOTURL}notifyuser/`,
+  getNotifiedUserById: `${ROOTURL}notifyuser/getnotifyUserById/`,
+  deleteNotifiedUser: `${ROOTURL}notifyuser/`,
+
+  // User endpoints
+  addUser: `${ROOTURL}users/`,
+  listUsers: `${ROOTURL}users/`,
+  getUser: `${ROOTURL}users/getUserById/`,
+  updateUser: `${ROOTURL}users/updateUser/`,
+  deleteUser: `${ROOTURL}users/softDeleteUser/`,
+  toggleStatusUser: `${ROOTURL}users/togglestatus/`,
+  trashUserList: `${ROOTURL}users/trash`,
+  restoreUser: `${ROOTURL}users/restore/`,
+  permanentDeleteUser: `${ROOTURL}users/permanentDelete/`,
   // NewsLetter endpoints
   addNewsLetter: `${ROOTURL}newsletters/`,
   listNewsLetter: `${ROOTURL}newsLetters/`,
@@ -78,10 +95,14 @@ const API = {
   restoreuserrole: `${ROOTURL}userrole/restore/`,
   permanentDeleteuserrole: `${ROOTURL}userrole/permanentDelete/`,
 
-
+//agencyprofile endpoints
+updateagencyprofile: `${ROOTURL}agencyprofile/updateagencyProfile/`,
+updatedocument: `${ROOTURL}agencyprofile/updatedocument/`,
+getagencyprofile: `${ROOTURL}agencyprofile/getagencyprofile`,
   // Category endpoints
   addcategory: `${ROOTURL}category/`,
   listcategory: `${ROOTURL}category/`,
+  getAllCategories: `${ROOTURL}category/all`,
   getcategorybyId: `${ROOTURL}category/getcategoryById/`,  // Make sure this matches the backend route
   updatecategory: `${ROOTURL}category/updatecategory/`,
   deletecategory: `${ROOTURL}category/softDeletecategory/`,
@@ -102,7 +123,7 @@ const API = {
   me: `${ROOTURL}auth/me`,
 
 
-    // Page endpoints
+  // Page endpoints
   addPage: `${ROOTURL}pages/`,
   listPage: `${ROOTURL}pages/`,
   getPage: `${ROOTURL}pages/getPageById/`,
@@ -112,17 +133,17 @@ const API = {
   trashPageList: `${ROOTURL}pages/trash`,
   restorePage: `${ROOTURL}pages/restore/`,
   permanentDeletePage: `${ROOTURL}pages/permanentDelete/`,
-  
+
   //BlogCategory endpoints
-  addBlogCategory:`${ROOTURL}blogCategory/`,
-  listBlogCategory:`${ROOTURL}blogCategory/`,
-  getBlogCategory:`${ROOTURL}blogCategory/getblogCategoryById/`,
-  updateBlogCategory:`${ROOTURL}blogCategory/updateblogCategory/`,
-  deleteBlogCategory:`${ROOTURL}blogCategory/softDeleteblogCategory/`,
-  toggleStatusBlogCategory:`${ROOTURL}blogCategory/togglestatus/`,
-  trashBlogCategoryList:`${ROOTURL}blogCategory/trash`,
-  restoreBlogCategory:`${ROOTURL}blogCategory/restore/`,
-  permanentDeleteBlogCategory:`${ROOTURL}blogCategory/permanentDelete/`,
+  addBlogCategory: `${ROOTURL}blogCategory/`,
+  listBlogCategory: `${ROOTURL}blogCategory/`,
+  getBlogCategory: `${ROOTURL}blogCategory/getblogCategoryById/`,
+  updateBlogCategory: `${ROOTURL}blogCategory/updateblogCategory/`,
+  deleteBlogCategory: `${ROOTURL}blogCategory/softDeleteblogCategory/`,
+  toggleStatusBlogCategory: `${ROOTURL}blogCategory/togglestatus/`,
+  trashBlogCategoryList: `${ROOTURL}blogCategory/trash`,
+  restoreBlogCategory: `${ROOTURL}blogCategory/restore/`,
+  permanentDeleteBlogCategory: `${ROOTURL}blogCategory/permanentDelete/`,
 
   // Profile endpoints
   profile: {
@@ -130,6 +151,19 @@ const API = {
     update: `${ROOTURL}auth/profile`,
     changePassword: `${ROOTURL}auth/change-password`
   },
+
+
+   // Property endpoints
+  addProperty: `${ROOTURL}properties/`,
+  listProperty: `${ROOTURL}properties/`,
+  getProperty: `${ROOTURL}properties/`,
+  updateProperty: `${ROOTURL}properties/`,
+  deleteProperty: `${ROOTURL}properties/softDelete/`,
+  toggleStatusProperty: `${ROOTURL}properties/toggleStatus/`,
+  trashPropertyList: `${ROOTURL}properties/trash`,
+  restoreProperty: `${ROOTURL}properties/restore/`,
+  permanentDeleteProperty: `${ROOTURL}properties/permanentDelete/`,
+  propertyConfig: `${ROOTURL}configs/properties`,
 
   // Template Images
   templateImage: `${ROOTURL}editer/image`

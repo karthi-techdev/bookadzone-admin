@@ -82,9 +82,10 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
       set({ loading: true, error: null });
       const statusParam =
         filter === 'Active' ? 'active' :
-        filter === 'Inactive' ? 'inactive' : '';
+          filter === 'Inactive' ? 'inactive' : '';
       const response = await axios.get(`${API.listuserrole}?page=${page}&limit=${limit}${statusParam ? `&status=${statusParam}` : ''}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
       });
 
 
@@ -115,7 +116,8 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await axios.get(API.createprivilegetable, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
       });
 
       const data = response.data;
@@ -131,16 +133,16 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
           permissions: menupermissons.map((perm: any) => perm.name),
           submenus: Array.isArray(menuItem.submenus)
             ? menuItem.submenus.map((submenu: any) => ({
-                id: submenu.id,
-                name: submenu.submenu,
-                slug: submenu.slug,
-                permissions: Array.isArray(submenu.permisson)
-                  ? submenu.permisson.map((perm: any) => ({
-                      slug: perm.menupermissonSlug,
-                      menuGroupId: perm.menuGroupId,
-                    }))
-                  : [],
-              }))
+              id: submenu.id,
+              name: submenu.submenu,
+              slug: submenu.slug,
+              permissions: Array.isArray(submenu.permisson)
+                ? submenu.permisson.map((perm: any) => ({
+                  slug: perm.menupermissonSlug,
+                  menuGroupId: perm.menuGroupId,
+                }))
+                : [],
+            }))
             : [],
         };
       });
@@ -157,12 +159,13 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
     try {
       set({ loading: true, error: null });
       const response = await axios.post(API.adduserrole, roleData, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
       });
 
       if (response.status !== 201) throw new Error(response.data.message || 'Failed to create role');
 
-     
+
 
 
       await useUserRoleStore.getState().fetchRoles();
@@ -178,10 +181,11 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.get(`${API.getuserrole}${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
       });
       const responseData = res.data as { data: IRole };
-     
+
       set({ loading: false, error: null });
       return responseData.data;
     } catch (error: any) {
@@ -191,29 +195,42 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
     }
   },
 
-  updateRole: async (id: string, role: IRole & { rolePrivileges?: { menuGroupId: string; status: boolean }[] }) => {
+  updateRole: async (
+    id: string,
+    role: Partial<IRole> & { rolePrivileges?: { menuGroupId: string; status: boolean }[] }
+  ) => {
     try {
       set({ loading: true, error: null });
-      let normalizedStatus: 'active' | 'inactive' | string = '';
-      if (typeof role.status === 'string') {
-        normalizedStatus = role.status === 'active' ? 'active' : 'inactive';
-      } else if (typeof role.status === 'boolean') {
-        normalizedStatus = role.status ? 'active' : 'inactive';
-      }
+      const normalizedStatus = (() => {
+        if (role.status === "active") {
+          return "active";
+        }
+        if (role.status === "inactive") {
+          return "inactive";
+        }
+        return "active"; 
+      })();     
+      const { rolePrivileges, ...roleWithoutPrivileges } = role;     
+      const existingRole = useUserRoleStore.getState().roles.find(r => r._id === id);
+      const payload = {
+        ...roleWithoutPrivileges,
+        name: role.name || existingRole?.name || '', 
+        status: normalizedStatus,
+        ...(rolePrivileges ? { rolePrivileges } : {}), 
+      };
 
-      const payload = { ...role, status: normalizedStatus };
+
       const res = await axios.put(`${API.updateuserrole}${id}`, payload, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
-      const responseData = res.data as { data: IRole };
       set((state) => ({
-        roles: state.roles.map(r => r._id === id ? { ...r, ...responseData.data } : r),
-        error: null,
+        roles: state.roles.map(r => r._id === id ? { ...r, ...res.data.data } : r),
         loading: false,
+        error: null,
       }));
     } catch (error: any) {
-      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to update role';
+      const errorMessage = error?.response?.data?.message || "Failed to update role";
       set({ error: errorMessage, loading: false });
       throw errorMessage;
     }
@@ -223,7 +240,8 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
     try {
       set({ loading: true, error: null });
       await axios.delete(`${API.deleteuserrole}${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
       });
       set((state) => ({
         roles: state.roles.filter(r => r._id !== id),
@@ -241,7 +259,8 @@ export const useUserRoleStore = create<UserRoleState>((set) => ({
     try {
       set({ loading: true, error: null });
       const res = await axios.patch(`${API.toggleStatususerrole}${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+
       });
       const responseData = res.data as { data: { status: string } };
       set((state) => ({

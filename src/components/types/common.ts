@@ -26,7 +26,40 @@ export interface Agency {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface Location {
+  city: string;
+  region: string;
+  country: string;
+  isp: string;
+  lat: number;
+  lon: number;
+  // optional fields if present
+  phone?: string;
+  address?: string;
+  pincode?: string;
+}
 
+export interface NotifiedUser {
+  _id?: string;
+  fullName: string;
+  email: string;
+  companyName?: string;
+  profileType: 'Advertiser' | 'Publisher' | 'Agency' | string;
+  position?: string;
+  status?: 'active' | 'inactive';
+  isDeleted: boolean;
+  signupDate: string;
+  createdAt: string;
+  updatedAt: string;
+
+  // Location object from IP geolocation
+  location: Location;
+
+  // Optional uploads
+  uploadIdProof?: string;
+  uploadBusinessProof?: string;
+  photo?: string;
+}
 export interface AgencyInput extends Omit<Agency, '_id' | 'userId' | 'status' | 'priority' | 'createdAt' | 'updatedAt'> {
   password: string; // Make password required for new agencies
 }
@@ -52,6 +85,9 @@ export interface BannerTwo {
   buttonName: string;
   buttonUrl: string;
 }
+
+
+
 
 export interface Banner {
   homepage: {
@@ -125,9 +161,11 @@ export interface User {
   username: string;
   email?: string;
   role?: string;
-  name?: string;
+  userType?: string;
   phone?: string;
+  password?: string;
 }
+
 
 export interface Faq {
   _id?: string;
@@ -221,9 +259,9 @@ export interface FieldConfig {
   valueAsNumber?: boolean;
   onChange?: (e: FormFieldChangeEvent) => void;
   dataTestId?: string;
-  value?:any;
+  value?: any;
   tableConfig?: TableConfig;
- 
+
   minLength?: number;
   maxLength?: number;
   pattern?: RegExp;
@@ -246,11 +284,11 @@ export interface TableConfig {
     values: Array<
       | string
       | {
-          type: 'checkbox';
-          name: string;
-          checked: boolean;
-          onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-        }
+        type: 'checkbox';
+        name: string;
+        checked: boolean;
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+      }
     >;
   }>;
 }
@@ -285,7 +323,7 @@ export interface IRole {
 
 export interface IMenu {
   _id: string;
-  name: string; 
+  name: string;
   path: string;
   status: 'active' | 'inactive';
   isDeleted: boolean;
@@ -296,8 +334,8 @@ export interface IMenu {
 export interface IMenuPermission {
   _id: string;
   menuId: string | IMenu;
-  roleId: string | IRole; 
-  permissions: string[]; 
+  roleId: string | IRole;
+  permissions: string[];
   status: 'active' | 'inactive';
   isDeleted: boolean;
   createdAt?: string;
@@ -315,21 +353,21 @@ export interface IUserRole {
   updatedAt?: string;
 }
 export interface BlogCategory {
-  _id?:string
-  name:string;
-  label:string;
+  _id?: string
+  name: string;
+  label: string;
   className?: string;
   placeholder?: string;
   required?: boolean;
-  status?:boolean;
+  status?: boolean;
   slug: string;
 
 }
 export interface NewsLetter {
   _id?: string;
   name: string;
-  slug: string ;
-  template:string;
+  slug: string;
+  template: string;
   status?: boolean;
 }
 
@@ -344,6 +382,49 @@ export interface Page {
   status: 'active' | 'inactive';
 }
 
+
+export interface Property {
+  _id?: string;
+  title: string;
+  slug: string;
+  bannerCode: string;
+  category: string | { _id?: string; name?: string; slug?: string };
+  locationType: string;
+  locationName: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  landmark?: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  images?: string[] | File[];
+  previewImage?: string | File;
+  size: { height: number; width: number };
+  orientation: string;
+  pricingType: string;
+  days: number;
+  priceRange: { min: number; max: number };
+  description?: string;
+  specifications?: { title: string; feature: string }[];
+  estimatedMonthlyImpressions?: string;
+  dailyVisibilityDuration?: string;
+  vehicleTrafficData?: number;
+  audienceDwellTime?: string;
+  nearbyInstitutions?: string[];
+  zone: string;
+  interests?: string[];
+  bannerVisibilityRange?: number;
+  fileTypeAllowed?: string;
+  status?: 'active' | 'inactive';
+  propertyStatus?: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Country {
   name: string;
   iso2: string;
@@ -353,7 +434,7 @@ export interface State {
   country_code: string;
   iso2: string;
 }
- export interface City {
+export interface City {
   name: string;
   country_code: string;
   state_code: string;
