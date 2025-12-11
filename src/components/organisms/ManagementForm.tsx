@@ -262,7 +262,7 @@ const ManagementForm: React.FC<ManagementFormProps> = ({
             );
           })}
         </div>
-        <div className="mt-4 w-full flex justify-center">
+        <div className=" w-full flex justify-center">
           <Button
             type="submit"
             className="p-3 bg-[var(--puprle-color)] text-[var(--white-color)] font-medium text-[.75rem] cursor-pointer rounded-tl-[5px] rounded-tr-[20px] rounded-bl-[20px] rounded-br-[5px] w-full disabled:opacity-50"

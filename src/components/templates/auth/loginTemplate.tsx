@@ -3,7 +3,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { FcGoogle } from 'react-icons/fc';
-import { FaApple } from 'react-icons/fa6';
+import { FaSquareFacebook } from 'react-icons/fa6';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuthStore } from '../../stores/AuthStore';
 import ManagementForm from '../../organisms/ManagementForm';
@@ -24,7 +24,7 @@ const Login: React.FC = () => {
 
   const methods = useForm<LoginFormData>({
     defaultValues: {
-      username: 'admin@gmail.com',
+      username: 'superadmin@gmail.com',
       password: 'admin@123',
     },
     mode: 'onChange',
@@ -182,21 +182,27 @@ const Login: React.FC = () => {
         }}
         extraProps={{}}
       />
-       <div className="mt-2 forgot-link w-full relative bottom-[90px] flex justify-end mb-4">
-              <Link to="/forgot-password" className="text-xs text-[10px] text-[var(--light-grey-color)] hover:text-[var(--white-color)] underline transition-all duration-300 ease-in-out">Forgot Password?</Link>
-            </div>
-            <div className="login-with relative bottom-[15px] relative w-full flex justify-center items-center my-4">
-              <div className="login-beforeline bg-[#ffffff9e] h-[1px] w-[70px] mr-[8px]"></div>
-              <span className="text-xs text-[10px] text-[var(--light-grey-color)]">Or Login With </span>
-              <div className="login-afterline bg-[#ffffff9e] h-[1px] w-[70px] ml-[8px]"></div>
-            </div>
-            <div className="login-methods flex justify-center items-center gap-4 w-full">
-              <Link to="/login/google" className="px-5 py-2 rounded-md bg-[var(--white-color)] font-medium text-sm cursor-pointer flex items-center gap-2 font-semibold shadow hover:bg-gray-100 transition"> <FcGoogle className="text-xl"/> Google</Link>
-              <Link to="/login/facebook" className="px-5 py-2 rounded-md bg-[#ffffff] text-[var(--#000000)] font-medium text-sm cursor-pointer flex items-center gap-2 font-semibold shadow hover:bg-[#145db2] transition"><FaApple className="text-xl" /> Apple</Link>
-            </div>
-            <div className="already-have-account mt-3 text-center w-full">
-              <span className="text-xs text-[10px] text-[var(--light-grey-color)]">Don't have an account? <Link to="/register" className="text-[var(--puprle-color)] font-medium underline">Signup</Link></span>
-            </div>
+      <div className="mt-2 forgot-link w-full flex justify-end mb-2">
+        <Link to="/forgot-password" className="text-xs text-[var(--light-grey-color)] hover:text-[var(--white-color)] underline transition-all duration-300 ease-in-out">
+          Forgot Password?
+        </Link>
+      </div>
+      <div className="login-with relative w-full flex justify-center items-center my-4">
+        <span className="text-xs text-[var(--light-grey-color)]">Or Login With</span>
+      </div>
+      <div className="login-methods flex justify-center items-center gap-4 w-full">
+        <Link to="/login/google" className="px-5 py-2 rounded-md bg-[var(--white-color)] font-medium text-sm cursor-pointer flex items-center gap-2 font-semibold shadow hover:bg-gray-100 transition">
+          <FcGoogle className="text-xl"/> Google
+        </Link>
+        <Link to="/login/facebook" className="px-5 py-2 rounded-md bg-[#1877F2] text-[var(--white-color)] font-medium text-sm cursor-pointer flex items-center gap-2 font-semibold shadow hover:bg-[#145db2] transition">
+          <FaSquareFacebook className="text-xl" /> Facebook
+        </Link>
+      </div>
+      <div className="already-have-account mt-3 text-center w-full">
+        <span className="text-xs text-[var(--light-grey-color)]">
+          Don't have an account? <Link to="/register" className="text-[var(--puprle-color)] font-medium underline">Register Now</Link>
+        </span>
+      </div>
     </FormProvider>
   );
 
@@ -205,8 +211,8 @@ const Login: React.FC = () => {
       carouselData={carouselData}
       carouselTitle="Map Your Reach. Maximize Your Impact."
       carouselDescription="Quickly explore and book hoardings directly from the interactive map."
-      pageTitle="Welcome back!"
-      pageSubtitle="Please enter your details"
+      pageTitle="Login"
+      pageSubtitle="Welcome back! Please enter your details"
       formContent={formContent}
     />
   );

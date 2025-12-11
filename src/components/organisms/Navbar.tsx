@@ -40,16 +40,7 @@ const Navbar: React.FC = () => {
             
           </motion.div>
           <div className="nav-content flex items-cente h-[45px] justify-between gap-[50px]">
-            <div className="header-search-box w-[70%] flex items-center justify-between border-[1px] border-[var(--light-blur-grey-color)] p-1 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px] bg-[var(--light-dark-color)] backdrop-blur-md">
-              <FiSearch className="text-[1.3rem] ml-2 text-[var(--light-grey-color)]" />
-              <input type="search" placeholder="Search..." className="outline-none text-[var(--white-color)] placeholder:text-[var(--light-grey-color)] text-[.80rem] px-3 w-full"/>
-              <Button
-                className="bg-[var(--puprle-color)] text-[var(--white-color)] text-[.80rem] px-5 py-1.5 rounded-bl-[20px] rounded-tr-[20px] rounded-tl-[5px] rounded-br-[5px]"
-                onClick={() => {/* TODO: handle search action */}}
-              >
-                Search
-              </Button>
-            </div>
+            
   
             <div className="nav-actions flex items-center justify-between">
               <div className="quick-btns flex items-center justify-between gap-5 mr-4">

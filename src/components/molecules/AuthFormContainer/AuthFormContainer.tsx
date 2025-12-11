@@ -161,9 +161,9 @@ const AuthFormContainer: React.FC<AuthFormContainerProps> = ({
         </div>
 
         {/* Right Side - Form */}
-        <div className="form-part md:pl-2 h-[400px] mt-[50px] flex flex-col items-center justify-center w-full">
+        <div className="form-part md:pl-2 flex flex-col items-center justify-center w-full">
           <div className="header-content flex flex-col justify-center items-center mt-4 md:mt-8 mb-2">
-            <img src={logo} alt={settings?.general?.siteName || 'logo'} className="w-[120px] md:w-[150px] mb-2"/>
+            <img src={logo} alt={settings?.general?.siteName || 'logo'} className="login-logo w-[120px] md:w-[150px]"/>
             <h2 className="welcome-back text-white text-[30px] font-sans font-bold">{pageTitle}</h2>
             <p className="welcome-back text-[10px] font-mono text-[#ffffff9e] font-bold">{pageSubtitle}</p>
           </div>

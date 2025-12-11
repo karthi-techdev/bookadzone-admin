@@ -103,7 +103,7 @@ export default function LoginOtp() {
               onChange={(e) => setMethod(e.target.value)}
               className="w-full p-4 bg-[var(--light-dark-color)] rounded-[7px_30px_7px_30px] border border-gray-600 text-white focus:outline-none"
               >
-                <option >Email</option>
+                <option>Email</option>
                 <option>Phone</option>
             </select>
           </div>

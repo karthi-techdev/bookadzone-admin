@@ -126,6 +126,9 @@ body {
 #newPassword{
   margin-bottom: 10px;
 }
+.profile-img{
+    align-items: center;
+}
 
 
 
@@ -162,7 +165,12 @@ body {
     width: 100%;
     justify-content: space-between;
   }
-  
+  .login-box{
+    height: 600px;
+  }
+  .login-logo{
+    margin-top: 40px;
+  }  
   .mobile-Head{
     width: 50%;
   }
